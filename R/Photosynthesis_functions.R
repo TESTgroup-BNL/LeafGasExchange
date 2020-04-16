@@ -28,7 +28,7 @@ f.ds<-function(Tleaf,Tair,RH){
 #'
 #' @examples gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
 f.gs<-function(A,cs,ds,g0,g1,power=0.5){
-  gs=g0+1.6*(1+g1/(ds/1000)^0.5)*(A)/cs
+  gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
   return(gs)
 }
 
