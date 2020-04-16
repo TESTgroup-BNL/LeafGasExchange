@@ -4,7 +4,7 @@
 \alias{f.gs}
 \title{USO model for stomatal conductance to water vapour}
 \usage{
-f.gs(A, cs, ds, g0, g1, Rd)
+f.gs(A, cs, ds, g0, g1, power = 0.5)
 }
 \arguments{
 \item{A}{Raw assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration}
@@ -17,7 +17,7 @@ f.gs(A, cs, ds, g0, g1, Rd)
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
-\item{Rd}{Respiration rate in micromol.m-2.s-1}
+\item{power}{Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication}
 }
 \value{
 This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1
@@ -26,7 +26,7 @@ This function returns the optimal stomatal conductance to water vapour in mol.m-
 Semi-empirical model of the leaf conductance to water vapour
 }
 \examples{
-gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,Rd=1)
+gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
 }
 \references{
 Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x

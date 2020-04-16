@@ -16,19 +16,19 @@ f.ds<-function(Tleaf,Tair,RH){
 #' @title USO model for stomatal conductance to water vapour
 #' @description Semi-empirical model of the leaf conductance to water vapour
 #' @param A Raw assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration
-#' @param Rd Respiration rate in micromol.m-2.s-1
 #' @param cs CO2 at the surface of the leaf in ppm
 #' @param ds Leaf surface to air vapour pressure deficit in Pa
 #' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
+#' @param power Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication
 #' @export
 #' @return This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1
 #' @references Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
 #'  Wu, J, Serbin, SP, Ely, KS, et al. The response of stomatal conductance to seasonal drought in tropical forests. Glob Change Biol. 2020; 26: 823– 839. https://doi.org/10.1111/gcb.14820
 #'
-#' @examples gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,Rd=1)
-f.gs<-function(A,cs,ds,g0,g1,Rd){
-  gs=g0+1.6*(1+g1/(ds/1000)^0.5)*(A+Rd)/cs
+#' @examples gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
+f.gs<-function(A,cs,ds,g0,g1,power=0.5){
+  gs=g0+1.6*(1+g1/(ds/1000)^0.5)*(A)/cs
   return(gs)
 }
 
@@ -151,12 +151,12 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=list(R=8.314,
   ds=f.ds(Tleaf,Tair,RH)
 
   # Analytical solution of the system of equations {E1 : A=f(ci), E2 : gs=f(A,cs) and ci=f(cs)}
-  cic=f.solv(x=Vcmax,y=1,z=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],ds=ds)
+  cic=f.solv(x=Vcmax,y=1,z=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds)
   Wc=Vcmax*cic/(cic+Kc*(1+param[['O2']]/Ko))
 
   I2=PFD*param[['abso']]*(1-param[['f']])/2
   J=(I2+Jmax-((I2+Jmax)^2-4*f.logistic(param[['LogitTheta']])*I2*Jmax)^0.5)/(2*f.logistic(param[['LogitTheta']]))
-  cij=f.solv(x=J,y=4,z=8*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],ds=ds)
+  cij=f.solv(x=J,y=4,z=8*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds)
   Wj=J*cij/(4*cij+8*Gstar)
 
   ci=cij
@@ -164,7 +164,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=list(R=8.314,
   if(!is.null(which(Wc<Wj))&length(cic)==length(cij)){ci[which(Wc<Wj)]=cic[which(Wc<Wj)]}
   if(!is.null(which(Wc<Wj))&length(cic)!=length(cij)){ci[which(Wc<Wj)]=cic}
   A=pmin(Wc,Wj)*(1-Gstar/ci)-Rd
-  gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],Rd=Rd)
+  gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']])
   output=list(A=A,gs=gs,ci=ci,ds=ds)
   return(output)
 }
@@ -187,11 +187,11 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=list(R=8.314,
 #' @keywords internal
 #'
 #' @examples
-f.solv<-function(x,y,z,cs,Rd,Gstar,g0,g1,ds){
-  m=1.6*(1+g1/(ds/1000)^0.5)
-  a=y*g0+m/cs*(x)
-  b=z*g0+m/cs*(-Gstar*x)-cs*g0*y+(x)*(1.6-m)
-  c=-z*cs*g0+(1.6-m)*(-Gstar*x)
+f.solv<-function(x,y,z,cs,Rd,Gstar,g0,g1,power,ds){
+  m=1.6*(1+g1/(ds/1000)^power)
+  a=y*g0+m/cs*(x-Rd*y)
+  b=z*g0+m/cs*(-Gstar*x-Rd*z)-cs*g0*y+(x-Rd*y)*(1.6-m)
+  c=-z*cs*g0+(1.6-m)*(-Gstar*x-Rd*z)
   ci2=(-b-(b^2-4*a*c)^0.5)/(2*a)
   ci1=(-b+(b^2-4*a*c)^0.5)/(2*a)
 
@@ -227,6 +227,7 @@ f.solv<-function(x,y,z,cs,Rd,Gstar,g0,g1,ds){
 #' @param LogitTheta Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1. To avoid numerical issues when fitting data, this parameters is transformed in this model and called LogitTheta. The transformation between Theta and LogitTheta is: Theta=f.logistic(LogitTheta) and LogitTheta=f.logit(Theta)
 #' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
+#' @param power Power of VPDl in USO model. By default power=0.5 as in Medlyn article
 #'
 #' @return List of parameters that can be used in f.A
 #' @references Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.x
@@ -260,7 +261,8 @@ f.make.param<-function(R=8.314,
                        f=	0.15,
                        LogitTheta=f.logit(0.85),
                        g0=0.01,
-                       g1=2){
+                       g1=2,
+                       power=0.5){
   return(list(R=R,
               O2=O2,
               TRef=TRef,
@@ -285,7 +287,8 @@ f.make.param<-function(R=8.314,
               f=	f,
               LogitTheta=LogitTheta,
               g0=g0,
-              g1=g1))
+              g1=g1,
+              power=power))
 
 }
 

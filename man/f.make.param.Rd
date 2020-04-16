@@ -29,7 +29,8 @@ f.make.param(
   f = 0.15,
   LogitTheta = f.logit(0.85),
   g0 = 0.01,
-  g1 = 2
+  g1 = 2,
+  power = 0.5
 )
 }
 \arguments{
@@ -82,6 +83,8 @@ f.make.param(
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
+
+\item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article}
 }
 \value{
 List of parameters that can be used in f.A
