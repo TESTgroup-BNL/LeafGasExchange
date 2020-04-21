@@ -28,7 +28,7 @@ f.ds<-function(Tleaf,Tair,RH){
 #'
 #' @examples gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
 f.gs<-function(A,cs,ds,g0,g1,power=0.5){
-  gs=g0+1.6*(1+g1/(ds/1000)^0.5)*(A)/cs
+  gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
   return(gs)
 }
 
@@ -543,7 +543,8 @@ f.MinusLogL<-function(data,sigma,R=8.314,
                        f=	0.15,
                        LogitTheta=0.85,
                        g0=0.01,
-                       g1=2){
+                       g1=2,
+                      power=0.5){
   param=list(R=R,
              O2=O2,
              TRef=TRef,
@@ -568,7 +569,8 @@ f.MinusLogL<-function(data,sigma,R=8.314,
              f=	f,
              LogitTheta=LogitTheta,
              g0=g0,
-             g1=g1)
+             g1=g1,
+             power=power)
   y<-dnorm(x=data$Photo,mean=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param),sd=sigma,log=TRUE)
   return(-sum(y))
 }
@@ -680,15 +682,16 @@ f.CO2.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,
     Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
+    f.plot.Aci(measures=measures,name=name,param =param,list_legend = Start)
   })
 
   try({
     Estimation2=mle2(minuslogl = f.MinusLogL,start = Start,fixed = Fixed,data = list(data=measures))
     print(summary(Estimation2))
     print(confint(Estimation2))
-    f.plot.Aci(measures=measures,name=name,param =as.list(Estimation2@fullcoef ))
+    f.plot.Aci(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef))
   })
-
+  return(list(MoindresCarres,Estimation2))
 }
 
 
