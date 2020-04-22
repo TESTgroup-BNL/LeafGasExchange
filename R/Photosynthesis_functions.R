@@ -394,7 +394,6 @@ f.AWc<-function(ci,Tleaf,param=list(ci,Tleaf,RdHa,GstarRef,GstarHa,RdRef,VcmaxRe
 
 #' @title Intracellular CO2 threshold between electron transport and carboxylation limitations
 #' @inheritParams f.A
-
 #' @return Intracellular CO2 such as Wc==Wj
 #' @export
 #'
@@ -472,9 +471,9 @@ f.plot.AQ<-function(measures=NULL,param,list_legend=NULL,name=''){
   }
   legend("topleft",legend=c("RuBP","Obs"),lty=c(2,0),
          pch=c(NA,21),
-         col=c("dark red","black"),bty="n",lwd=c(2,1),
+         col=c("dark blue","black"),bty="n",lwd=c(2,1),
          seg.len=2,cex=1,pt.cex=1)
-  lines(x=measures$PARi,y=f.AWj(ci=measures$Ci,Tleaf=measures$Tleaf,PFD=measures$PARi,param=param),lwd=2,col="dark red",lty=2)
+  lines(x=measures$PARi,y=f.AWj(ci=measures$Ci,Tleaf=measures$Tleaf,PFD=measures$PARi,param=param),lwd=2,col="dark blue",lty=2)
   box(lwd=1)
 }
 
@@ -609,7 +608,8 @@ f.MinusLogL_Aq<-function(data,sigma,R=8.314,
                       f=	0.15,
                       LogitTheta=f.logit(0.85),
                       g0=0.01,
-                      g1=2){
+                      g1=2,
+                      power=0.5){
   param=list(R=R,
              O2=O2,
              TRef=TRef,
@@ -634,7 +634,8 @@ f.MinusLogL_Aq<-function(data,sigma,R=8.314,
              f=	f,
              LogitTheta=LogitTheta,
              g0=g0,
-             g1=g1)
+             g1=g1,
+             power=power)
   y<-dnorm(x=data$Photo,mean=f.AWj(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param),sd=sigma,log=TRUE)
   return(-sum(y))
 }
@@ -648,6 +649,7 @@ f.MinusLogL_Aq<-function(data,sigma,R=8.314,
 #' @param Start List of parameters to fit with their initial values.
 #' @param param See f.make.param() for details.
 #' @param modify.init TRUE or FALSE, allows to modify the Start values before fitting the data
+#' @param do.plot TRUE or FALSE, plot data and fitted curves ?
 #' @return
 #' @export
 #'
@@ -657,7 +659,7 @@ f.MinusLogL_Aq<-function(data,sigma,R=8.314,
 #' param=f.make.param(RdRef=1.25,VcmaxRef=57,JmaxRef=92))+rnorm(n = 20,mean = 0,sd = 0.5))
 #'
 #' f.CO2.fitting(measures=data,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1))
-f.CO2.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(),modify.init=TRUE){
+f.CO2.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(),modify.init=TRUE,do.plot=TRUE){
   Fixed=param[!names(param)%in%names(Start)]
   if(modify.init){
       if('JmaxRef'%in%names(Start)){Start[['JmaxRef']]=f.modified.arrhenius.inv(P = 6*(max(measures$Photo,na.rm=TRUE)+1),Ha = param[['JmaxHa']],Hd = param[['JmaxHd']],s = param[['JmaxS']],Tleaf = mean(measures$Tleaf,na.rm=TRUE),TRef = param[['TRef']],R = param[['R']])}
@@ -682,14 +684,14 @@ f.CO2.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,
     Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
-    f.plot.Aci(measures=measures,name=name,param =param,list_legend = Start)
+    if(do.plot){f.plot.Aci(measures=measures,name=name,param =param,list_legend = Start)}
   })
 
   try({
     Estimation2=mle2(minuslogl = f.MinusLogL,start = Start,fixed = Fixed,data = list(data=measures))
     print(summary(Estimation2))
     print(confint(Estimation2))
-    f.plot.Aci(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef))
+    if(do.plot){f.plot.Aci(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef))}
   })
   return(list(MoindresCarres,Estimation2))
 }
@@ -730,7 +732,7 @@ f.logistic<-function(x){ return(ifelse(x>0,1/(1+exp(-x)),exp(x)/(1+exp(x))))}
 #' data=data.frame(Tleaf=300,Ci=280,PARi=seq(0,2000,67),Photo=f.AWj(PFD=seq(0,2000,67),Tleaf=300,ci=280,param=f.make.param(LogitTheta=f.logit(0.89),JmaxRef=215,RdRef=1))+rnorm(n = 30,mean = 0,sd = 0.35))
 #' Start=list(JmaxRef=50,LogitTheta=f.logit(0.8),RdRef=0.5)
 #' f.light.fitting(measures=data,Start=Start)
-f.light.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,LogitTheta=0.6,RdRef=1),param=f.make.param(),modify.init=TRUE){
+f.light.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,LogitTheta=0.6,RdRef=1),param=f.make.param(),modify.init=TRUE,do.plot=TRUE){
   Fixed=param[!names(param)%in%names(Start)]
   param=c(Start,Fixed)
   if(modify.init){
@@ -759,7 +761,7 @@ f.light.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,LogitTheta
     Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
-    f.plot.AQ(measures=measures,name=name,param =param,list_legend = Start)
+    if(do.plot){f.plot.AQ(measures=measures,name=name,param =param,list_legend = Start)}
 
   })
 
@@ -768,7 +770,7 @@ f.light.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,LogitTheta
     print(summary(Estimation2))
     print(confint(Estimation2))
     param =as.list(Estimation2@fullcoef )
-    f.plot.AQ(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef ))
+    if(do.plot){f.plot.AQ(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef ))}
   })
 return(list(MoindresCarres,Estimation2))
 }

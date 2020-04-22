@@ -9,7 +9,8 @@ f.light.fitting(
   id.name = NULL,
   Start = list(JmaxRef = 90, LogitTheta = 0.6, RdRef = 1),
   param = f.make.param(),
-  modify.init = TRUE
+  modify.init = TRUE,
+  do.plot = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ f.light.fitting(
 \item{param}{See f.make.param() for details.}
 
 \item{modify.init}{TRUE or FALSE, allows to modify the Start values before fitting the data}
+
+\item{do.plot}{TRUE or FALSE, plot data and fitted curves ?}
 }
 \value{
 
