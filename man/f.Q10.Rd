@@ -6,6 +6,9 @@
 \usage{
 f.Q10(Pref, Q10, Tleaf, TRef)
 }
+\arguments{
+\item{TRef}{Reference temperature for Kc, Ko, Rd,GammaStar Vcmax, Jmax}
+}
 \value{
 Value of the photosynthetic parameter at the specified leaf temperature
 }

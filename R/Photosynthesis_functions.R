@@ -40,7 +40,7 @@ f.gs<-function(A,cs,ds,g0,g1,power=0.5,model="USO"){
 #' @title Calculation of the minimal conductance given by a particular coupled conductance and photosynthesis model
 #' @description The minimal conductance of a model depends on the parameters of the model (ie g0 and g1) but also on the minimum A value, which corresponds to the dark respiration.
 #' Knowing the minimal conductance is important because the conductance can become negative and lead to unrealistic values in photosynthesis models
-#' @inheritParams f.make.param()
+#' @inheritParams f.make.param
 #'
 #' @return Minimal conductance
 #' @export
@@ -90,7 +90,7 @@ f.arrhenius.inv<-function(P,Ha,Tleaf,TRef=298.16,R=8.314){
 
 #' @title Temperature dependence of photosynthetic parameters
 #' @details This equation is used in JULES TBM model
-#' @inheritParams f.make.param()
+#' @inheritParams f.make.param
 #'
 #' @return Value of the photosynthetic parameter at the specified leaf temperature
 #' @export
@@ -104,7 +104,7 @@ f.Q10=function(Pref,Q10,Tleaf,TRef){
 #' @title Temperature dependence of photosynthetic parameters
 #' @details This equation is used in JULES TBM model
 #'
-#' @inheritParams f.make.param()
+#' @inheritParams f.make.param
 #'
 #' @return Value of the photosynthetic parameter at the specified leaf temperature
 #' @references Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
@@ -152,7 +152,7 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #' @title Coupled conductance photosynthesis model
 #' @description Photosynthesis model at the leaf level using the farquhar equations. The parameters can be defined by the
 #' function f.make param and corresponds to the parameters inplemented in different Terrestrial Biosphere Modesl such as ORCHIDEE, JULES, CLM4.5 or FATES
-#' @inheritParams f.make.param()
+#' @inheritParams f.make.param
 #' @export
 #' @return List of different variables:
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
@@ -535,7 +535,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
 
 #' @title Photosynthesis model
 #' @description Calculate the assimilation according to Farquhar equations. Contrary to f.A, this function uses intracellular CO2 and not ambiant air CO2
-#' @inheritParams f.make.param()
+#' @inheritParams f.make.param
 #' @param param List of parameters, see f.make.param for details
 #'
 #' @return Assimilation in micromol.m-2.s-1
@@ -730,7 +730,6 @@ f.SumSq<-function(Fixed,data,Start){
 #' Title
 #'
 #' @inheritParams f.make.param
-#' @inheritParams f.plot.Aci
 #' @param sigma Sigma value
 #' @return
 #' @export

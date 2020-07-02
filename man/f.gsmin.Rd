@@ -18,6 +18,17 @@ f.gsmin(
   model = "USO"
 )
 }
+\arguments{
+\item{RdRef}{Respiration value at the reference temperature}
+
+\item{RdHa}{Energie of activation for Rd in J.mol-1}
+
+\item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
+
+\item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
+
+\item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article}
+}
 \value{
 Minimal conductance
 }
