@@ -5,35 +5,58 @@
 \title{Photosynthesis and stomata model parameters}
 \usage{
 f.make.param(
-  R = 8.314,
-  O2 = 210,
-  TRef = 298.16,
-  Patm = 101,
-  JmaxRef = 85,
-  JmaxHa = 50300,
-  JmaxHd = 152044,
-  JmaxS = 495,
-  VcmaxRef = 55,
-  VcmaxHa = 73637,
-  VcmaxHd = 149252,
-  VcmaxS = 486,
-  RdRef = 1,
-  RdHa = 46390,
-  KcRef = 404.9,
-  KcHa = 79430,
-  KoRef = 278.4,
-  KoHa = 36380,
-  GstarRef = 42.75,
-  GstarHa = 37830,
-  abso = 0.85,
-  f = 0.15,
-  LogitTheta = f.logit(0.85),
-  g0 = 0.01,
-  g1 = 2,
-  power = 0.5
+  TBM = "FATES",
+  R = NA,
+  O2 = NA,
+  TRef = NA,
+  Patm = NA,
+  JmaxRef = NA,
+  JmaxHa = NA,
+  JmaxHd = NA,
+  JmaxS = NA,
+  VcmaxRef = NA,
+  VcmaxHa = NA,
+  VcmaxHd = NA,
+  VcmaxS = NA,
+  VcmaxQ10 = NA,
+  Tlow = NA,
+  Tup = NA,
+  TpRef = NA,
+  TpHa = NA,
+  TpHd = NA,
+  TpS = NA,
+  thetacj = NA,
+  thetaip = NA,
+  RdRef = NA,
+  RdHa = NA,
+  RdHd = NA,
+  RdS = NA,
+  KcRef = NA,
+  KcHa = NA,
+  KcQ10 = NA,
+  KoRef = NA,
+  KoHa = NA,
+  KoQ10 = NA,
+  GstarRef = NA,
+  GstarHa = NA,
+  TauRef = NA,
+  TauQ10 = NA,
+  abso = NA,
+  aQY = NA,
+  Theta = NA,
+  model.gs = NA,
+  g0 = NA,
+  g1 = NA,
+  power = NA,
+  gmRef = NA,
+  gmS = NA,
+  gmHa = NA,
+  gmHd = NA
 )
 }
 \arguments{
+\item{TBM}{Type of model (FATES, ORCHIDEE, CLM4.5 or JULES). Default is FATES}
+
 \item{R}{Ideal gas constant}
 
 \item{O2}{O2 concentration in ppm}
@@ -76,29 +99,47 @@ f.make.param(
 
 \item{abso}{Absorptance of the leaf in the photosynthetic active radiation wavelenghts}
 
-\item{f}{Correcting factor for the spectral quality of the light}
+\item{aQY}{Apparent quantum yield}
 
-\item{LogitTheta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1. To avoid numerical issues when fitting data, this parameters is transformed in this model and called LogitTheta. The transformation between Theta and LogitTheta is: Theta=f.logistic(LogitTheta) and LogitTheta=f.logit(Theta)}
+\item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
+
+\item{model.gs}{Type of conductance model (USO, USO_simpl)}
 
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
 \item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article}
+
+\item{gmRef}{Mesophyll conductance at Tref (25 deg C) mol m-2 s-1}
+
+\item{gmS}{Entropy term for gm J K-1 mol-1}
+
+\item{gmHa}{Energy of activation for gm in J.mol-1}
+
+\item{gmHd}{Energy of deactivation for gm in J.mol-1}
 }
 \value{
 List of parameters that can be used in f.A
 }
 \description{
-Function to create a list of parameters to be used in f.A, f.Aci, f.AWc and f.AWj function.
-Depending on the function, all the parameters are not used. For example go and g1 are not used in f.Aci
+Function to create a list of parameters to be used in most of the functions of this package.
+Depending on the function, all the parameters are not used. For example go and g1 are not used in f.Aci.
+The parameters from different TBM are implemented and can be chosen by selecting a TBM
+}
+\details{
+The call of this function is made using f.make.param(). If a parameter is modified for example writting f.make.param(VcmaxRef=10), this function will return all the default parameters from FATES TBM with VcmaxRef = 10 instead of its default value
 }
 \examples{
-param1=f.make.param(JmaxRef=100,VcmaxRef=60,RdRef=1)
- param2=f.make.param(JmaxRef=100,VcmaxRef=80,RdRef=1)
+param1=f.make.param(TBM='FATES',JmaxRef=100,VcmaxRef=60,RdRef=1,TpRef=10)
+ param2=f.make.param(TBM='CLM4.5',JmaxRef=100,VcmaxRef=60,RdRef=1,TpRef=10)
  f.A(PFD=1500,cs=400,Tleaf=300,Tair=299,RH=70,param=param1)
  f.A(PFD=1500,cs=400,Tleaf=300,Tair=299,RH=70,param=param2)
 }
 \references{
 Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.x
+CLM4.5: http://www.cesm.ucar.edu/models/cesm2/land/CLM45_Tech_Note.pdf
+ORCHIDEE: https://forge.ipsl.jussieu.fr/orchidee/wiki/Documentation/OrchideeParameters AND https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2003GB002199
+JULES: https://www.geosci-model-dev.net/4/701/2011/gmd-4-701-2011.pdf
+FATES: https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html#
 }

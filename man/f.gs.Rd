@@ -2,12 +2,12 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.gs}
 \alias{f.gs}
-\title{USO model for stomatal conductance to water vapour}
+\title{Conductance model for stomatal conductance to water vapour}
 \usage{
-f.gs(A, cs, ds, g0, g1, power = 0.5)
+f.gs(A, cs, ds, g0, g1, power = 0.5, model = "USO")
 }
 \arguments{
-\item{A}{Raw assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration}
+\item{A}{Net assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration}
 
 \item{cs}{CO2 at the surface of the leaf in ppm}
 
@@ -18,6 +18,8 @@ f.gs(A, cs, ds, g0, g1, power = 0.5)
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
 \item{power}{Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication}
+
+\item{model}{Stomatal model ("USO" or "USO_simpl")}
 }
 \value{
 This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1

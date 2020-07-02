@@ -4,42 +4,20 @@
 \alias{f.A}
 \title{Coupled conductance photosynthesis model}
 \usage{
-f.A(
-  PFD,
-  cs,
-  Tleaf,
-  Tair,
-  RH,
-  param = list(R = 8.314, O2 = 210, TRef = 298.16, Patm = 101, JmaxRef = 160, JmaxHa =
-    50300, JmaxHd = 152044, JmaxS = 495, VcmaxRef = 120, VcmaxHa = 73637, VcmaxHd =
-    149252, VcmaxS = 486, RdRef = 1, RdHa = 46390, KcRef = 404.9, KcHa = 79430, KoRef =
-    278.4, KoHa = 36380, GstarRef = 42.75, GstarHa = 37830, abso = 0.85, f = 0.15,
-    LogitTheta = f.logit(0.85), g0 = 0.01, g1 = 2)
-)
-}
-\arguments{
-\item{PFD}{Photo Flux Density in micromol.m-2,s-1}
-
-\item{cs}{CO2 at the surface of the leaf in ppm}
-
-\item{Tleaf}{Temperature of the leaf in Kelvin}
-
-\item{Tair}{Temperature of the air in Kelvin}
-
-\item{RH}{Relative Humidity of the air, from 0 to 100}
-
-\item{param}{List of parameters, see f.make.param for details}
+f.A(PFD, cs, Tleaf, Tair, RH, param = list())
 }
 \value{
 List of different variables:
  - A: Raw assimilation of the leaf in micromol.m-2.s-1
  - gs: Conductance of the leaf for water vapour
  - ci: Intracellular CO2 concentration in micromol.mol-1
+ - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
  - ds: Leaf surface to air vapour pressure deficit in Pa
 }
 \description{
-Coupled conductance photosynthesis model
+Photosynthesis model at the leaf level using the farquhar equations. The parameters can be defined by the
+function f.make param and corresponds to the parameters inplemented in different Terrestrial Biosphere Modesl such as ORCHIDEE, JULES, CLM4.5 or FATES
 }
 \examples{
-f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70)
+f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
 }

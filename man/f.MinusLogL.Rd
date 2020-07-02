@@ -7,36 +7,59 @@
 f.MinusLogL(
   data,
   sigma,
-  R = 8.314,
-  O2 = 210,
-  TRef = 298.16,
-  Patm = 101,
-  JmaxRef = 85,
-  JmaxHa = 50300,
-  JmaxHd = 152044,
-  JmaxS = 495,
-  VcmaxRef = 55,
-  VcmaxHa = 73637,
-  VcmaxHd = 149252,
-  VcmaxS = 486,
-  RdRef = 1,
-  RdHa = 46390,
-  KcRef = 404.9,
-  KcHa = 79430,
-  KoRef = 278.4,
-  KoHa = 36380,
-  GstarRef = 42.75,
-  GstarHa = 37830,
-  abso = 0.85,
-  f = 0.15,
-  LogitTheta = 0.85,
-  g0 = 0.01,
-  g1 = 2,
-  power = 0.5
+  TBM = 0,
+  R = 0.75,
+  O2 = 0.75,
+  TRef = 0.75,
+  Patm = 0.75,
+  JmaxRef = 0.75,
+  JmaxHa = 0.75,
+  JmaxHd = 0.75,
+  JmaxS = 0.75,
+  VcmaxRef = 0.75,
+  VcmaxHa = 0.75,
+  VcmaxHd = 0.75,
+  VcmaxS = 0.75,
+  VcmaxQ10 = 0.75,
+  Tlow = 0.75,
+  Tup = 0.75,
+  TpRef = 0.75,
+  TpHa = 0.75,
+  TpHd = 0.75,
+  TpS = 0.75,
+  thetacj = 0.75,
+  thetaip = 0.75,
+  RdRef = 0.75,
+  RdHa = 0.75,
+  RdHd = 0.75,
+  RdS = 0.75,
+  KcRef = 0.75,
+  KcHa = 0.75,
+  KcQ10 = 0.75,
+  KoRef = 0.75,
+  KoHa = 0.75,
+  KoQ10 = 0.75,
+  GstarRef = 0.75,
+  GstarHa = 0.75,
+  TauRef = 0.75,
+  TauQ10 = 0.75,
+  abso = 0.75,
+  aQY = 0.75,
+  Theta = 0.75,
+  model.gs = NA,
+  g0 = 0.75,
+  g1 = 0.75,
+  power = 0.75,
+  gmRef = 0.75,
+  gmS = 0.75,
+  gmHa = 0.75,
+  gmHd = 0.75
 )
 }
 \arguments{
 \item{sigma}{Sigma value}
+
+\item{TBM}{Type of model (FATES, ORCHIDEE, CLM4.5 or JULES). Default is FATES}
 
 \item{R}{Ideal gas constant}
 
@@ -80,15 +103,25 @@ f.MinusLogL(
 
 \item{abso}{Absorptance of the leaf in the photosynthetic active radiation wavelenghts}
 
-\item{f}{Correcting factor for the spectral quality of the light}
+\item{aQY}{Apparent quantum yield}
 
-\item{LogitTheta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1. To avoid numerical issues when fitting data, this parameters is transformed in this model and called LogitTheta. The transformation between Theta and LogitTheta is: Theta=f.logistic(LogitTheta) and LogitTheta=f.logit(Theta)}
+\item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
+
+\item{model.gs}{Type of conductance model (USO, USO_simpl)}
 
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
 \item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article}
+
+\item{gmRef}{Mesophyll conductance at Tref (25 deg C) mol m-2 s-1}
+
+\item{gmS}{Entropy term for gm J K-1 mol-1}
+
+\item{gmHa}{Energy of activation for gm in J.mol-1}
+
+\item{gmHd}{Energy of deactivation for gm in J.mol-1}
 }
 \value{
 

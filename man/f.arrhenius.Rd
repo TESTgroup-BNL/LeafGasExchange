@@ -27,6 +27,6 @@ Temperature dependence of Gamma star, Ko, Kc and Rd
 plot(x=seq(25,35,0.1),y=f.arrhenius(PRef=1,Ha=46390,Tleaf=seq(273.15+25,273.15+35,0.1),R=8.314),xlab='Temperature degree C',ylab='Rd')
 }
 \references{
-VON CAEMMERER, S. (2013), Steady‐state models of photosynthesis. Plant Cell Environ, 36: 1617-1630. doi:10.1111/pce.12098
+VON CAEMMERER, S. (2013), Steady state models of photosynthesis. Plant Cell Environ, 36: 1617-1630. doi:10.1111/pce.12098
  Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.x
 }

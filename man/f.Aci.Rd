@@ -4,24 +4,9 @@
 \alias{f.Aci}
 \title{Photosynthesis model}
 \usage{
-f.Aci(
-  PFD,
-  ci,
-  Tleaf,
-  param = list(R = 8.314, O2 = 210, TRef = 298.16, Patm = 101, JmaxRef = 160, JmaxHa =
-    50300, JmaxHd = 152044, JmaxS = 495, VcmaxRef = 120, VcmaxHa = 73637, VcmaxHd =
-    149252, VcmaxS = 486, RdRef = 1, RdHa = 46390, KcRef = 404.9, KcHa = 79430, KoRef =
-    278.4, KoHa = 36380, GstarRef = 42.75, GstarHa = 37830, abso = 0.85, f = 0.15,
-    LogitTheta = f.logit(0.85))
-)
+f.Aci(PFD, ci, Tleaf, param = list())
 }
 \arguments{
-\item{PFD}{Photo Flux Density in micromol.m-2,s-1}
-
-\item{ci}{Leaf intracellular CO2 in ppm}
-
-\item{Tleaf}{Temperature of the leaf in Kelvin}
-
 \item{param}{List of parameters, see f.make.param for details}
 }
 \value{
@@ -31,6 +16,6 @@ Assimilation in micromol.m-2.s-1
 Calculate the assimilation according to Farquhar equations. Contrary to f.A, this function uses intracellular CO2 and not ambiant air CO2
 }
 \examples{
-ci=seq(1,1500,10)
-plot(x=ci,y=f.Aci(PFD=2000,ci=ci,Tleaf=300))
+ci=seq(40,1500,10)
+plot(x=ci,y=f.Aci(PFD=2000,ci=ci,Tleaf=300,param=f.make.param())$A)
 }

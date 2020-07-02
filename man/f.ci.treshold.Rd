@@ -4,19 +4,7 @@
 \alias{f.ci.treshold}
 \title{Intracellular CO2 threshold between electron transport and carboxylation limitations}
 \usage{
-f.ci.treshold(
-  PFD,
-  Tleaf,
-  param = list(GstarRef, GstarHa, KoRef, KoHa, KcRef, KcHa, VcmaxHa, VcmaxHd, VcmaxS,
-    JmaxHa, JmaxHd, JmaxS, VcmaxRef, JmaxRef, abso, f, LogitTheta)
-)
-}
-\arguments{
-\item{PFD}{Photo Flux Density in micromol.m-2,s-1}
-
-\item{Tleaf}{Temperature of the leaf in Kelvin}
-
-\item{param}{List of parameters, see f.make.param for details}
+f.ci.treshold(PFD, Tleaf, param)
 }
 \value{
 Intracellular CO2 such as Wc==Wj
