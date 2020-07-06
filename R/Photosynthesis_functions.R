@@ -484,7 +484,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
     thetacj=0.999,thetaip=0.999,
     RdRef=	1.43,RdHa=	46390,RdHd=150650,RdS=490,
     KcRef=	404.9,KcHa=	79430,KoRef=	278.4,KoHa=	36380,GstarRef=	42.75,GstarHa	=37830,
-    abso=	0.85,aQY=	0.425,Theta=(0.85),g0=0.02,g1=4.1,model.gs=0,power=0.5)
+    abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5)
   }
   if(TBM=='ORCHIDEE'){
     param=list(TBM=1,R=8.314,O2=210,TRef=298.16,Patm=101,
@@ -503,7 +503,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                thetacj=0.98,thetaip=0.95,
                RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,
                KcRef=	404.9,KcHa=	79430,KoRef=	278.4,KoHa=	36380,GstarRef=	42.75,GstarHa	=37830,
-               abso=	0.85,aQY=	0.425,Theta=(0.85),g0=0.02,g1=4.1,model.gs=0,power=0.5)
+               abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5)
   }
   if(TBM=='JULES'){
     param=list(TBM=3,R=8.314,O2=210,TRef=298.16,Patm=101,
@@ -879,7 +879,7 @@ f.logistic<-function(x){ return(ifelse(x>0,1/(1+exp(-x)),exp(x)/(1+exp(x))))}
 
 
 
-###pack <- "TestGasEx"
+###pack <- "LeafGasExchange"
 #path <- find.package(pack)
 #system(paste(shQuote(file.path(R.home("bin"), "R")),"CMD", "Rd2pdf", shQuote(path)))
 
