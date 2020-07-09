@@ -4,7 +4,7 @@
 \alias{f.A}
 \title{Coupled conductance photosynthesis model}
 \usage{
-f.A(PFD, cs, Tleaf, Tair, RH, param = list())
+f.A(PFD, cs, Tleaf, Tair, RH, param = f.make.param())
 }
 \value{
 List of different variables:

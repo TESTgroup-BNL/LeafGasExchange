@@ -4,9 +4,20 @@
 \alias{f.AT}
 \title{Coupled conductance photosynthesis model with energy balance model}
 \usage{
-f.AT(PFD, cs, Tair, RH, wind, precision = 0.1, max_it = 10, param = list())
+f.AT(
+  PFD,
+  cs,
+  Tair,
+  RH,
+  wind,
+  precision = 0.1,
+  max_it = 10,
+  param = f.make.param()
+)
 }
 \arguments{
+\item{wind}{Wind speed at the surface of the leaf in m.s-1}
+
 \item{precision}{Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.}
 
 \item{max_it}{Maximum number of iterations to find the solution}

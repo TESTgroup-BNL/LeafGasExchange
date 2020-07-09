@@ -4,7 +4,7 @@
 \alias{f.Aci}
 \title{Photosynthesis model}
 \usage{
-f.Aci(PFD, ci, Tleaf, param = list())
+f.Aci(PFD, ci, Tleaf, param = f.make.param())
 }
 \arguments{
 \item{param}{List of parameters, see f.make.param for details}

@@ -271,10 +271,11 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @details This function allo to calculate the photosynthesis from environmental variables PFD, RH, wind, cs, Tair.
 #' (There is no boundary layer). The energy balance model comes from the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
 #' Here the cuticular conductance is considered to be equal to g0 even if it is wrong for the USO models. Most of the times, no precaution is taken on gs_min when fitting the conductance models so gs_min is often negative. This choice was made to prevent unrealistic energy budgets.
-#' @inheritParams
+#' @inheritParams f.A
 #' @param param List of parameters given by f.make.param()
 #' @param precision Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.
 #' @param max_it Maximum number of iterations to find the solution
+#' @param wind Wind speed at the surface of the leaf in m.s-1
 #' @return
 #' @export
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
