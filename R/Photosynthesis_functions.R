@@ -162,7 +162,7 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #'  - ds: Leaf surface to air vapour pressure deficit in Pa
 #'
 #' @examples f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
-f.A<-function(PFD,cs,Tleaf,Tair,RH,param=list()){
+f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   #Calculation of temperature dependence of the parameters
   Kc=f.arrhenius(param[['KcRef']],param[['KcHa']],Tleaf)
   Ko=f.arrhenius(param[['KoRef']],param[['KoHa']],Tleaf)
@@ -280,7 +280,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=list()){
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
 
 #' @examples f.AT(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
-f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param=list()){
+f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param=f.make.param()){
   Tleaf=Tair+1
   n=1
   delta=precision+1
@@ -543,7 +543,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
 #'
 #' @examples ci=seq(40,1500,10)
 #' plot(x=ci,y=f.Aci(PFD=2000,ci=ci,Tleaf=300,param=f.make.param())$A)
-f.Aci=function(PFD,ci,Tleaf,param=list()){
+f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
 
   Kc=f.arrhenius(param[['KcRef']],param[['KcHa']],Tleaf)
   Ko=f.arrhenius(param[['KoRef']],param[['KoHa']],Tleaf)
@@ -882,5 +882,3 @@ f.logistic<-function(x){ return(ifelse(x>0,1/(1+exp(-x)),exp(x)/(1+exp(x))))}
 ###pack <- "LeafGasExchange"
 #path <- find.package(pack)
 #system(paste(shQuote(file.path(R.home("bin"), "R")),"CMD", "Rd2pdf", shQuote(path)))
-
-
