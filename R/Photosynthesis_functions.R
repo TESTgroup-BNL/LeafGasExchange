@@ -156,10 +156,11 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #' @export
 #' @return List of different variables:
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
-#'  - gs: Conductance of the leaf for water vapour
+#'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1
 #'  - ci: Intracellular CO2 concentration in micromol.mol-1
 #'  - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
 #'  - ds: Leaf surface to air vapour pressure deficit in Pa
+#'  - Trans: Water transpiration in mL m-2 s-1
 #'
 #' @examples f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
 f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
@@ -203,7 +204,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,gs=gs,ci=ci,ds=ds)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
   }
 
@@ -240,7 +241,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,gs=gs,ci=ci,ds=ds)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
 
   }
@@ -260,7 +261,8 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Wj=Wj*(1-Gstar/cc)
     A=pmin(Wc,Wj)-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,gs=gs,ci=ci,cc=cc,ds=ds)
+
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
     }
 }
@@ -341,7 +343,7 @@ f.solv<-function(x,y,z,cs,Rd,Gstar,g0,g1,power,ds,model){
   ci2=(-b-(b^2-4*a*c)^0.5)/(2*a)
   ci1=(-b+(b^2-4*a*c)^0.5)/(2*a)
 
-  return(ci1)
+  return(pmax(ci1,ci2))
 }
 
 
@@ -392,7 +394,7 @@ f.solv.Acc=function(x1,x2,g0,g1,power,ds,model,gm,Rd,Gstar,cs){
 #' @param R Ideal gas constant
 #' @param O2 O2 concentration in ppm
 #' @param TRef Reference temperature for Kc, Ko, Rd,GammaStar Vcmax, Jmax
-#' @param Patm Atmospheric pressure in Pa
+#' @param Patm Atmospheric pressure in kPa
 #' @param JmaxRef Maximum electron transport rate in micromol.m-2.s-1
 #' @param JmaxHa Energy of activation for Jmax in J.mol-1
 #' @param JmaxHd Energy of desactivation for Jmax in J.mol-1
