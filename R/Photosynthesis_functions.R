@@ -56,6 +56,26 @@ f.gsmin<-function(RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,Tleaf=300,cs=400,
   return(gsmin)
 
 }
+
+#' @title Maximum theoretical stomatal conductance
+#' @details This function calculates the maximum theoretical conductance value according to morphological data and the physics of diffusion through pores. It follows the equation from Franks and Berling 2009.
+#' @param Sarea Maximum area of the aperture of stomata when open (microm2)
+#' @param Sdensity Number of stomata per mm2 of leaf
+#' @param Sdepth Stomatal pore depth (micro m)
+#' @param Diffusivity Diffusivity of water vapor in air (m2·s−1)
+#' @param mvair Molar volume of air (m3 mol−1)
+#'
+#' @return Maximum stomatal conductance to water vapour in mol m-2 s-1
+#' @export
+#' @references Franks PJ, Beerling DJ. Maximum leaf conductance driven by CO2 effects on stomatal size and density over geologic time. Proc Natl Acad Sci U S A. 2009;106(25):10343-10347. doi:10.1073/pnas.0904209106
+#' @examples
+#' ## The density of stomata is around 400 stomata.mm-2 in the tropical species.
+#' ## The length of the stomata is around 20 micro m. Following Franks and Beerling 2009 we can estimate the
+#' ## Sarea of the stomata: pi*(20/4*10^-6)^2 and the Sdepth: 20*10^-6/4
+#' f.gsmax(Sarea=0.78,Sdensity=400,Sdepth=5)
+f.gsmax=function(Sarea=0.78,Sdensity=400,Sdepth=5,Diffusivity=0.282/1000,mvair=24.5/1000){
+  Diffusivity/mvair*Sdensity*Sarea*10^-6/(Sdepth*10^-6+pi/2*(Sarea*10^-12/pi)^0.5)
+}
 #' @title Temperature dependence of Gamma star, Ko, Kc and Rd
 #'
 #' @param PRef Value of the parameter at the reference temperature
