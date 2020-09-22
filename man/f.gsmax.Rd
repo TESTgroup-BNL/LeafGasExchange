@@ -19,9 +19,9 @@ f.gsmax(
 
 \item{Sdepth}{Stomatal pore depth (micro m)}
 
-\item{Diffusivity}{Diffusivity of water vapor in air (m2·s−1)}
+\item{Diffusivity}{Diffusivity of water vapor in air (m2 s-1)}
 
-\item{mvair}{Molar volume of air (m3 mol−1)}
+\item{mvair}{Molar volume of air (m3 mol-1)}
 }
 \value{
 Maximum stomatal conductance to water vapour in mol m-2 s-1

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.AT}
 \alias{f.AT}
-\title{Coupled conductance photosynthesis model with energy balance model}
+\title{Coupled conductance photosynthesis model and energy balance model}
 \usage{
 f.AT(
   PFD,
@@ -28,12 +28,12 @@ f.AT(
 
 }
 \description{
-Coupled conductance photosynthesis model with energy balance model
+Coupled conductance photosynthesis model and energy balance model
 }
 \details{
-This function allo to calculate the photosynthesis from environmental variables PFD, RH, wind, cs, Tair.
-(There is no boundary layer). The energy balance model comes from the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
-Here the cuticular conductance is considered to be equal to g0 even if it is wrong for the USO models. Most of the times, no precaution is taken on gs_min when fitting the conductance models so gs_min is often negative. This choice was made to prevent unrealistic energy budgets.
+This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
+The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
+Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
 }
 \examples{
 f.AT(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())

@@ -62,8 +62,8 @@ f.gsmin<-function(RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,Tleaf=300,cs=400,
 #' @param Sarea Maximum area of the aperture of stomata when open (microm2)
 #' @param Sdensity Number of stomata per mm2 of leaf
 #' @param Sdepth Stomatal pore depth (micro m)
-#' @param Diffusivity Diffusivity of water vapor in air (m2·s−1)
-#' @param mvair Molar volume of air (m3 mol−1)
+#' @param Diffusivity Diffusivity of water vapor in air (m2 s-1)
+#' @param mvair Molar volume of air (m3 mol-1)
 #'
 #' @return Maximum stomatal conductance to water vapour in mol m-2 s-1
 #' @export
@@ -286,10 +286,10 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 
 
 
-#' @title Coupled conductance photosynthesis model with energy balance model
-#' @details This function allo to calculate the photosynthesis from environmental variables PFD, RH, wind, cs, Tair.
-#' (There is no boundary layer). The energy balance model comes from the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
-#' Here the cuticular conductance is considered to be equal to g0 even if it is wrong for the USO models. Most of the times, no precaution is taken on gs_min when fitting the conductance models so gs_min is often negative. This choice was made to prevent unrealistic energy budgets.
+#' @title Coupled conductance photosynthesis model and energy balance model
+#' @details This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
+#' The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
+#' Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
 #' @inheritParams f.A
 #' @param param List of parameters given by f.make.param()
 #' @param precision Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.
@@ -337,7 +337,6 @@ f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param=f.make.param())
 #' @title Analytical solution of the coupled photosynthesis and USO model
 #' @param x
 #' @param y
-#' @param z
 #' @param cs
 #' @param Rd
 #' @param Gstar
@@ -445,6 +444,7 @@ f.solv.Acc=function(x1,x2,g0,g1,power,ds,model,gm,Rd,Gstar,cs){
 #' ORCHIDEE: https://forge.ipsl.jussieu.fr/orchidee/wiki/Documentation/OrchideeParameters AND https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2003GB002199
 #' JULES: https://www.geosci-model-dev.net/4/701/2011/gmd-4-701-2011.pdf
 #' FATES: https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html#
+#' Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
 #' @export
 #'
 #' @examples param1=f.make.param(TBM='FATES',JmaxRef=100,VcmaxRef=60,RdRef=1,TpRef=10)

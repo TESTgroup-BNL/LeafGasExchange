@@ -142,4 +142,5 @@ CLM4.5: http://www.cesm.ucar.edu/models/cesm2/land/CLM45_Tech_Note.pdf
 ORCHIDEE: https://forge.ipsl.jussieu.fr/orchidee/wiki/Documentation/OrchideeParameters AND https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2003GB002199
 JULES: https://www.geosci-model-dev.net/4/701/2011/gmd-4-701-2011.pdf
 FATES: https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html#
+Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
 }
