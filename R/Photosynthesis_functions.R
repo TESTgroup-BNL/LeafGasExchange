@@ -203,11 +203,11 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   if(param[['TBM']]%in%c(0,2)){
 
     # Analytical solution of the system of equations {E1 : A=f(ci), E2 : gs=f(A,cs) and ci=f(cs)}
-    cic=f.solv(x=Vcmax,y=1,z=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,model=param[["model.gs"]])
-    Wc=Vcmax*cic/(cic+Kc*(1+param[['O2']]/Ko))
+    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,model=param[["model.gs"]])
+    Wc=(cic-Gstar)*Vcmax/(cic+Kc*(1+param[['O2']]/Ko))
 
-    cij=f.solv(x=J,y=4,z=8*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
-    Wj=J*cij/(4*cij+8*Gstar)
+    cij=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
+    Wj=(cij-Gstar)*J/(4*cij+8*Gstar)
 
     Tp=f.modified.arrhenius(PRef=param[['TpRef']],param[['TpHa']],param[['TpHd']],param[['TpS']],Tleaf)
     Wp=3*Tp
@@ -218,9 +218,6 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     if(!is.null(which(Wc<Wj))&length(cic)!=length(cij)){ci[which(Wc<Wj)]=cic}
     W=pmin(Wc,Wj)
     if(!is.null(which(Wp<W))){ci[which(Wp<W)]=cip[which(Wp<W)]}
-    Wc=Wc*(1-Gstar/ci)
-    Wj=Wj*(1-Gstar/ci)
-    Wp=Wp*(1-Gstar/ci)
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
@@ -354,12 +351,12 @@ f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param=f.make.param())
 #' @keywords internal
 #'
 #' @examples
-f.solv<-function(x,y,z,cs,Rd,Gstar,g0,g1,power,ds,model){
+f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,model){
   if(model=="USO"|model==0){m=1.6*(1+g1/(ds/1000)^power)}else if(model=="USO_simpl"|model==1){m=1.6*(g1/(ds/1000)^power)}else{print(paste("model:",model,'is not in the list of implemented stomatal models'))}
 
-  a=y*g0+m/cs*(x-Rd*y)
-  b=z*g0+m/cs*(-Gstar*x-Rd*z)-cs*g0*y+(x-Rd*y)*(1.6-m)
-  c=-z*cs*g0+(1.6-m)*(-Gstar*x-Rd*z)
+  a=g0+m/cs*(x-Rd)
+  b=y*g0+m/cs*(-Gstar*x-Rd*y)-cs*g0+(x-Rd)*(1.6-m)
+  c=-y*cs*g0+(1.6-m)*(-Gstar*x-Rd*y)
   ci2=(-b-(b^2-4*a*c)^0.5)/(2*a)
   ci1=(-b+(b^2-4*a*c)^0.5)/(2*a)
 
