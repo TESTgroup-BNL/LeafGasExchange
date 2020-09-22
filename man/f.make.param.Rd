@@ -63,7 +63,7 @@ f.make.param(
 
 \item{TRef}{Reference temperature for Kc, Ko, Rd,GammaStar Vcmax, Jmax}
 
-\item{Patm}{Atmospheric pressure in Pa}
+\item{Patm}{Atmospheric pressure in kPa}
 
 \item{JmaxRef}{Maximum electron transport rate in micromol.m-2.s-1}
 

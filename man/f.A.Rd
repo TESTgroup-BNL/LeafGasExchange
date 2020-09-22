@@ -9,10 +9,11 @@ f.A(PFD, cs, Tleaf, Tair, RH, param = f.make.param())
 \value{
 List of different variables:
  - A: Raw assimilation of the leaf in micromol.m-2.s-1
- - gs: Conductance of the leaf for water vapour
+ - gs: Conductance of the leaf for water vapour in mol m-2 s-1
  - ci: Intracellular CO2 concentration in micromol.mol-1
  - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
  - ds: Leaf surface to air vapour pressure deficit in Pa
+ - Trans: Water transpiration in mL m-2 s-1
 }
 \description{
 Photosynthesis model at the leaf level using the farquhar equations. The parameters can be defined by the

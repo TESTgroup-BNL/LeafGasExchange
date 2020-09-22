@@ -211,7 +211,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 
     Tp=f.modified.arrhenius(PRef=param[['TpRef']],param[['TpHa']],param[['TpHd']],param[['TpS']],Tleaf)
     Wp=3*Tp
-    cip=f.solv(x=3*Tp,y=1,z=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
+    cip=f.solv(x=3*Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
 
     ci=cij
     if(!is.null(which(Wc<Wj))&length(cic)==length(cij)){ci[which(Wc<Wj)]=cic[which(Wc<Wj)]}
@@ -238,18 +238,18 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Vcmax=f.Q10.modified(Pref = param[['VcmaxRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     Tau=f.arrhenius(param[['TauRef']],param[['TauQ10']],Tleaf,TRef=param[['TRef']])
     Gstar=param[['O2']]/(2*Tau)
-    cic=f.solv(x=Vcmax,y=1,z=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,model=param[["model.gs"]])
+    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,model=param[["model.gs"]])
     Wc=Vcmax*cic/(cic+Kc*(1+param[['O2']]/Ko))
     J=param[['abso']]*param[['aQY']]*PFD
 
-    cij=f.solv(x=J,y=1,z=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
+    cij=f.solv(x=J,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
     Wj=J*(cij-Gstar)/(cij+2*Gstar)
 
     ci=cij
     Tp=f.Q10.modified(Pref = param[['TpRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
 
     Wp=3*Tp
-    cip=f.solv(x=Tp,y=1,z=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
+    cip=f.solv(x=Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,model=param[["model.gs"]])
 
     if(!is.null(which(Wc<Wj))&length(cic)==length(cij)){ci[which(Wc<Wj)]=cic[which(Wc<Wj)]}
     if(!is.null(which(Wc<Wj))&length(cic)!=length(cij)){ci[which(Wc<Wj)]=cic}

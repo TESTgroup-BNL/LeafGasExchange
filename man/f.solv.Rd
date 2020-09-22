@@ -4,7 +4,7 @@
 \alias{f.solv}
 \title{Analytical solution of the coupled photosynthesis and USO model}
 \usage{
-f.solv(x, y, z, cs, Rd, Gstar, g0, g1, power, ds, model)
+f.solv(x, y, cs, Rd, Gstar, g0, g1, power, ds, model)
 }
 \arguments{
 \item{model}{}
