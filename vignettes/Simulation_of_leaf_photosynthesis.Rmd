@@ -2,7 +2,9 @@
 title: "How_to_simulate_Photosynthesis"
 author: "Julien LAMOUR"
 date: "9/22/2020"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r, include=FALSE}
@@ -21,7 +23,7 @@ The input variables for this model are:
 
 * Air temperature at the surface of the leaf, Tair in degree K
 
-* Air relative humidity, RH in % (between 0 and 100)
+* Air relative humidity, RH in percent (between 0 and 100)
 
 * Wind speed at the surface of the leaf, wind in m s-1
 
@@ -95,8 +97,8 @@ print(Leaf_photo)
 
 ## References
 
-Farquhar, G.D., von Caemmerer, S. & Berry, J.A. A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149, 78–90 (1980). https://doi.org/10.1007/BF00386231
+Farquhar, G.D., von Caemmerer, S. & Berry, J.A. A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149, 78–90 (1980). 
 
-Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C., Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L. (2011), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17: 2134-2144. doi:10.1111/j.1365-2486.2010.02375.x
+Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C., Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L. (2011), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17: 2134-2144. 
 
-Christopher D Muir, tealeaves: an R package for modelling leaf temperature using energy budgets, AoB PLANTS, Volume 11, Issue 6, December 2019, plz054, https://doi.org/10.1093/aobpla/plz054
+Christopher D Muir, tealeaves: an R package for modelling leaf temperature using energy budgets, AoB PLANTS, Volume 11, Issue 6, December 2019, plz054
