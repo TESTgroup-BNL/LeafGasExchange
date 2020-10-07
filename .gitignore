@@ -1,4 +1,10 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
+# R
+*.Rproj
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+
+# MacOSX
+*.DS*
+*._*
