@@ -13,3 +13,9 @@ A particular documentation for this function is given in https://rpubs.com/jlamo
 
 Other functions are also implemented to import gas exchange data from LiCor (f.import_licor6400 and f.import_licor6800) and to fit Aci curve and Aq curves (f.fitting)
 
+### Installation
+`LeafGasExchange` is not currently on CRAN, but
+you can install `LeafGasExchange` from [GitHub](https://github.com/) with:
+``` r
+devtools::install_github("TESTgroup-BNL/LeafGasExchange", dependencies=TRUE)
+```
