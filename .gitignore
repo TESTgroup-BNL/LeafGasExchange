@@ -8,3 +8,4 @@
 # MacOSX
 *.DS*
 *._*
+.Rproj.user

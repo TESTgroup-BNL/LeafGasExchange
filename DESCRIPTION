@@ -13,6 +13,7 @@ LazyData: true
 RoxygenNote: 7.1.0
 Depends: stats4, bbmle, readxl, stringr, tidyverse, readr, tealeaves,reshape2,ggplot2
 Imports: stats4, bbmle, readxl, stringr, tidyverse, readr, tealeaves,reshape2,ggplot2
+Remotes: git:://github.com/ebimodeling/biocro
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
