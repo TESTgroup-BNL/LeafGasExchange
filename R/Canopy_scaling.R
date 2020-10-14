@@ -20,7 +20,7 @@
 #' @examples
 #'## Simulation of photosynthetic gradients
 #' LAI=seq(0,6.2,6.2/49)
-#' Vcmax=f.VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70)
+#' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 #' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 #' ##Simulation of weather data
 #' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
@@ -175,7 +175,7 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.
   for(i in 1:length(t.d)){
     Light_Profile=sunML(Idir = PFD_dir[i],Idiff = PFD_dif[i],LAI = LAI,nlayers = n_layers,cos.theta = cos.th[i],heightf = LAI/Height,chi.l=chi.l)
     Canopy_time_dir[,i]=(Light_Profile$layIdir)
-    Canopy_time_dif[,i]=(Light_Profile$layIdiff)
+    Canopy_time_dif.VcmaxRef_LAIf[,i]=(Light_Profile$layIdiff)
     f_sun[,i]=(Light_Profile$layFsun)
   }
   
