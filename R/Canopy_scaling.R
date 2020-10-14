@@ -1,8 +1,8 @@
 
-#' @title Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
-#'
+#' @title Canopy scale GPP calculation
+#' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 #' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in %) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
 #' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
@@ -20,17 +20,17 @@
 #' @examples
 #'## Simulation of photosynthetic gradients
 #' LAI=seq(0,6.2,6.2/49)
-#' Vcmax=VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70)
+#' Vcmax=f.VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 #' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 #' ##Simulation of weather data
 #' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
-#' canopy=canopy_interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
-#' GPP_sc1=GPP(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
+#' GPP_sc1=f.GPP(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
 #' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
 #' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
-GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
+f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$canopy_time_dir
   for(Layer in 1:nrow(canopy$canopy_time_dir)){
     res_dir=f.A(PFD = canopy$canopy_time_dir[Layer,],
@@ -125,25 +125,25 @@ GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,
 #' @param kn Exponential decrease
 #' @param lambda Asymptot of the decrease (see Krinner et al. 2005)
 #' @references Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199
-#'Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
+#' Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
 #' Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010
 #' @return Vector of Vcmax at the different LAI specified in the call of the function
 #' @export
 #'
 #' @examples
 #' LAI=seq(0,6.2,6.2/49)
-#' Vcmax=VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70)
-#' Vcmax2=VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70,lambda=0.7)
+#' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
+#' Vcmax2=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70,lambda=0.7)
 #' plot(Vcmax)
 #' lines(Vcmax2)
-VcmaxRef_LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambda=1){
+f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambda=1){
   if(is.null(kn)){kn=exp(alpha*Vcmax0+beta)}
   return(Vcmax0*(1-lambda*(1-exp(-kn*LAI))))
 }
 
 
 #' @title Wrapper of biocro lightME and sunML function to describe the light levels inside the canopy
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in %) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1
 #' @param lat Latitude of the canopy to model (see lightME from biocro)
 #' @param t.d time of the day (see lightME from biocro)
 #' @param DOY Day of Year (see lightME from biocro)
@@ -160,8 +160,8 @@ VcmaxRef_LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambda=
 #' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
-#' canopy=canopy_interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
-canopy_interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.l=0.9){
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
+f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.l=0.9){
   Light_carac=lightME(lat = lat,t.d = t.d,DOY = DOY)# This gives the proportion of diffuse light and direct light
   PFD_dir=meteo_hourly$sr*Light_carac$propIdir
   PFD_dif=meteo_hourly$sr*Light_carac$propIdiff
