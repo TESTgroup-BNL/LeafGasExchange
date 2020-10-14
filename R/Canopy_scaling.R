@@ -175,7 +175,7 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.
   for(i in 1:length(t.d)){
     Light_Profile=sunML(Idir = PFD_dir[i],Idiff = PFD_dif[i],LAI = LAI,nlayers = n_layers,cos.theta = cos.th[i],heightf = LAI/Height,chi.l=chi.l)
     Canopy_time_dir[,i]=(Light_Profile$layIdir)
-    Canopy_time_dif.VcmaxRef_LAIf[,i]=(Light_Profile$layIdiff)
+    Canopy_time_dif[,i]=(Light_Profile$layIdiff)
     f_sun[,i]=(Light_Profile$layFsun)
   }
   
