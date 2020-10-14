@@ -53,7 +53,7 @@ Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at
 \examples{
 ## Simulation of photosynthetic gradients
 LAI=seq(0,6.2,6.2/49)
-Vcmax=f.VcmaxRef_LAI(kn=0.11,LAI=LAI,Vcmax0=70)
+Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 ##Simulation of weather data
 meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
