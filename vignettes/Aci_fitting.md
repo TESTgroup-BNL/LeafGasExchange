@@ -30,7 +30,7 @@ We display this simulated curve using the function f.plot
 f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
 ```
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpU9XtTi/preview-3e305ff44dcc.dir/Aci_fitting_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 \#Fitting an Aci curve
 
@@ -50,15 +50,15 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 ```
 
     ## $par
-    ##  JmaxRef VcmaxRef    RdRef 
-    ## 79.85982 50.36833  1.30114 
+    ##   JmaxRef  VcmaxRef     RdRef 
+    ## 79.685854 50.740471  1.380129 
     ## 
     ## $value
-    ## [1] 9.664316
+    ## [1] 13.46319
     ## 
     ## $counts
     ## function gradient 
-    ##      194       NA 
+    ##      150       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -66,14 +66,14 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.567577201230855"
+    ## [1] "sd 0.66990512831346"
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpU9XtTi/preview-3e305ff44dcc.dir/Aci_fitting_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpU9XtTi/preview-3e305ff44dcc.dir/Aci_fitting_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 In a second example we now also fit TpRef
 
 ``` r
@@ -82,14 +82,14 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 86.284516 51.854787  1.585834  5.072319 
+    ## 88.761768 52.172765  1.700766  5.013401 
     ## 
     ## $value
-    ## [1] 2.352092
+    ## [1] 3.940224
     ## 
     ## $counts
     ## function gradient 
-    ##      385       NA 
+    ##      343       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -97,14 +97,14 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.280005461051322"
+    ## [1] "sd 0.36240969890763"
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpU9XtTi/preview-3e305ff44dcc.dir/Aci_fitting_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpU9XtTi/preview-3e305ff44dcc.dir/Aci_fitting_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
 The fitting corresponds to a list of 2 objects. The first object
 corresponds to the fitting using a minimum square function whereas the
@@ -116,9 +116,9 @@ calculate the confidence interval of the parameters:
 confint(fitting2[[2]])
 ```
 
-    ##               2.5 %     97.5 %
-    ## sigma     0.2218056  0.3691327
-    ## JmaxRef  83.7818744 88.8735402
-    ## VcmaxRef 49.4515423 54.4199752
-    ## TpRef     4.9463109  5.1996526
-    ## RdRef     1.2380305  1.9398229
+    ##              2.5 %     97.5 %
+    ## sigma     0.287082  0.4777669
+    ## JmaxRef  84.935260 93.7495123
+    ## VcmaxRef 49.149819 55.5009942
+    ## TpRef     4.849933  5.1790073
+    ## RdRef     1.254726  2.1588684
