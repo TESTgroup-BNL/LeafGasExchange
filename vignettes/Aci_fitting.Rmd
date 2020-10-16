@@ -1,6 +1,10 @@
 ---
-title: "Aci_and_Aq_fitting"
-output: github_document
+title: "Aci_fitting"
+author: "Julien LAMOUR"
+date: "10/16/2020"
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
