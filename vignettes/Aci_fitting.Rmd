@@ -2,8 +2,7 @@
 title: "Aci_fitting"
 author: "Julien LAMOUR"
 date: "10/16/2020"
-output:
-  github_document: default
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
