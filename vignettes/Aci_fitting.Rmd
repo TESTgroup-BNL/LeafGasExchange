@@ -1,14 +1,10 @@
 ---
 title: "Aci_and_Aq_fitting"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Aci_and_Aq_fitting}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: github_document
 ---
 
-
-```{r setup}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
 ```
 
@@ -24,7 +20,6 @@ PAR=1800
 RH=80
 simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 simul$A=simul$A+rnorm(n = length(CO2),mean = 0,sd = 0.4)
-
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
 ```
 
@@ -54,6 +49,5 @@ The fitting corresponds to a list of 2 objects. The first object corresponds to 
 ```{r warning=FALSE}
 confint(fitting2[[2]])
 ```
-
 
 
