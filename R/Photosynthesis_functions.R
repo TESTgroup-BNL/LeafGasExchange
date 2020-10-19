@@ -858,8 +858,7 @@ f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRe
     Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
-    if(do.plot){f.plot(measures=measures,name=name,param =param,list_legend = Start,type=type)}
-  })
+    })
 
   try({
     Estimation2=mle2(minuslogl = f.MinusLogL,start = Start,fixed = Fixed,data = list(data=measures))
