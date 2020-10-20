@@ -221,7 +221,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
   }
 
@@ -564,24 +564,24 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
 #' @examples ci=seq(40,1500,10)
 #' plot(x=ci,y=f.Aci(PFD=2000,ci=ci,Tleaf=300,param=f.make.param())$A)
 f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
-
+  
   Kc=f.arrhenius(param[['KcRef']],param[['KcHa']],Tleaf)
   Ko=f.arrhenius(param[['KoRef']],param[['KoHa']],Tleaf)
   Gstar=f.arrhenius(param[['GstarRef']],param[['GstarHa']],Tleaf)
-
+  
   Rd=f.modified.arrhenius(PRef=param[['RdRef']],param[['RdHa']],param[['RdHd']],param[['RdS']],Tleaf)
   Vcmax=f.modified.arrhenius(PRef=param[['VcmaxRef']],param[['VcmaxHa']],param[['VcmaxHd']],param[['VcmaxS']],Tleaf)
   Jmax=f.modified.arrhenius(PRef=param[['JmaxRef']],param[['JmaxHa']],param[['JmaxHd']],param[['JmaxS']],Tleaf)
-
+  
   I2=PFD*param[['abso']]*(param[['aQY']])
   J=(I2+Jmax-((I2+Jmax)^2-4*(param[['Theta']])*I2*Jmax)^0.5)/(2*(param[['Theta']]))
-
-
+  
+  
   if(param[['TBM']]==1){
     gm=f.modified.arrhenius(PRef=param[['gmRef']],param[['gmHa']],param[['gmHd']],param[['gmS']],Tleaf)
     ccc=f.solv.cc(gm=gm,Rd=Rd,Gstar=Gstar,x1=Vcmax,x2=Kc*(1+param[['O2']]/Ko),ci=ci)
     ccj=f.solv.cc(gm=gm,Rd=Rd,Gstar=Gstar,x1=J/4,x2=2*Gstar,ci=ci)
-
+    
     Wc=Vcmax*(ccc-Gstar)/(ccc+Kc*(1+param[['O2']]/Ko))
     Wj=J/4*(ccj-Gstar)/(ccj+2*Gstar)
     Wp=NA
@@ -591,11 +591,11 @@ f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
     }else{
       cc=ccj
       cc[Wc<Wj&!is.na(Wj)&!is.na(Wc)]=ccc[Wc<Wj&!is.na(Wj)&!is.na(Wc)]
-      }
+    }
     cc[Wj<Wc&!is.na(Wj)&!is.na(Wc)]=ccj[Wj<Wc&!is.na(Wj)&!is.na(Wc)]
     A=pmin(Wc,Wj)-Rd
   }
-
+  
   if(param[['TBM']]%in%c(0,2)){
     Tp=f.modified.arrhenius(PRef=param[['TpRef']],param[['TpHa']],param[['TpHd']],param[['TpS']],Tleaf)
     Wp=3*Tp
@@ -604,7 +604,7 @@ f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
   }
-
+  
   if(param[['TBM']]==3){
     Kc=f.Q10(Pref = param[['KcRef']],Q10 = param[['KcQ10']],Tleaf,TRef=param[['TRef']])
     Ko=f.Q10(Pref = param[['KoRef']],Q10 = param[['KoQ10']],Tleaf,TRef=param[['TRef']])
@@ -612,7 +612,7 @@ f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
     PFD2[PFD2<11]=exp(-10)
     Rd=f.Q10.modified(Pref = param[['RdRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     #Rd=(0.5-0.05*log(PFD2))*f.Q10.modified(Pref = param[['RdRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
-
+    
     Vcmax=f.Q10.modified(Pref = param[['VcmaxRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     Tp=f.Q10.modified(Pref = param[['TpRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     Tau=f.arrhenius(param[['TauRef']],param[['TauQ10']],Tleaf,TRef=param[['TRef']])
@@ -623,7 +623,7 @@ f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
   }
-  result=data.frame(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd)
+  result=data.frame(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd)
   return(result)
 }
 

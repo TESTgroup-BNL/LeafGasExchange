@@ -29,21 +29,23 @@ Tair=27+273.16
 PAR=1800
 RH=80
 simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
-simul$A=simul$A+rnorm(n = length(CO2),mean = 0,sd = 0.4)
+
+# Here we include a normal error with a standard deviation proportionnal to the gross photosynthesis (as it is often observed)
+
+noise=unlist(lapply(X = simul$Ag,FUN = function(x){rnorm(n=1,mean=0,sd=0.035*(x))}))
+simul$A=simul$A+noise
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
 ```
 
 We display this simulated curve using the function f.plot
 
 ``` r
-f.plot(measures = measures,type = 'Aci',
-       list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],
-       param = param)
+f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
 ```
 
 ![](Aci_fitting_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-\#\#Fitting an Aci curve
+## Fitting an Aci curve
 
 To fit an Aci curve, it is necessary to detail the parameter that we
 want to estimate. All the parameters present in f.make.param can
@@ -60,22 +62,19 @@ photosynthesis are used. In this example, we also give a very high value
 to TpRef so the TPU limitation is not considered when fitting the curve.
 
 ``` r
-fitting1=f.fitting(measures = measures,
-                   Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1),
-                   param=f.make.param(TpRef=50),
-                   modify.init=TRUE,do.plot=TRUE,type='Aci')
+fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1),param=f.make.param(),modify.init=TRUE,do.plot=TRUE,type='Aci')
 ```
 
     ## $par
-    ##   JmaxRef  VcmaxRef     RdRef 
-    ## 79.161990 49.179085  1.212728 
+    ##  JmaxRef VcmaxRef    RdRef 
+    ## 78.51244 48.36841  1.16680 
     ## 
     ## $value
-    ## [1] 9.918262
+    ## [1] 17.35969
     ## 
     ## $counts
     ## function gradient 
-    ##      162       NA 
+    ##      128       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -83,34 +82,28 @@ fitting1=f.fitting(measures = measures,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.57498585509885"
+    ## [1] "sd 0.760694608423429"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
 ![](Aci_fitting_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-In the first exemple, the parameter TpRef was not included in the list
-Start, so the TPU limitation was not included in the fitting. In this
-second example, we now add TpRef in the list Start so the TPU limitation
-is also evaluated.
+In a second example we now also fit TpRef
 
 ``` r
-fitting2=f.fitting(measures = measures,
-                   Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1,TpRef=9),
-                   param=f.make.param(),
-                   modify.init=TRUE,do.plot=TRUE,type='Aci')
+fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1,TpRef=9),param=f.make.param(),modify.init=TRUE,do.plot=TRUE,type='Aci')
 ```
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 86.110531 50.072531  1.443516  5.005375 
+    ## 86.628962 50.379243  1.513889  4.973832 
     ## 
     ## $value
-    ## [1] 2.244302
+    ## [1] 9.426514
     ## 
     ## $counts
     ## function gradient 
-    ##      277       NA 
+    ##      387       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -118,7 +111,7 @@ fitting2=f.fitting(measures = measures,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.273514303065669"
+    ## [1] "sd 0.560550733535672"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -130,18 +123,18 @@ second object corresponds to a maximum likelihood which is made using
 the package mle2. This latter method is usefull because it allowes us to
 calculate the confidence interval of the parameters. The mean parameters
 used to simulate the curves (VcmaxRef = 50,JmaxRef=85,TpRef=5,
-RdRef=1.43 and sigma= 0.4) should be in the confidence interval.
+RdRef=1.43 and sigma\_b= 0.035) should be in the confidence interval.
 
 ``` r
 confint(fitting2[[2]])
 ```
 
-    ##               2.5 %     97.5 %
-    ## sigma     0.2166631  0.3605745
-    ## JmaxRef  83.6072505 88.7431597
-    ## VcmaxRef 47.8350948 52.4863658
-    ## TpRef     4.8836268  5.1300299
-    ## RdRef     1.1144461  1.7869679
+    ##                2.5 %      97.5 %
+    ## sigma_b   0.03089982  0.05151112
+    ## JmaxRef  82.39958570          NA
+    ## VcmaxRef 47.48716414 51.37171767
+    ## TpRef     4.79290861  5.09148706
+    ## RdRef     1.28516419  1.50849007
 
 It is possible to compare the AIC of the two models using the base
 function AIC. The lower AIC corresponds to the best model, showing that
@@ -152,10 +145,39 @@ the fit of the model.
 AIC(fitting1[[2]])
 ```
 
-    ## [1] 59.93172
+    ## [1] 62.20528
 
 ``` r
 AIC(fitting2[[2]])
 ```
 
-    ## [1] 17.35202
+    ## [1] 48.57756
+
+It is also possible to calculate the interval of confidence and
+prediction of the Aci curve from the outputs of the fitting.
+
+``` r
+var_cov=fitting2[[2]]@vcov
+random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma_b','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
+
+random_simul=matrix(data = NA,nrow = 1000,ncol = nrow(measures))
+for(i in 1:1000){
+  random_simul[i,]=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=random_param[i,'VcmaxRef'],JmaxRef=random_param[i,'JmaxRef'],TpRef=random_param[i,'TpRef'],RdRef=random_param[i,'RdRef']))$A
+}
+
+fit_pred=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],RdRef=fitting2[[2]]@coef[c('RdRef')]))
+
+sd_mean=apply(X = random_simul,MARGIN = 2,FUN =sd)
+sd_res=fitting2[[2]]@coef['sigma_b']*fit_pred$Ag
+sd_tot=sqrt(sd_mean^2+sd_res^2)
+simul_confint=rbind(fit_pred$A-1.96*sd_mean,fit_pred$A+1.96*sd_mean)
+simul_pred=rbind(fit_pred$A-1.96*sd_tot,fit_pred$A+1.96*sd_tot)
+
+f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
+polygon(c(measures$Ci ,rev(measures$Ci)),c(simul_pred[1,], rev(simul_pred[2,])),
+        col=adjustcolor("lightgrey",alpha.f=0.5),border=NA)
+polygon(c(measures$Ci ,rev(measures$Ci)),c(simul_confint[1,], rev(simul_confint[2,])),
+        col=adjustcolor("#99CC99",alpha.f=0.5),border=NA)
+```
+
+![](Aci_fitting_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
