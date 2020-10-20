@@ -13,6 +13,10 @@ A particular documentation for this function is given in https://rpubs.com/jlamo
 
 Other functions are also implemented to import gas exchange data from LiCor (f.import_licor6400 and f.import_licor6800) and to fit Aci curve and Aq curves (f.fitting). A particular documentation of this function is given in [Aci_fitting](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Aci_fitting.md)
 
+# Scaling the leaf gas exchange at the canopy scale
+
+Functions to scale  the leaf gas exchange from the leaf level to the canopy scale are also present in the package. They use notably functions from the package BioCro. A presentation of those functions is presented in [Canopy_scaling](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Canopy_scaling.md)
+
 ### Installation
 `LeafGasExchange` is not currently on CRAN, but
 you can install `LeafGasExchange` from [GitHub](https://github.com/) with:
