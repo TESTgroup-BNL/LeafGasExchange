@@ -9,13 +9,13 @@ The function f.Aci allows to simulate photosynthetic rate using as input variabl
 The function f.A couples the photosynthetic model with a conductance model (USO or USO_simpl) and simulates the photosynthetic rate using the air temperature, leaf temperature, light intensity, leaf surface CO2 and humidity.
 
 Eventually, the function f.AT uses, in addition to the stomata model and the photosynthesis model, a leaf energy budget using package tealeaves. It allows to simulate the photosynthetic rates with environment variables as sole inputs (Air temperature, humidity, wind speed and light intensity).
-A particular documentation for this function is given in https://rpubs.com/jlamour/664573. 
+A particular documentation for this function is given in [Simulation_of_leaf_photosynthesis](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Simulation_of_leaf_photosynthesis.md). 
 
 Other functions are also implemented to import gas exchange data from LiCor (f.import_licor6400 and f.import_licor6800) and to fit Aci curve and Aq curves (f.fitting). A particular documentation of this function is given in [Aci_fitting](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Aci_fitting.md)
 
 # Scaling the leaf gas exchange at the canopy scale
 
-Functions to scale  the leaf gas exchange from the leaf level to the canopy scale are also present in the package. They use notably functions from the package BioCro. A presentation of those functions is presented in [Canopy_scaling](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Canopy_scaling.md)
+Functions to scale  the leaf gas exchange from the leaf level to the canopy scale are also present in the package. They use notably functions from the package BioCro. A presentation of those functions is given in [Canopy_scaling](https://github.com/TESTgroup-BNL/LeafGasExchange/blob/Scaling_UP/vignettes/Canopy_scaling.md)
 
 ### Installation
 `LeafGasExchange` is not currently on CRAN, but
