@@ -756,7 +756,7 @@ f.SumSq<-function(Fixed,data,Start){
 #' @keywords internal
 #'
 #' @examples
-f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
+f.MinusLogL<-function(data,sigma_b,TBM=0,R=0.75,O2=0.75,TRef=0.75,
                       Patm=0.75,JmaxRef=	0.75,
                       JmaxHa=	0.75,
                       JmaxHd=	0.75,
@@ -799,7 +799,7 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
                       gmS=0.75,
                       gmHa=0.75,
                       gmHd=0.75){
-
+  
   param=list(TBM=TBM,R=R,O2=O2,TRef=TRef,Patm=Patm,JmaxRef=JmaxRef,JmaxHa=	JmaxHa,
              JmaxHd=	JmaxHd,JmaxS	=JmaxS,VcmaxRef=VcmaxRef,VcmaxHa	= VcmaxHa,VcmaxHd	=VcmaxHd,
              VcmaxS	=VcmaxS,VcmaxQ10=VcmaxQ10,Tlow=Tlow,Tup=Tup,
@@ -809,8 +809,8 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
              KcRef= KcRef,KcHa=	KcHa,KcQ10=KcQ10,KoRef=KoRef,KoHa=	KoHa,KoQ10=KoQ10,GstarRef=	GstarRef,TauRef=TauRef,TauQ10=TauQ10,
              GstarHa	=GstarHa,abso=	abso,aQY=aQY,Theta=Theta,model.gs=model.gs,
              g0=g0,g1=g1,power=power,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
-  A_pred=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)$A
-  y<-dnorm(x=data$Photo,mean=A_pred,sd=sigma,log=TRUE)
+  A_pred=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)
+  y<-dnorm(x=data$Photo,mean=A_pred$A,sd=(sigma_b)*(A_pred$Ag),log=TRUE)
   return(-sum(y))
 }
 
@@ -836,30 +836,31 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
 f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(),modify.init=TRUE,do.plot=TRUE,type='Aci'){
   Fixed=param[!names(param)%in%names(Start)]
   if(modify.init){
-      if('JmaxRef'%in%names(Start)){Start[['JmaxRef']]=f.modified.arrhenius.inv(P = 6*(max(measures$Photo,na.rm=TRUE)+1),Ha = param[['JmaxHa']],Hd = param[['JmaxHd']],s = param[['JmaxS']],Tleaf = mean(measures$Tleaf,na.rm=TRUE),TRef = param[['TRef']],R = param[['R']])}
-      if('JmaxRef'%in%names(Start)&'VcmaxRef'%in%names(Start)){Start[['VcmaxRef']]=Start[['JmaxRef']]/2}
-      grille=expand.grid(lapply(X = Start,FUN = function(x){x*c(0.2,1,2)}))
-      grille.list=apply(X=grille,MARGIN = 1,FUN=as.list)
-      value=9999999
-      l_param=0
-      for(l in 1:nrow(grille)){
-          MoindresCarres=optim(par=grille.list[[l]],fn=f.SumSq,data=measures,Fixed=Fixed)
-          if(!is.null(MoindresCarres)&MoindresCarres$value<value){value=MoindresCarres$value;l_param=l}
-      }
-      Start=grille.list[[l_param]]
+    if('JmaxRef'%in%names(Start)){Start[['JmaxRef']]=f.modified.arrhenius.inv(P = 6*(max(measures$Photo,na.rm=TRUE)+1),Ha = param[['JmaxHa']],Hd = param[['JmaxHd']],s = param[['JmaxS']],Tleaf = mean(measures$Tleaf,na.rm=TRUE),TRef = param[['TRef']],R = param[['R']])}
+    if('JmaxRef'%in%names(Start)&'VcmaxRef'%in%names(Start)){Start[['VcmaxRef']]=Start[['JmaxRef']]/2}
+    grille=expand.grid(lapply(X = Start,FUN = function(x){x*c(0.2,1,2)}))
+    grille.list=apply(X=grille,MARGIN = 1,FUN=as.list)
+    value=9999999
+    l_param=0
+    for(l in 1:nrow(grille)){
+      MoindresCarres=optim(par=grille.list[[l]],fn=f.SumSq,data=measures,Fixed=Fixed)
+      if(!is.null(MoindresCarres)&MoindresCarres$value<value){value=MoindresCarres$value;l_param=l}
+    }
+    Start=grille.list[[l_param]]
   }
-
+  
   if(is.null(id.name)){name=''}else{name=unique(measures[,id.name])}
   MoindresCarres<-Estimation2<-NULL
   try({
     MoindresCarres<-optim(par=Start,fn=f.SumSq,data=measures,Fixed=Fixed)
     print(MoindresCarres)
     print(paste('sd',sqrt(MoindresCarres$value/NROW(measures))))
-    Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
+    Start$sigma_b=sqrt(MoindresCarres$value/NROW(measures))/5
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
-    })
-
+    #if(do.plot){f.plot(measures=measures,name=name,param =param,list_legend = Start,type=type)}
+  })
+  
   try({
     Estimation2=mle2(minuslogl = f.MinusLogL,start = Start,fixed = Fixed,data = list(data=measures))
     print(summary(Estimation2))
