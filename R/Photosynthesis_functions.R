@@ -258,7 +258,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
 
   }
@@ -279,7 +279,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     A=pmin(Wc,Wj)-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
 
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,Ag=A+Rd,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
     }
 }
@@ -300,7 +300,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
 
 #' @examples f.AT(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
-f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param=f.make.param()){
+f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
   Tleaf=Tair+1
   n=1
   delta=precision+1
