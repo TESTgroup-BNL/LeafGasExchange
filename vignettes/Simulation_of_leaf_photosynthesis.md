@@ -91,14 +91,14 @@ library(LeafGasExchange)
 
     ## Loading required package: tidyverse
 
-    ## -- Attaching packages ------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ----------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.3
     ## v tibble  3.0.3     v dplyr   0.8.5
     ## v tidyr   1.0.2     v forcats 0.5.0
     ## v readr   1.3.1
 
-    ## -- Conflicts ---------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts -------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
     ## x dplyr::slice()  masks bbmle::slice()
@@ -430,24 +430,27 @@ Prediction of the photosynthesis using the previous list of parameters
 and different leaf conditions is done in the following way:
 
 ``` r
-Leaf_photo=f.AT(PFD = 1000,cs = 400,Tair = 273.15+29,RH = 70,wind = 2,param = param)
+Leaf_photo=f.AT(PFD = 1500,cs = 400,Tair = 273.15+29,RH = 70,wind = 2,param = param)
 print(Leaf_photo)
 ```
 
     ## $A
-    ## [1] 12.66151
+    ## [1] 12.72588
     ## 
     ## $Ac
     ## [1] 12.86855
     ## 
     ## $Aj
-    ## [1] 13.65009
+    ## [1] 14.21332
     ## 
     ## $Ap
     ## [1] 27.66732
     ## 
+    ## $Ag
+    ## [1] 13.82645
+    ## 
     ## $gs
-    ## [1] 0.2395673
+    ## [1] 0.2406834
     ## 
     ## $ci
     ## [1] 315.3237
@@ -456,10 +459,70 @@ print(Leaf_photo)
     ## [1] 1438.278
     ## 
     ## $Transp
-    ## [1] 0.06140748
+    ## [1] 0.06169359
     ## 
     ## $Tleaf
-    ## [1] 303.5711
+    ## [1] 305.0111
+
+In this case the leaf temperature was predicted by the function. If the
+leaf temperature is known, it is possible to use the function f.A
+
+``` r
+Leaf_photo2=f.A(PFD = 1000,cs = 400,Tair = 273.15+29,Tleaf = 303,RH = 70,param = param)
+print(Leaf_photo2)
+```
+
+    ## $A
+    ## [1] 12.781
+    ## 
+    ## $Ac
+    ## [1] 13.00088
+    ## 
+    ## $Aj
+    ## [1] 13.72704
+    ## 
+    ## $Ap
+    ## [1] 27.62239
+    ## 
+    ## $Ag
+    ## [1] 13.88129
+    ## 
+    ## $gs
+    ## [1] 0.2438359
+    ## 
+    ## $ci
+    ## [1] 316.0173
+    ## 
+    ## $ds
+    ## [1] 1401.926
+    ## 
+    ## $Transp
+    ## [1] 0.06092196
+
+The function f.A accepts vectors as input variables, so it is possible
+to simulate a light curve or an CO2 curve easily:
+
+``` r
+Leaf_photo3=f.A(PFD = 0:2000,cs = 400,Tair = 273.15+29,Tleaf = 303,RH = 70,param = param)
+plot(x=0:2000,y = Leaf_photo3$A,xlab='PFD',ylab='Anet',type='l')
+```
+
+![](Simulation_of_leaf_photosynthesis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+The function f.AT does not accept a vector as input variables. To
+produce a curve like a temperature curve for example it is necessary to
+do a loop or to use an ‘apply’ function. The calculation time can be
+long so be carefull on the number of conditions you want to simulate.
+Here is an example of a temperature curve:
+
+``` r
+param1<-f.make.param(JmaxRef = 100,VcmaxRef = 60,RdRef = 1,g0 = 0.02,g1=2,model.gs = 'USO')
+Leaf_photo4=lapply(X = seq(10,40,1)+273.15,FUN = function(x){f.AT(PFD = 1500,cs = 400,Tair = x,wind=1,RH = 80,param = param)})
+Leaf_photo4=matrix(unlist(Leaf_photo4),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo4[[1]])))
+plot(x=seq(10,40,1),y=Leaf_photo4[,'A'],xlab='Tair',ylab='Anet',type='l')
+```
+
+![](Simulation_of_leaf_photosynthesis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## References
 
