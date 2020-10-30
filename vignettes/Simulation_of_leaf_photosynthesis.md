@@ -516,7 +516,6 @@ long so be carefull on the number of conditions you want to simulate.
 Here is an example of a temperature curve:
 
 ``` r
-param1<-f.make.param(JmaxRef = 100,VcmaxRef = 60,RdRef = 1,g0 = 0.02,g1=2,model.gs = 'USO')
 Leaf_photo4=lapply(X = seq(10,40,1)+273.15,FUN = function(x){f.AT(PFD = 1500,cs = 400,Tair = x,wind=1,RH = 80,param = param)})
 Leaf_photo4=matrix(unlist(Leaf_photo4),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo4[[1]])))
 plot(x=seq(10,40,1),y=Leaf_photo4[,'A'],xlab='Tair',ylab='Anet',type='l')
