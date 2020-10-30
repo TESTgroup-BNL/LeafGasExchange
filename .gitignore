@@ -8,3 +8,5 @@
 # MacOSX
 *.DS*
 *._*
+.Rproj.user
+inst/doc
