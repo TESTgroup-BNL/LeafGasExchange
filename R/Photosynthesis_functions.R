@@ -22,7 +22,7 @@ f.ds<-function(Tleaf,Tair,RH){
 #' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
 #' @param power Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication
-#' @param model Stomatal model ("USO" or "USO_simpl")
+#' @param model Stomatal model ("USO", "USO_simpl" or "BWB")
 #' @export
 #' @return This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1
 #' @references Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
@@ -181,6 +181,10 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #' @export
 #' @return List of different variables:
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
+#'  - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1
+#'  - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1
+#'  - Ap: TPU rate of the leaf in micromol.m-2.s-1
+#'  - Ag: Gross assimilation in micromol.m-2.s-1
 #'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1
 #'  - ci: Intracellular CO2 concentration in micromol.mol-1
 #'  - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
@@ -301,6 +305,14 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @param max_it Maximum number of iterations to find the solution
 #' @param wind Wind speed at the surface of the leaf in m.s-1
 #' @return
+#'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
+#'  - Ag: Gross assimilation in micromol.m-2.s-1
+#'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1
+#'  - ci: Intracellular CO2 concentration in micromol.mol-1
+#'  - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
+#'  - ds: Leaf surface to air vapour pressure deficit in Pa
+#'  - Trans: Water transpiration in mL m-2 s-1
+#'  - Tleaf: Leaf Temperature in K
 #' @export
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
 
