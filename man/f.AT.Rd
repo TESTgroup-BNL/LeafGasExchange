@@ -4,16 +4,7 @@
 \alias{f.AT}
 \title{Coupled conductance photosynthesis model and energy balance model}
 \usage{
-f.AT(
-  PFD,
-  cs,
-  Tair,
-  RH,
-  wind,
-  precision = 0.1,
-  max_it = 10,
-  param = f.make.param()
-)
+f.AT(PFD, cs, Tair, RH, wind, precision = 0.1, max_it = 10, param)
 }
 \arguments{
 \item{wind}{Wind speed at the surface of the leaf in m.s-1}
@@ -25,7 +16,14 @@ f.AT(
 \item{param}{List of parameters given by f.make.param()}
 }
 \value{
-
+- A: Raw assimilation of the leaf in micromol.m-2.s-1
+ - Ag: Gross assimilation in micromol.m-2.s-1
+ - gs: Conductance of the leaf for water vapour in mol m-2 s-1
+ - ci: Intracellular CO2 concentration in micromol.mol-1
+ - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
+ - ds: Leaf surface to air vapour pressure deficit in Pa
+ - Trans: Water transpiration in mL m-2 s-1
+ - Tleaf: Leaf Temperature in K
 }
 \description{
 Coupled conductance photosynthesis model and energy balance model

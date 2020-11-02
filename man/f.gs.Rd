@@ -4,7 +4,7 @@
 \alias{f.gs}
 \title{Conductance model for stomatal conductance to water vapour}
 \usage{
-f.gs(A, cs, ds, g0, g1, power = 0.5, model = "USO")
+f.gs(A, cs, ds = NULL, RH = NULL, g0, g1, power = 0.5, model = "USO")
 }
 \arguments{
 \item{A}{Net assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration}
@@ -13,13 +13,15 @@ f.gs(A, cs, ds, g0, g1, power = 0.5, model = "USO")
 
 \item{ds}{Leaf surface to air vapour pressure deficit in Pa}
 
+\item{RH}{Humidity at the surface of the leaf (0 - 100). ds or RH as to be specified}
+
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
 \item{power}{Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication}
 
-\item{model}{Stomatal model ("USO" or "USO_simpl")}
+\item{model}{Stomatal model ("USO", "USO_simpl" or "BWB")}
 }
 \value{
 This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1

@@ -4,7 +4,7 @@
 \alias{f.solv.Acc}
 \title{Analytical solution of the coupled photosynthesis with mesophyll conductance and USO model}
 \usage{
-f.solv.Acc(x1, x2, g0, g1, power, ds, model, gm, Rd, Gstar, cs)
+f.solv.Acc(x1, x2, g0, g1, power, ds, RH, model, gm, Rd, Gstar, cs)
 }
 \arguments{
 \item{cs}{}
