@@ -78,6 +78,12 @@ better to have real weather data but for the sake of this example, the
 simulated data will work as well. Here, we only model the evolution of
 light during the day, all the other meterological variables are
 considered constant which is of course a (bad) simplification.
+Several variables are needed:
+- The photosynthetic light intensity in micro mol m-2 s-1
+- The relative humidity of the air from 0 to 100
+- The ambient temperature in degree C
+- The canopy temperature in degree C
+- The wind speed in m s-1
 
 ``` r
 ##Simulation of weather data
