@@ -114,6 +114,14 @@ plot(x=seq(10,40,1),y=Leaf_photo4[,'A'],xlab='Tair',ylab='Anet',type='l')
 ```
 
 
+Here is a similar example for a light curve:
+
+```{r,echo=TRUE}
+Leaf_photo5=lapply(X = seq(0,2500,50),FUN = function(x){f.AT(PFD = x,cs = 400,Tair =28 +273.15,wind=2,RH = 70,param = param)})
+Leaf_photo5=matrix(unlist(Leaf_photo5),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo5[[1]])))
+plot(x=seq(0,2500,50),y=Leaf_photo5[,'A'],xlab='PFD',ylab='Anet',type='l')
+```
+
 
 
 ## References
