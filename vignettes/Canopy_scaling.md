@@ -8,10 +8,10 @@ Julien LAMOUR
 The aim of this tutorial is to show how to scale the gas exchange
 predictions from the leaf to the canopy. In this tutorial, several
 assumptions are used to simulate the canopy photosynthesis (GPP) and the
-transpiration. We consider that appart from the light, the
-micrometeorological variables are homogenous inside the canopy (Air
+transpiration. We consider that apart from the light, the
+micrometeorological variables are homogeneous inside the canopy (Air
 temperature, wind, CO2, humidity). We also consider that the leaf size
-and structure is homogenous. Those assumptions may be challenged if
+and structure is homogeneous. Those assumptions may be challenged if
 needed. In this model we consider, as in most of the TBMs, that the
 vertical gradients of leaf properties are similar for all the
 photosynthetic parameters (Vcmax, Jmax, Tp and Td).
@@ -22,12 +22,10 @@ Basically, in most of the TBMs, the photosynthesis is modeled at the
 leaf level and the scaling up to the canopy is made using two other
 elements, the canopy structure and the canopy radiation interception.
 
-![](Canopy_scaling_files/figure-gfm/Scaling_UP.png)<!-- -->
-
 The leaf level photosynthesis is modeled using the function f.AT. This
 function allows to simulate the leaf gas exchange using input
-environmental variables surounding the leaves (PARi, wind, RH, Tair) and
-leaf photosynthetic parameters (produced using the function
+environmental variables surrounding the leaves (PARi, wind, RH, Tair)
+and leaf photosynthetic parameters (produced using the function
 f.make.param()). This function couples 3 different models. The Farquhar
 et al. 1980 model itself which describes the rate of photosynthesis from
 the intracellular CO2, the leaf temperature and the light intensity
@@ -36,10 +34,10 @@ intracellular CO2 from the leaf surface CO2 and environmental factors
 that modify the conductance of the stomata. The last part of this model
 is the leaf energy budget which calculates the leaf temperature knowing
 the amount of energy that is received by the leaf and absorbed or
-reimited. This part is represented by using the package tealeaves (Muir
+reemmited. This part is represented by using the package tealeaves (Muir
 2019)
 
-The canopy structure corresponds to the vertical organisation of the
+The canopy structure corresponds to the vertical organization of the
 forest as well as its size, the size of the leaves, and their
 orientation. The vertical gradients of leaf properties are also
 represented, and notably the vertical structure of Vcmax, Jmax, TPU and
@@ -80,6 +78,12 @@ better to have real weather data but for the sake of this example, the
 simulated data will work as well. Here, we only model the evolution of
 light during the day, all the other meterological variables are
 considered constant which is of course a (bad) simplification.
+Several variables are needed:
+- The photosynthetic light intensity in micro mol m-2 s-1
+- The relative humidity of the air from 0 to 100
+- The ambient temperature in degree C
+- The canopy temperature in degree C
+- The wind speed in m s-1
 
 ``` r
 ##Simulation of weather data
@@ -101,7 +105,7 @@ light levels inside the cnaopy.
 canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = Canopy_Height,LAI = Total_LAI)
 ```
 
-![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 
 Finally, we calculate the GPP and transpiration of the canopy:
 

@@ -103,7 +103,7 @@ f.make.param(
 
 \item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
 
-\item{model.gs}{Type of conductance model (USO, USO_simpl)}
+\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB)}
 
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
