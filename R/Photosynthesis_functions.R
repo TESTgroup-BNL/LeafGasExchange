@@ -314,10 +314,11 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #'  - Trans: Water transpiration in mL m-2 s-1
 #'  - Tleaf: Leaf Temperature in K
 #' @export
+#' @keywords internal
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
 
-#' @examples f.AT(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
-f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
+#' @examples f.ATnotvectorised(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
+f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
   Tleaf=Tair+1
   n=1
   delta=precision+1
@@ -350,6 +351,33 @@ f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
   }
   return(Leaf_physio)
 }
+
+#' @title Coupled conductance photosynthesis model and energy balance model
+#' @details This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
+#' The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
+#' Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
+#' @inheritParams f.AT
+#' @return
+#'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
+#'  - Ag: Gross assimilation in micromol.m-2.s-1
+#'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1
+#'  - ci: Intracellular CO2 concentration in micromol.mol-1
+#'  - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
+#'  - ds: Leaf surface to air vapour pressure deficit in Pa
+#'  - Trans: Water transpiration in mL m-2 s-1
+#'  - Tleaf: Leaf Temperature in K
+#' @export
+#' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
+#' @examples leaf_physio=f.AT(PFD=seq(0,1500,50),cs=400,Tair=300,wind=2,RH=70,param=f.make.param())
+#' plot(x=seq(0,1500,50),y=leaf_physio$A)
+
+f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
+  input_variable=data.frame(PFD=PFD,cs=cs,Tair=Tair,RH=RH,wind=wind)
+  result=apply(X = input_variable,1,FUN = function(x){
+    f.ATnotvectorised(PFD = x['PFD'],cs = x['cs'],Tair = x['Tair'],RH = x['RH'],wind = x['wind'],
+         precision = precision,max_it = max_it,param = param )})
+return(as.data.frame(matrix(unlist(result),ncol = length(result[[1]]),byrow = TRUE,dimnames = list(NULL,names(result[[1]])))))
+  }
 
 #' @title Analytical solution of the coupled photosynthesis and USO model
 #' @param x
