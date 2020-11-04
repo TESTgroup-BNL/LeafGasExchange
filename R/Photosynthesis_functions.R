@@ -337,10 +337,10 @@ f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
 
     leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(0.04), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((300*param[["abso"]]+3300*0.5242)/4000)))
 
-    enviro_par <- make_enviropar(replace=list(S_sw=set_units(PFD/4.6*2,"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))
+    enviro_par <- make_enviropar(replace=list(S_sw=set_units(PFD/(4.57*0.45),"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
     constants <- make_constants()
     Tleaf_mod <- as.numeric(tleaf(leaf_par, enviro_par, constants,quiet = TRUE)$T_leaf)
-    delta=(Tleaf-Tleaf_mod)
+    delta=abs(Tleaf-Tleaf_mod)
     Tleaf=Tleaf_mod
     n=n+1
     if(n>10&delta>0.1){
@@ -788,7 +788,7 @@ f.SumSq<-function(Fixed,data,Start){
 #' @keywords internal
 #'
 #' @examples
-f.MinusLogL<-function(data,sigma_b,TBM=0,R=0.75,O2=0.75,TRef=0.75,
+f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
                       Patm=0.75,JmaxRef=	0.75,
                       JmaxHa=	0.75,
                       JmaxHd=	0.75,
@@ -842,7 +842,8 @@ f.MinusLogL<-function(data,sigma_b,TBM=0,R=0.75,O2=0.75,TRef=0.75,
              GstarHa	=GstarHa,abso=	abso,aQY=aQY,Theta=Theta,model.gs=model.gs,
              g0=g0,g1=g1,power=power,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
   A_pred=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)
-  y<-dnorm(x=data$Photo,mean=A_pred$A,sd=(sigma_b)*(A_pred$Ag),log=TRUE)
+
+  y<-dnorm(x=data$Photo,mean=A_pred$A,sd=(sigma),log=TRUE)
   return(-sum(y))
 }
 
@@ -887,7 +888,7 @@ f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRe
     MoindresCarres<-optim(par=Start,fn=f.SumSq,data=measures,Fixed=Fixed)
     print(MoindresCarres)
     print(paste('sd',sqrt(MoindresCarres$value/NROW(measures))))
-    Start$sigma_b=sqrt(MoindresCarres$value/NROW(measures))/5
+    Start$sigma=sqrt(MoindresCarres$value/NROW(measures))
     for(l.name in names(MoindresCarres$par)){Start[l.name]=MoindresCarres$par[[l.name]]}
     for(l.name in names(MoindresCarres$par)){param[l.name]=MoindresCarres$par[[l.name]]}
     #if(do.plot){f.plot(measures=measures,name=name,param =param,list_legend = Start,type=type)}
