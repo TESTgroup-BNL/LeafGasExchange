@@ -105,21 +105,11 @@ Leaf_photo3=f.A(PFD = 0:2000,cs = 400,Tair = 273.15+29,Tleaf = 303,RH = 70,param
 plot(x=0:2000,y = Leaf_photo3$A,xlab='PFD',ylab='Anet',type='l')
 ```
 
-The function f.AT does not accept a vector as input variables. To produce a curve like a temperature curve for example it is necessary to do a loop or to use an 'apply' function. The calculation time can be long so be carefull on the number of conditions you want to simulate. Here is an example of a temperature curve:
+Similarly, it is possible to simulate a light curve by considering the leaf energy budget. The simulation is more computational intensive than without the energy budget. So it is important to reduce the number of simulation cases. Here the light curve is simulated with a resolution of 50 PFD between each point of the curve, instead of a resolution of 1 as done previously. 
 
 ```{r,echo=TRUE}
-Leaf_photo4=lapply(X = seq(10,40,1)+273.15,FUN = function(x){f.AT(PFD = 1500,cs = 400,Tair = x,wind=1,RH = 80,param = param)})
-Leaf_photo4=matrix(unlist(Leaf_photo4),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo4[[1]])))
-plot(x=seq(10,40,1),y=Leaf_photo4[,'A'],xlab='Tair',ylab='Anet',type='l')
-```
-
-
-Here is a similar example for a light curve:
-
-```{r,echo=TRUE}
-Leaf_photo5=lapply(X = seq(0,2500,50),FUN = function(x){f.AT(PFD = x,cs = 400,Tair =28 +273.15,wind=2,RH = 70,param = param)})
-Leaf_photo5=matrix(unlist(Leaf_photo5),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo5[[1]])))
-plot(x=seq(0,2500,50),y=Leaf_photo5[,'A'],xlab='PFD',ylab='Anet',type='l')
+Leaf_photo4=f.AT(PFD = seq(0,2000,50),cs = 400,Tair = 273.15+29,wind=2,RH = 80,param = param)
+plot(x=seq(0,2000,50),y = Leaf_photo4$A,xlab='PFD',ylab='Anet',type='l')
 ```
 
 

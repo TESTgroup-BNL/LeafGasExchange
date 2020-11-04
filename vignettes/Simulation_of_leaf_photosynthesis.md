@@ -91,14 +91,14 @@ library(LeafGasExchange)
 
     ## Loading required package: tidyverse
 
-    ## -- Attaching packages --------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ------------------------------------------------------------------ tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.3
     ## v tibble  3.0.3     v dplyr   0.8.5
     ## v tidyr   1.0.2     v forcats 0.5.0
     ## v readr   1.3.1
 
-    ## -- Conflicts ------------------------------------------------------------ tidyverse_conflicts() --
+    ## -- Conflicts --------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
     ## x dplyr::slice()  masks bbmle::slice()
@@ -434,35 +434,10 @@ Leaf_photo=f.AT(PFD = 1500,cs = 400,Tair = 273.15+29,RH = 70,wind = 2,param = pa
 print(Leaf_photo)
 ```
 
-    ## $A
-    ## [1] 9.879278
-    ## 
-    ## $Ac
-    ## [1] 9.940783
-    ## 
-    ## $Aj
-    ## [1] 12.07758
-    ## 
-    ## $Ap
-    ## [1] 27.40356
-    ## 
-    ## $Ag
-    ## [1] 10.93946
-    ## 
-    ## $gs
-    ## [1] 0.1649675
-    ## 
-    ## $ci
-    ## [1] 304.1102
-    ## 
-    ## $ds
-    ## [1] 2246.952
-    ## 
-    ## $Transp
-    ## [1] 0.06606074
-    ## 
-    ## $Tleaf
-    ## [1] 306.259
+    ##          A       Ac       Aj       Ap       Ag        gs       ci       ds
+    ## 1 9.879278 9.940783 12.07758 27.40356 10.93946 0.1649675 304.1102 2246.952
+    ##       Transp   Tleaf
+    ## 1 0.06606074 306.259
 
 In this case the leaf temperature was predicted by the function. If the
 leaf temperature is known, it is possible to use the function f.A
@@ -509,29 +484,19 @@ plot(x=0:2000,y = Leaf_photo3$A,xlab='PFD',ylab='Anet',type='l')
 
 ![](Simulation_of_leaf_photosynthesis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-The function f.AT does not accept a vector as input variables. To
-produce a curve like a temperature curve for example it is necessary to
-do a loop or to use an ‘apply’ function. The calculation time can be
-long so be carefull on the number of conditions you want to simulate.
-Here is an example of a temperature curve:
+Similarly, it is possible to simulate a light curve by considering the
+leaf energy budget. The simulation is more computational intensive than
+without the energy budget. So it is important to reduce the number of
+simulation cases. Here the light curve is simulated with a resolution of
+50 PFD between each point of the curve, instead of a resolution of 1 as
+done previously.
 
 ``` r
-Leaf_photo4=lapply(X = seq(10,40,1)+273.15,FUN = function(x){f.AT(PFD = 1500,cs = 400,Tair = x,wind=1,RH = 80,param = param)})
-Leaf_photo4=matrix(unlist(Leaf_photo4),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo4[[1]])))
-plot(x=seq(10,40,1),y=Leaf_photo4[,'A'],xlab='Tair',ylab='Anet',type='l')
+Leaf_photo4=f.AT(PFD = seq(0,2000,50),cs = 400,Tair = 273.15+29,wind=2,RH = 80,param = param)
+plot(x=seq(0,2000,50),y = Leaf_photo4$A,xlab='PFD',ylab='Anet',type='l')
 ```
 
 ![](Simulation_of_leaf_photosynthesis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
-
-Here is a similar example for a light curve:
-
-``` r
-Leaf_photo5=lapply(X = seq(0,2500,50),FUN = function(x){f.AT(PFD = x,cs = 400,Tair =28 +273.15,wind=2,RH = 70,param = param)})
-Leaf_photo5=matrix(unlist(Leaf_photo5),ncol = 10,byrow = TRUE,dimnames = list(NULL,names(Leaf_photo5[[1]])))
-plot(x=seq(0,2500,50),y=Leaf_photo5[,'A'],xlab='PFD',ylab='Anet',type='l')
-```
-
-![](Simulation_of_leaf_photosynthesis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## References
 
