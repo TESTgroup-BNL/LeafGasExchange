@@ -31,6 +31,7 @@
 #' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
 #' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
 f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
+ if(length(Vcmax_Profile)!=nrow(canopy$canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$canopy_time_dir
   for(Layer in 1:nrow(canopy$canopy_time_dir)){
     res_dir=f.A(PFD = canopy$canopy_time_dir[Layer,],
@@ -105,8 +106,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
      +labs(fill=expression(g[sw]~(mol~m^-2~s^-1))))
   print(a)
   print(b)
-  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*max(canopy$Light_Profile$LAI)*365*3600*24*44/10^6
-  totalET= mean(Trans,na.rm=TRUE)*max(canopy$Light_Profile$LAI)*365*3600*24*18*10^-3
+  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*canopy$LAItot*365*3600*24*44/10^6
+  totalET= mean(Trans,na.rm=TRUE)*canopy$LAItot*365*3600*24*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
   return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,GPP=totalGPP,ET=totalET,fig_A=a,fig_gs=b))
@@ -139,11 +140,12 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25,wind=2)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 3,Height = 26,LAI = 6)
 #' GPP_sc1=f.GPPT(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
 #' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
 #' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
 f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
+  if(length(Vcmax_Profile)!=nrow(canopy$canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=Tleaf_dir=Tleaf_dif=canopy$canopy_time_dir
   for(Layer in 1:nrow(canopy$canopy_time_dir)){
     print(paste('Layer',Layer,'of', nrow(canopy$canopy_time_dir),'layers'))
@@ -229,8 +231,8 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   print(a)
   print(b)
   print(c)
-  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*max(canopy$Light_Profile$LAI)*365*3600*24*44/10^6
-  totalET= mean(Trans,na.rm=TRUE)*max(canopy$Light_Profile$LAI)*365*3600*24*18*10^-3
+  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*canopy$LAItot*365*3600*24*44/10^6
+  totalET= mean(Trans,na.rm=TRUE)*canopy$LAItot*365*3600*24*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
   return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,GPP=totalGPP,ET=totalET,fig_A=a,fig_gs=b,fig_Tleaf=c))
@@ -286,38 +288,41 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 #' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
-f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.l=0.9){
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAItot = 6)
+f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAItot,chi.l=0.9){
   Light_carac=lightME(lat = lat,t.d = t.d,DOY = DOY)# This gives the proportion of diffuse light and direct light
   PFD_dir=meteo_hourly$sr*Light_carac$propIdir
   PFD_dif=meteo_hourly$sr*Light_carac$propIdiff
   cos.th=Light_carac$cos.th
   
-  plot(x=t.d,y=PFD_dir,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)))
+  plot(x=t.d,y=PFD_dir,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='red')
   lines(x=t.d,y=PFD_dif,col="blue")
-  legend('topleft',c('Direct light','Diffuse light'),col=c('black','blue'),lty=c(1,1))
+  lines(x=t.d,y=PFD_dif+PFD_dir,col='black')
+  legend('topleft',c('Direct light','Diffuse light','Total'),col=c('red','blue','black'),lty=c(1,1,1))
   ### Creation of matrices with 50 vertical layers and 24 hours
-  Canopy_time_dir=Canopy_time_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = n_layers,ncol = length(t.d),dimnames = list(Layer=1:n_layers,time=t.d))
+  Canopy_time_dir=Canopy_time_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = n_layers,ncol = length(t.d),dimnames = list(Layer=1:n_layers,time=t.d))
   for(i in 1:length(t.d)){
-    Light_Profile=sunML(Idir = PFD_dir[i],Idiff = PFD_dif[i],LAI = LAI,nlayers = n_layers,cos.theta = cos.th[i],heightf = LAI/Height,chi.l=chi.l)
+    Light_Profile=sunML(Idir = PFD_dir[i],Idiff = PFD_dif[i],LAI = LAItot,nlayers = n_layers,cos.theta = cos.th[i],chi.l=chi.l)
     Canopy_time_dir[,i]=(Light_Profile$layIdir)
     Canopy_time_dif[,i]=(Light_Profile$layIdiff)
+    Canopy_time_tot[,i]=(Light_Profile$layItotal)
     f_sun[,i]=(Light_Profile$layFsun)
+    f_shade[,i]=(Light_Profile$layFshade)
   }
   
   Light=Canopy_time_dir*f_sun+Canopy_time_dif*(1-f_sun)
-  Light_Profile$LAI=LAI-Light_Profile$layHeight/Height*LAI
+  Light_Profile$LAI=seq(LAItot/n_layers,LAItot,LAItot/n_layers)
   figure_light_dir=melt(Canopy_time_dir)
-  #print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
-  #  +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-  # +scale_y_reverse()
-  #  +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
+  print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
+    +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+   +scale_y_reverse()
+    +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
   
   figure_light_dif=melt(Canopy_time_dif)
-  #print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
-  #  +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-  # +scale_y_reverse()
-  #  +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
+  print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
+    +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+   +scale_y_reverse()
+    +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
   
   figure_f_sun=melt(f_sun)
   #print(ggplot(data=figure_f_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
@@ -330,5 +335,5 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,n_layers,Height,LAI,chi.
     +ggtitle('Mean PFD of an average leaf')
     +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
     +scale_y_reverse()+labs(fill=expression(PFD~(mu~mol~m^-2~s^-1))))
-  return(list(canopy_time_dir=Canopy_time_dir,canopy_time_dif=Canopy_time_dif,f_sun=f_sun,Light_Profile=Light_Profile))
+  return(list(canopy_time_dir=Canopy_time_dir,canopy_time_tot=Canopy_time_tot,canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=LAItot))
 }
