@@ -147,10 +147,10 @@ refl_canopy=sum(I_up_l[1,])
 # the sum of the direct light which is absorbed by the soil and the diffuse light
 # which is absorbed by the soil
 
-abs_soil=sum(I_abs_dif_l[(nlayers+1),])+I_abs_dir_l[nlayers+1]
+abs_soil=sum(I_abs_l[(nlayers+1),])+I_abs_dir_l[nlayers+1]
 
 ## The quantity of light absorbed by the canopy corresponds to the sum of the direct light and the diffuse light
-abs_veg=sum(I_abs_dif_l[1:(nlayers),]*(f_sha+f_sun))+sum(I_abs_dir_l[1:nlayers])
+abs_veg=sum(I_abs_l[1:(nlayers),]*(f_sha+f_sun))+sum(I_abs_dir_l[1:nlayers])
 
 
 total_light
