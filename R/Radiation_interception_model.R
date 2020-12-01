@@ -13,31 +13,27 @@
 
 
 ##### Inputs of the model
-cosz= 0.45            ## Solar zenith angle (>0 and <=1)
-chil= 0.1           ## Angle distribution parameter of the leaves
-clumping_index= 0.85  ## Vegetation dispersion parameter that quantifies the level of foliage distribution 
+f.radiation=function(
+cosz= 0.4,           ## Solar zenith angle (>0 and <=1)
+chil= 0.1,           ## Angle distribution parameter of the leaves
+clumping_index= 0.85,  ## Vegetation dispersion parameter that quantifies the level of foliage distribution 
                       #non-randomness
-nlayers=10            ## Number of vertical layers of vegetation
+nlayers=50,            ## Number of vertical layers of vegetation
                       # !!!!!! Important, in the code we consider nlayers +1 and the last layers correspond to the soil
-LAItot=6              ## Total LAI of the canopy
-nitermax=1000         ## Number of light rebounds considered in the iterative loop
-rhol=0.1              ## Reflectance of the leaves (for direct and diffuse light)
-taul=0.05             ## Transmittance of the leaves (for direct and diffuse light)
-rhos_dir=0.1          ## Reflectance of the soil for direct light
-rhos_dif=0.1          ## Reflectance of the soil for diffuse light
-
-PFD_dir_top=2000      ## Quantity of direct light at the top of the canopy (micro mol m-2 s-1)
+LAI=seq(6/50,6,6/50), ## vector of LAI inside the canopy. If the canopy is discretised in n layers, the LAI vector is of length n and each LAI corresponds to the value on the bottom of the layer
+nitermax=1000,         ## Number of light rebounds considered in the iterative loop
+rhol=0.1,              ## Reflectance of the leaves (for direct and diffuse light)
+taul=0.05,             ## Transmittance of the leaves (for direct and diffuse light)
+rhos_dir=0.1,         ## Reflectance of the soil for direct light
+rhos_dif=0.1,         ## Reflectance of the soil for diffuse light
+PFD_dir_top=2000,      ## Quantity of direct light at the top of the canopy (micro mol m-2 s-1)
 PFD_dif_top=200       ## Quantity of diffuse light at the top of the canopy (micro mol m-2 s-1)
-
-
-#### Construction of a LAI profile inside the canopy
-LAIl= LAItot/nlayers  ## Here we assume that the LAI is homogeneous in the different layers of the canopy, 
-                      #with a LAI of LAIl inside each layer
-
-LAI_l=seq(LAIl,LAItot,LAIl) ## LAI at the bottom of each layer 
-LAI_above_l=c(0,LAI_l[1:(length(LAI_l)-1)]) ## LAI at the top of each layer
+){
+  
+#### Transformation of the LAI to specifically used the LAI at the top of each layers or at the bottom
+LAI_above_l=c(0,LAI[1:(length(LAI)-1)]) 
 if(nlayers==1){LAI_above_l=0}
-LAI_all=c(0,LAI_l[1:(length(LAI_l))]) 
+LAI_all=c(0,LAI[1:(length(LAI))]) 
 
 
 ## Calculation of the coefficient of extinction of the light inside the canopy
@@ -57,15 +53,15 @@ angle=seq(180/(2*n_angle),180,180/n_angle)*pi/360
 for(alpha in  angle){
   gdir_j = phi1b + phi2b * sin(alpha)
   k_dir_j=clumping_index * gdir_j / sin(alpha)
-  tr_dif_l=tr_dif_l+exp(-k_dir_j*(LAI_l-LAI_above_l))
+  tr_dif_l=tr_dif_l+exp(-k_dir_j*(LAI-LAI_above_l))
   tr_dif_top_l=tr_dif_top_l+exp(-k_dir_j*(LAI_all))
 }
 tr_dif_l=tr_dif_l/n_angle
 tr_dif_top_l=tr_dif_top_l/n_angle
 
-tr_dir_l = exp(-k_dir * (LAI_l-LAI_above_l)) ## Proportion of direct light crossing layer l without being intercepted
+tr_dir_l = exp(-k_dir * (LAI-LAI_above_l)) ## Proportion of direct light crossing layer l without being intercepted
 
-f_sun_l=exp(-k_dir*LAI_l) ## Proportion of sunlit leaves
+f_sun_l=exp(-k_dir*LAI) ## Proportion of sunlit leaves
 f_sha_l=1-f_sun_l ## Proportion of shaded leaves
 
 int_dir_l=(1-tr_dir_l) ## Proportion of the direct light which is intercepted when crossing layer l
@@ -79,7 +75,7 @@ trans_dif_l=taul*int_dif_l ## Proportion of diffuse light which is transmitted w
 refl_dif_l=rhol*int_dif_l ## Proportion of the diffuse light which is reflected when crossing layer l
 abs_dif_l=(1-rhol-taul)*int_dif_l ## Proportion of the diffuse light which is absorbed when crossing layer l
 
-## Adding the coefficients of the soil, which is considered here as the layer nlayers +1 
+## Adding the coefficients of the soil, which is considered here as the layer layer nlayers +1 
 tr_dir_l[(length(tr_dir_l)+1)]=0 #There is no light transmitted below the soil layer
 tr_dif_l[(length(tr_dif_l)+1)]=0 #There is no light transmitted below the soil layer
 refl_dir_l[(length(refl_dir_l)+1)]=rhos_dir
@@ -92,7 +88,8 @@ trans_dif_l[(length(trans_dif_l)+1)]=0
 
 top_rad_dir_l= exp(-k_dir * (LAI_all))*PFD_dir_top ## Calculation of the quantity of direct light at the top of 
                                                   #each layer 
-top_rad_dif_l=tr_dif_top_l*PFD_dif_top ## Calculation of the quantity of diffuse light entering each layer 
+top_rad_dif_l=tr_dif_top_l*PFD_dif_top ## Calculation of the quantity of diffuse light at the top of 
+#each layer 
 
 
 I_up_l=matrix(data=NA,nrow = nlayers+1,ncol = nitermax) ## Matrix of the radiation going up 
@@ -198,15 +195,18 @@ abs_veg_l=abs_sha_l+abs_sun_l
 abs_veg=sum(abs_veg_l)
 total_light
 abs_soil+abs_veg+refl_canopy
+print(paste('Warning on energy closure: the total light entering the system is:',total_light,'the light absorbed by the soil or the vegetation or reflected back in the atmosphere is',abs_soil+abs_veg+refl_canopy))
 
 ###Calculation of the PFD received by the sunlit leaves and the PFD received by the shaded leaves
 ## LAI of sunlit leaves
-LAI_sun_l=(LAI_l-LAI_above_l)*f_sun_l
-LAI_sha_l=(LAI_l-LAI_above_l)*f_sha_l
+LAI_sun_l=(LAI-LAI_above_l)*f_sun_l
+LAI_sha_l=(LAI-LAI_above_l)*f_sha_l
 LAI_sun=sum(LAI_sun_l)
 LAI_sha=sum(LAI_sha_l)
 LAI_sun+LAI_sha
 
 PFD_abs_sun_l=abs_sun_l/(LAI_sun_l)
 PFD_abs_sha_l=abs_sha_l/(LAI_sha_l)
+return(list(PFD_abs_sun=PFD_abs_sun_l,PFD_abs_sha=PFD_abs_sha_l,LAI_sun_l=LAI_sun_l,LAI_sha_l=LAI_sha_l))
+}
 
