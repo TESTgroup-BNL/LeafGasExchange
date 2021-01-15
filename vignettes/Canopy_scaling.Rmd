@@ -33,10 +33,10 @@ We first model the canopy structure, ie the leaf photosynthetic gradients, the L
 
 ```{r}
 # Modeling of the LAI inside the 50 levels of the canopy, with a total LAI of 6.2
-Height = 26
 LAItot = 6
-n_layers=50
-LAI=seq(0,LAItot,LAItot/(n_layers-1))
+nlayers=50
+dLAI=rep(6/50,50)
+LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
 
 # Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
 Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
@@ -66,7 +66,7 @@ lat=9.2801048
 t.d = 0:23
 DOY = 60
 
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,n_layers = n_layers,Height = Height,LAItot = LAItot)
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI)
 
 ```
 
@@ -81,78 +81,6 @@ canopy_gasEx=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
                    canopy=canopy,gsmin = 0.01)
 ```
 
-
-As you probably noticed, in this simulation the temperature of the vegetation was known as it is sometimes measured. It is also possible to use a leaf energy budget to estimate the vegetation temperature. The function to perform this simulation is f.GPPT. This function is more calculation intensive, so be patient..
-
-
-```{r}
-canopy_gasEx=f.GPPT(TBM = "FATES",meteo_hourly =meteo_hourly,
-                   Vcmax_Profile = Vcmax,Jmax_Profile =Jmax, Rd_Profile =Rd ,Tp_Profile = Tp,
-                   g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),
-                   canopy=canopy,gsmin = 0.01,wind=2)
-```
-
-```{r}
-
-LAItot=6
-Height=26
-lat=9.2801048
-t.d = 0:23
-DOY = 60
-
-meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,tl=25)
-
-GPP_pack=GPP_new=rep(NA,50)
-for(n_layers in 1:50){
-LAI2=seq(0,LAItot,LAItot/(n_layers-1))
-# Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
-Vcmax_layer=f.VcmaxRef.LAI(kn=0.11,LAI=LAI2,Vcmax0=70)
-# As in most TBM we model the other photosynthetic parameter from Vcmax
-Jmax_layer=1.7*Vcmax_layer; Tp_layer=1/5*Vcmax_layer; Rd_layer=0.03*Vcmax_layer
-
-
-canopy2=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,n_layers = n_layers,Height = Height,LAI = LAItot)
-
-canopy_gasEx2=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
-                   Vcmax_Profile = Vcmax_layer,Jmax_Profile =Jmax_layer, Rd_Profile =Rd_layer ,Tp_Profile = Tp_layer,
-                   g0_Profile = rep(0.02,length(Vcmax_layer)),g1_Profile = rep(4,length(Vcmax_layer)),
-                   canopy=canopy2,gsmin = -10)
-
-g0=0.02
-g1=4
-cs=400
-RH=80
-Tleaf=273.15+25
-Tair=273.15+25
-A_tot=matrix(NA,nrow=n_layers,ncol=24)
-for(time in 1:24){
-  for (layer in 1:n_layers){
-    Vcmax=Vcmax_layer[layer]
-    Jmax=Jmax_layer[layer]
-    Rd=Rd_layer[layer]
-    Tp=Tp_layer[layer]
-    Leaf_shade=LAItot/n_layers*canopy2$f_shade[layer,time]
-    Leaf_sun=LAItot/n_layers*canopy2$f_sun[layer,time]
-    PFD_shade=canopy2$canopy_time_dif[layer,time]
-    PFD_sun=canopy2$canopy_time_dir[layer,time]
-    A_shade_rate=f.A(PFD = PFD_shade,cs = cs,Tleaf = Tleaf,Tair = Tair,RH = RH,param = f.make.param(VcmaxRef = Vcmax,JmaxRef = Jmax,RdRef = Rd,TpRef = Tp,g0=g0,g1=g1))$A
-     A_sun_rate=f.A(PFD = PFD_sun,cs = cs,Tleaf = Tleaf,Tair = Tair,RH = RH,param = f.make.param(VcmaxRef = Vcmax,JmaxRef = Jmax,RdRef = Rd,TpRef = Tp,g0=g0,g1=g1))$A
-    A_shade=Leaf_shade*A_shade_rate*3600
-    A_sun=Leaf_sun*A_sun_rate*3600
-    A_tot[layer,time]=A_shade+A_sun
-  }
-}
-GPP_day=sum(A_tot)
-GPP_year=GPP_day*365
-GPP_mol_year=GPP_year/1000000
-GPP_g_year=GPP_mol_year*44
-print(GPP_g_year)
-print(canopy_gasEx2$GPP)
-GPP_new[layer]=GPP_g_year
-GPP_pack[layer]=canopy_gasEx2$GPP
-}
-
-```
 
 
 ## References

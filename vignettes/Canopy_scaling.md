@@ -60,9 +60,10 @@ vertical levels inside the canopy.
 
 ``` r
 # Modeling of the LAI inside the 50 levels of the canopy, with a total LAI of 6.2
-Canopy_Height=26
-Total_LAI=6.2
-LAI=seq(0,Total_LAI,Total_LAI/49)
+LAItot = 6
+nlayers=50
+dLAI=rep(6/50,50)
+LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
 
 # Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
 Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
@@ -78,12 +79,6 @@ better to have real weather data but for the sake of this example, the
 simulated data will work as well. Here, we only model the evolution of
 light during the day, all the other meterological variables are
 considered constant which is of course a (bad) simplification.
-Several variables are needed:
-- The photosynthetic light intensity in micro mol m-2 s-1
-- The relative humidity of the air from 0 to 100
-- The ambient temperature in degree C
-- The canopy temperature in degree C
-- The wind speed in m s-1
 
 ``` r
 ##Simulation of weather data
@@ -102,10 +97,43 @@ Then a two stream radiation interception model is used to calculate the
 light levels inside the cnaopy.
 
 ``` r
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = Canopy_Height,LAI = Total_LAI)
+lat=9.2801048
+t.d = 0:23
+DOY = 60
+
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI)
 ```
 
-![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+    ## [1] "Radiation model for a total LAI of  6"
+
+![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->![](Canopy_scaling_files/figure-gfm/unnamed-chunk-3-4.png)<!-- -->
+
+## Simulation of the GPP without leaf energy budget
 
 Finally, we calculate the GPP and transpiration of the canopy:
 
@@ -118,8 +146,8 @@ canopy_gasEx=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
 
 ![](Canopy_scaling_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->![](Canopy_scaling_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
-    ## [1] "GPP =  2146.81520818625 g CO2 m-2 Ground Y-1"
-    ## [1] "ET =  964.192951390878 L H20 m-2 Ground Y-1"
+    ## [1] "GPP =  2006.54477690822 g CO2 m-2 Ground Y-1"
+    ## [1] "ET =  966.255981802251 L H20 m-2 Ground Y-1"
 
 ## References
 

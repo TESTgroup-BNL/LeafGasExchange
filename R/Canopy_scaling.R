@@ -358,17 +358,17 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,rho=0.1,tau
   
   Light=Canopy_time_dir*f_sun+Canopy_time_dif*(1-f_sun)
   figure_light_dir=melt(Canopy_time_dir)
-  print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
-        +scale_y_reverse()
-        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-        +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
+  #print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
+  #     +scale_y_reverse()
+  #     +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+  #     +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
   
   figure_light_dif=melt(Canopy_time_dif)
-  print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
-        +scale_y_reverse()
-        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-        +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
-  
+  #print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
+  #      +scale_y_reverse()
+  #      +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+  #      +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
+  #
   figure_f_sun=melt(f_sun)
   #print(ggplot(data=figure_f_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
   # +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
@@ -561,9 +561,6 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI = dLAI)
-#' GPP_sc1=f.GPPT(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
-#' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
-#' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
 f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=Tleaf_dir=Tleaf_dif=canopy$canopy_time_dir
