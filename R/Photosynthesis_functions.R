@@ -304,6 +304,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @param precision Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.
 #' @param max_it Maximum number of iterations to find the solution
 #' @param wind Wind speed at the surface of the leaf in m.s-1
+#' @param NIR NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57 )
 #' @return
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
 #'  - Ag: Gross assimilation in micromol.m-2.s-1
@@ -315,10 +316,10 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #'  - Tleaf: Leaf Temperature in K
 #' @export
 #' @keywords internal
-#' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
-
+#' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 
+#'Yun, S. H., Park, C. Y., Kim, E. S., & Lee, D. K. (2020). A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure. Forests, 11(11), 1164.
 #' @examples f.ATnotvectorised(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
-f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
+f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param,NIR=NA,abso_s=0.5){
   Tleaf=Tair+1
   n=1
   delta=precision+1
@@ -336,9 +337,9 @@ f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
                              Temp = set_units(Tair, "K"),
                              P = set_units(101.3246, "kPa"))$`umol/m^2/s/Pa`
 
-    leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(0.04), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((300*param[["abso"]]+3300*0.5242)/4000)))
-
-    enviro_par <- make_enviropar(replace=list(S_sw=set_units(PFD/(4.57*0.45),"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
+    leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(0.04), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((abso_s))))
+    if(is.na(NIR))(SW=PFD/(4.57*0.45)) else (SW=PFD/4.57+NIR)
+    enviro_par <- make_enviropar(replace=list(S_sw=set_units(SW,"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
     constants <- make_constants()
     Tleaf_mod <- as.numeric(tleaf(leaf_par, enviro_par, constants,quiet = TRUE)$T_leaf)
     delta=abs(Tleaf-Tleaf_mod)
@@ -371,10 +372,10 @@ f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
 #' @examples leaf_physio=f.AT(PFD=seq(0,1500,50),cs=400,Tair=300,wind=2,RH=70,param=f.make.param())
 #' plot(x=seq(0,1500,50),y=leaf_physio$A)
 
-f.AT<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param){
-  input_variable=data.frame(PFD=PFD,cs=cs,Tair=Tair,RH=RH,wind=wind)
+f.AT<-function(PFD,NIR=NA,cs,Tair,RH,wind,precision=0.1,max_it=10,param,abso_s=0.5){
+  input_variable=data.frame(PFD=PFD,cs=cs,Tair=Tair,RH=RH,wind=wind,NIR=NIR,abso_s=abso_s)
   result=apply(X = input_variable,1,FUN = function(x){
-    f.ATnotvectorised(PFD = x['PFD'],cs = x['cs'],Tair = x['Tair'],RH = x['RH'],wind = x['wind'],
+    f.ATnotvectorised(PFD = x['PFD'],cs = x['cs'],Tair = x['Tair'],RH = x['RH'],wind = x['wind'],NIR=x['NIR'],abso_s=x['abso_s'],
          precision = precision,max_it = max_it,param = param )})
 return(as.data.frame(matrix(unlist(result),ncol = length(result[[1]]),byrow = TRUE,dimnames = list(NULL,names(result[[1]])))))
   }

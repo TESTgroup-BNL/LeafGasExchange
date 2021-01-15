@@ -58,10 +58,10 @@ f.tridiagonal.solver=function(a,b,c,d,n){
 
 #' @title Norman 1979 Radiation interception model
 #'
-#' @param rho Leaf reflectance
-#' @param tau Leaf transmittance
-#' @param rho_soil_dir Direct beam albedo of ground (soil)
-#' @param rho_soil_dif Direct beam albedo of ground (soil)
+#' @param Rho Leaf reflectance
+#' @param Tau Leaf transmittance
+#' @param Rho_soil_dir Direct beam albedo of ground (soil)
+#' @param Rho_soil_dif Direct beam albedo of ground (soil)
 #' @param cosz Cosinus of the solar zenith angle
 #' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6
 #' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)
@@ -78,9 +78,9 @@ f.tridiagonal.solver=function(a,b,c,d,n){
 #' @export
 #'
 #' @examples
-#' f.Norman.Radiation(rho=0.1, tau=0.05, PARdir=1000,PARdif=200,dLAI=c(rep(6/20,20)),rho_soil_dif = 0.1,rho_soil_dir = 0.1,cosz = 0.88,chil = 0.1,clumpfac = 0.8)
+#' f.Norman.Radiation(Rho=0.1, Tau=0.05, PARdir=1000,PARdif=200,dLAI=c(rep(6/20,20)),Rho_soil_dif = 0.1,Rho_soil_dir = 0.1,cosz = 0.88,chil = 0.1,clumpfac = 0.8)
 
-f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1,cosz,chil,clumpfac,dLAI,nlayers,PARdir=0.8,PARdif=0.2){
+f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1,cosz,chil,clumpfac,dLAI,nlayers,PARdir=0.8,PARdif=0.2){
   if(length(dLAI)!=nlayers){print('Error: the input parameters nlayers does not correspond to the length of the input vector dLAI')}
   ## be careful, the original code by Bonan works with the first layer being the ground and the last being the top.
   ## so dlai has to be reverted.
@@ -133,19 +133,19 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
   
   swup=swdn=rep(0,nlayers+1)
   a=b=c=d=rep(0,nlayers+1)
-  omega=rho+tau
+  omega=Rho+Tau
   # Soil: upward flux
   m=1
   iv = 1
   a[m] = 0
   b[m] = 1
-  c[m] = -rho_soil_dif
-  d[m] = PARdir * tbcum[m] * rho_soil_dir
+  c[m] = -Rho_soil_dif
+  d[m] = PARdir * tbcum[m] * Rho_soil_dir
   
   # Soil: downward flux
   
-  refld = (1 - td[iv+1]) * rho
-  trand = (1 - td[iv+1]) * tau + td[iv+1]
+  refld = (1 - td[iv+1]) * Rho
+  trand = (1 - td[iv+1]) * Tau + td[iv+1]
   aiv = refld - trand * trand / refld;
   biv = trand / refld;
   
@@ -153,15 +153,15 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
   a[m] = -aiv
   b[m] = 1
   c[m] = -biv
-  d[m] = PARdir * tbcum[iv+1] * (1 - tb[iv+1]) * (tau - rho * biv)
+  d[m] = PARdir * tbcum[iv+1] * (1 - tb[iv+1]) * (Tau - Rho * biv)
   
   # Leaf layers, excluding top layer
   
   for (iv in 2:(nlayers)){
     # Upward flux
     
-    refld = (1 - td[iv]) * rho
-    trand = (1 - td[iv]) * tau + td[iv]
+    refld = (1 - td[iv]) * Rho
+    trand = (1 - td[iv]) * Tau + td[iv]
     fiv = refld - trand * trand / refld
     eiv = trand / refld;
     
@@ -169,12 +169,12 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
     a[m] = -eiv
     b[m] = 1
     c[m] = -fiv
-    d[m] = PARdir * tbcum[iv] * (1 - tb[iv]) * (rho - tau * eiv)
+    d[m] = PARdir * tbcum[iv] * (1 - tb[iv]) * (Rho - Tau * eiv)
     
     # Downward flux
     
-    refld = (1 - td[iv+1]) * rho
-    trand = (1 - td[iv+1]) * tau + td[iv+1]
+    refld = (1 - td[iv+1]) * Rho
+    trand = (1 - td[iv+1]) * Tau + td[iv+1]
     aiv = refld - trand * trand / refld;
     biv = trand / refld;
     
@@ -182,15 +182,15 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
     a[m] = -aiv
     b[m] = 1
     c[m] = -biv
-    d[m] = PARdir * tbcum[iv+1] * (1 - tb[iv+1]) * (tau - rho * biv)
+    d[m] = PARdir * tbcum[iv+1] * (1 - tb[iv+1]) * (Tau - Rho * biv)
     
   }
   
   # Top canopy layer: upward flux
   
   iv = nlayers+1
-  refld = (1 - td[iv]) * rho
-  trand = (1 - td[iv]) * tau + td[iv]
+  refld = (1 - td[iv]) * Rho
+  trand = (1 - td[iv]) * Tau + td[iv]
   fiv = refld - trand * trand / refld
   eiv = trand / refld
   
@@ -198,7 +198,7 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
   a[m] = -eiv
   b[m] = 1
   c[m] = -fiv
-  d[m] = PARdir * tbcum[iv] * (1 - tb[iv]) * (rho - tau * eiv)
+  d[m] = PARdir * tbcum[iv] * (1 - tb[iv]) * (Rho - Tau * eiv)
   
   # Top canopy layer: downward flux
   
@@ -238,8 +238,8 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
   # Absorbed direct beam and diffuse for ground (soil)
   
   iv = 1
-  direct = PARdir * tbcum[iv] * (1 - rho_soil_dir)
-  diffuse = swdn[iv] * (1 - rho_soil_dif)
+  direct = PARdir * tbcum[iv] * (1 - Rho_soil_dir)
+  diffuse = swdn[iv] * (1 - Rho_soil_dif)
   swsoi = direct + diffuse
   
   # Absorbed direct beam and diffuse for each leaf layer and sum
@@ -312,16 +312,18 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
 
 
 #' @title Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C) Tleaf (leaf temperature in degree C) RH (humidity in pc) and PFD the total PFD in micro mol m-2 s-1 and NIR the NIR radiation in watt m-2
 #' @param lat Latitude of the canopy to model (see lightME from biocro)
 #' @param t.d time of the day (see lightME from biocro)
 #' @param DOY Day of Year (see lightME from biocro)
 #' @param nlayers Number of layers inside the canopy (max = 50)
 #' @param dLAI LAI of each one of the n layers of vegetation in the canopy
-#' @param rho Leaf reflectance
-#' @param tau Leaf transmittance
-#' @param rho_soil_dir Direct reflectance of the ground (soil)
-#' @param rho_soil_dif Diffuse reflectance of the ground (soil)
+#' @param Rho Leaf reflectance in the visible wavelengths
+#' @param Tau Leaf transmittance in the visible wavelengths
+#' @param Rho_nir in the nir wavelengths
+#' @param Tau_nir in the nir wavelengths
+#' @param Rho_soil_dir Direct reflectance of the ground (soil)
+#' @param Rho_soil_dif Diffuse reflectance of the ground (soil)
 #' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6
 #' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)
 
@@ -332,14 +334,16 @@ f.Norman.Radiation=function(rho=0.1, tau=0.05, rho_soil_dir=0.1,rho_soil_dif=0.1
 #'
 #' @examples
 #' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
+#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,SW=0)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI=c(rep(6/50,50)))
-f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,rho=0.1,tau=0.05,rho_soil_dir=0.1,rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
+f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau=0.05,Rho_nir=0.45,Tau_nir=0.25,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
   Light_carac=lightME(lat = lat,t.d = t.d,DOY = DOY)# This gives the proportion of diffuse light and direct light
-  PFD_dir=meteo_hourly$sr*Light_carac$propIdir
-  PFD_dif=meteo_hourly$sr*Light_carac$propIdiff
+  PFD_dir=meteo_hourly$PFD*Light_carac$propIdir
+  PFD_dif=meteo_hourly$PFD*Light_carac$propIdiff
+  NIR_dir=meteo_hourly$NIR*Light_carac$propIdir
+  NIR_dif=meteo_hourly$NIR*Light_carac$propIdiff
   cos.th=Light_carac$cos.th
   
   plot(x=t.d,y=PFD_dir,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='red')
@@ -347,11 +351,14 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,rho=0.1,tau
   lines(x=t.d,y=PFD_dif+PFD_dir,col='black')
   legend('topleft',c('Direct light','Diffuse light','Total'),col=c('red','blue','black'),lty=c(1,1,1))
   ### Creation of matrices with 50 vertical layers and 24 hours
-  Canopy_time_dir=Canopy_time_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(t.d),dimnames = list(Layer=1:nlayers,time=t.d))
+  Canopy_time_dir=Canopy_time_dif=Canopy_time_NIR_dir=Canopy_time_NIR_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(t.d),dimnames = list(Layer=1:nlayers,time=t.d))
   for(i in 1:length(t.d)){
-    Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,rho = rho,tau = tau,rho_soil_dif =rho_soil_dif,rho_soil_dir=rho_soil_dir)
+    Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,Rho = Rho,Tau = Tau,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
+    Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,Rho =Rho_nir,Tau=Tau_nir,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
     Canopy_time_dir[,i]=(Light_Profile$PARsun)
     Canopy_time_dif[,i]=(Light_Profile$PARsha)
+    Canopy_time_NIR_dir[,i]=(Light_Profile_NIR$PARsun)
+    Canopy_time_NIR_dif[,i]=(Light_Profile_NIR$PARsha)
     f_sun[,i]=(Light_Profile$fracsun)
     f_shade[,i]=(Light_Profile$fracsha)
   }
@@ -381,7 +388,7 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,rho=0.1,tau
         +scale_y_reverse()
         +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
         +labs(fill=expression(PFD~(mu~mol~m^-2~s^-1))))
-  return(list(canopy_time_dir=Canopy_time_dir,canopy_time_tot=Canopy_time_tot,canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI)))
+  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI)))
 }
 
 
@@ -420,7 +427,7 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 #' @title Canopy scale GPP calculation
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 #' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C) tl (leaf temperature in degree C) RH (humidity in pc) and sr the total PAR in micro mol m-2 s-1
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
 #' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
@@ -442,22 +449,22 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 #' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 #' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 #' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
-#' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
+#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25)
+#' meteo_hourly[!meteo_hourly$time%in%7:17,'PFD']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI = dLAI)
 #' GPP_sc1=f.GPP(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
 #' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
 #' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
 f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
-  if(length(Vcmax_Profile)!=nrow(canopy$canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$canopy_time_dir),'vertical canopy layers ?'))}
-  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$canopy_time_dir
-  for(Layer in 1:nrow(canopy$canopy_time_dir)){
-    res_dir=f.A(PFD = canopy$canopy_time_dir[Layer,],
+  if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
+  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
+  for(Layer in 1:nrow(canopy$Canopy_time_dir)){
+    res_dir=f.A(PFD = canopy$Canopy_time_dir[Layer,],
                 cs = 400,
-                Tair = meteo_hourly[,"at"]+273.15,
-                Tleaf= meteo_hourly[,"tl"]+273.15,
-                RH = meteo_hourly[,"rh"],
+                Tair = meteo_hourly[,"Tair"]+273.15,
+                Tleaf= meteo_hourly[,"Tleaf"]+273.15,
+                RH = meteo_hourly[,"RH"],
                 param = f.make.param(TBM=TBM,
                                      VcmaxRef =Vcmax_Profile[Layer],
                                      RdRef = Rd_Profile[Layer],
@@ -468,7 +475,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.A(PFD = 0,cs = 400,Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"],param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.A(PFD = 0,cs = 400,Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
@@ -476,15 +483,15 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                                                                                                                                                              g0=1,
                                                                                                                                                              g1=g1_Profile[Layer]
     ))$A[ls.gs]
-    #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
+    #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
     VpdL_dir[Layer,]=res_dir$ds/1000
     gs_dir[Layer,]=res_dir$gs
-    res_dif=f.A(PFD = canopy$canopy_time_dif[Layer,],
+    res_dif=f.A(PFD = canopy$Canopy_time_dif[Layer,],
                 cs = 400,
-                Tair = meteo_hourly[,"at"]+273.15,
-                Tleaf= meteo_hourly[,"tl"]+273.15,
-                RH = meteo_hourly[,"rh"],
+                Tair = meteo_hourly[,"Tair"]+273.15,
+                Tleaf= meteo_hourly[,"Tleaf"]+273.15,
+                RH = meteo_hourly[,"RH"],
                 param = f.make.param(TBM=TBM,
                                      VcmaxRef =Vcmax_Profile[Layer],
                                      RdRef = Rd_Profile[Layer],
@@ -495,7 +502,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.A(PFD = 0,cs = 400,Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"],param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.A(PFD = 0,cs = 400,Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
@@ -535,7 +542,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' @title Canopy scale GPP calculation, with leaf energy budget
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 #' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) RH (humidity in pc) and sr the total PAR in micro mol m-2 s-1
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
 #' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
@@ -552,70 +559,79 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #'
 #' @examples
 #'## Simulation of photosynthetic gradients
-#' LAI=seq(0,6.2,6.2/49)
-#' dLAI=rep(6.2/50,50)
+#' LAI=seq(0,6,6/14)
+#' dLAI=rep(6/15,15)
 #' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 #' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 #' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25,wind=2)
-#' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
+#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,wind=2,NIR=sin(seq(0,pi,pi/23))*2000/4.57)
+#' meteo_hourly[!meteo_hourly$time%in%7:17,'PFD']=0
+#' meteo_hourly[!meteo_hourly$time%in%7:17,'NIR']=0
 #' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI = dLAI)
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 15,dLAI = dLAI)
+#' GPP_sc1=f.GPPT(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
+#' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
+#' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
+
 f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
-  if(length(Vcmax_Profile)!=nrow(canopy$canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$canopy_time_dir),'vertical canopy layers ?'))}
-  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=Tleaf_dir=Tleaf_dif=canopy$canopy_time_dir
-  for(Layer in 1:nrow(canopy$canopy_time_dir)){
-    print(paste('Layer',Layer,'of', nrow(canopy$canopy_time_dir),'layers'))
-    res_dir=f.AT(PFD = canopy$canopy_time_dir[Layer,],
+  if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
+  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=Tleaf_dir=Tleaf_dif=canopy$Canopy_time_dir
+  for(Layer in 1:nrow(canopy$Canopy_time_dir)){
+    print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
+    res_dir=f.AT(PFD = canopy$Canopy_time_dir[Layer,],
+                 NIR=canopy$Canopy_time_NIR_dir[Layer,],
                  cs = 400,
-                 Tair = meteo_hourly[,"at"]+273.15,
+                 Tair = meteo_hourly[,"Tair"]+273.15,
                  wind= meteo_hourly[,'wind'],
-                 RH = meteo_hourly[,"rh"],
+                 RH = meteo_hourly[,"RH"],
+                 abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
                                       g0=g0_Profile[Layer],
-                                      g1=g1_Profile[Layer],...
+                                      g1=g1_Profile[Layer],abso=1
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = 0,cs = 400,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"],wind=meteo_hourly[,'wind'],param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],cs = 400,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
                                                                                                                                                       g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer]
+                                                                                                                                                      g1=g1_Profile[Layer],abso=1
     ))$A[ls.gs]
-    #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
+    #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
     VpdL_dir[Layer,]=res_dir$ds/1000
     gs_dir[Layer,]=res_dir$gs
     Tleaf_dir[Layer,]=res_dir$Tleaf
-    res_dif=f.AT(PFD = canopy$canopy_time_dif[Layer,],
+    res_dif=f.AT(PFD = canopy$Canopy_time_dif[Layer,],
+                 NIR=canopy$Canopy_time_NIR_dif[Layer,],
                  cs = 400,
-                 Tair = meteo_hourly[,"at"]+273.15,
+                 Tair = meteo_hourly[,"Tair"]+273.15,
                  wind=meteo_hourly[,'wind'],
-                 RH = meteo_hourly[,"rh"],
+                 RH = meteo_hourly[,"RH"],
+                 abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
                                       g0=g0_Profile[Layer],
-                                      g1=g1_Profile[Layer],...
+                                      g1=g1_Profile[Layer],abso=1,...
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = 0,cs = 400,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"rh"],wind=meteo_hourly[,'wind'],param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],cs = 400,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
                                                                                                                                                       g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer]
+                                                                                                                                                      g1=g1_Profile[Layer],abso=1
     ))$A[ls.gs]
     Photosynthesis_rate_dif[Layer,]=res_dif$A
     gs_dif[Layer,]=res_dif$gs
