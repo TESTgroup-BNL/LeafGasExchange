@@ -304,6 +304,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @param precision Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.
 #' @param max_it Maximum number of iterations to find the solution
 #' @param wind Wind speed at the surface of the leaf in m.s-1
+#' @param abso_s absorptance of the leaves in shortwave, see documentation of tealeaves package
 #' @param NIR NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57 )
 #' @return
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
