@@ -30,10 +30,9 @@ PAR=1800
 RH=80
 simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
-# Here we include a normal error with a standard deviation proportionnal to the gross photosynthesis (as it is often observed)
+# Here we include a normal error 
 
-noise=unlist(lapply(X = simul$Ag,FUN = function(x){rnorm(n=1,mean=0,sd=0.035*(x))}))
-simul$A=simul$A+noise
+simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.6)
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
 ```
 
@@ -66,15 +65,15 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 ```
 
     ## $par
-    ##  JmaxRef VcmaxRef    RdRef 
-    ## 78.51244 48.36841  1.16680 
+    ##   JmaxRef  VcmaxRef     RdRef 
+    ## 79.086026 49.837138  1.269978 
     ## 
     ## $value
-    ## [1] 17.35969
+    ## [1] 13.97696
     ## 
     ## $counts
     ## function gradient 
-    ##      128       NA 
+    ##      120       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -82,7 +81,7 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.760694608423429"
+    ## [1] "sd 0.682567708505785"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -96,14 +95,14 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 86.628962 50.379243  1.513889  4.973832 
+    ## 83.276423 51.233239  1.492137  5.084070 
     ## 
     ## $value
-    ## [1] 9.426514
+    ## [1] 10.87456
     ## 
     ## $counts
     ## function gradient 
-    ##      387       NA 
+    ##      403       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -111,7 +110,7 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.560550733535672"
+    ## [1] "sd 0.602067540600589"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -123,18 +122,18 @@ second object corresponds to a maximum likelihood which is made using
 the package mle2. This latter method is usefull because it allowes us to
 calculate the confidence interval of the parameters. The mean parameters
 used to simulate the curves (VcmaxRef = 50,JmaxRef=85,TpRef=5,
-RdRef=1.43 and sigma\_b= 0.035) should be in the confidence interval.
+RdRef=1.43 and sigma= 0.6) should be in the confidence interval.
 
 ``` r
 confint(fitting2[[2]])
 ```
 
-    ##                2.5 %      97.5 %
-    ## sigma_b   0.03089982  0.05151112
-    ## JmaxRef  82.39958570          NA
-    ## VcmaxRef 47.48716414 51.37171767
-    ## TpRef     4.79290861  5.09148706
-    ## RdRef     1.28516419  1.50849007
+    ##               2.5 %     97.5 %
+    ## sigma     0.4769272  0.7937109
+    ## JmaxRef  78.1955389 88.6510706
+    ## VcmaxRef 46.4498577 56.6649010
+    ## TpRef     4.8113754  5.3772552
+    ## RdRef     0.7653912  2.2366471
 
 It is possible to compare the AIC of the two models using the base
 function AIC. The lower AIC corresponds to the best model, showing that
@@ -145,20 +144,20 @@ the fit of the model.
 AIC(fitting1[[2]])
 ```
 
-    ## [1] 62.20528
+    ## [1] 70.2227
 
 ``` r
 AIC(fitting2[[2]])
 ```
 
-    ## [1] 48.57756
+    ## [1] 64.69317
 
 It is also possible to calculate the interval of confidence and
 prediction of the Aci curve from the outputs of the fitting.
 
 ``` r
 var_cov=fitting2[[2]]@vcov
-random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma_b','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
+random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
 
 random_simul=matrix(data = NA,nrow = 1000,ncol = nrow(measures))
 for(i in 1:1000){
@@ -168,7 +167,7 @@ for(i in 1:1000){
 fit_pred=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],RdRef=fitting2[[2]]@coef[c('RdRef')]))
 
 sd_mean=apply(X = random_simul,MARGIN = 2,FUN =sd)
-sd_res=fitting2[[2]]@coef['sigma_b']*fit_pred$Ag
+sd_res=fitting2[[2]]@coef['sigma']
 sd_tot=sqrt(sd_mean^2+sd_res^2)
 simul_confint=rbind(fit_pred$A-1.96*sd_mean,fit_pred$A+1.96*sd_mean)
 simul_pred=rbind(fit_pred$A-1.96*sd_tot,fit_pred$A+1.96*sd_tot)
