@@ -2,21 +2,28 @@
 % Please edit documentation in R/Canopy_scaling.R
 \name{f.canopy.interception}
 \alias{f.canopy.interception}
-\title{Wrapper of biocro lightME and sunML function to describe the light levels inside the canopy}
+\title{Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy}
 \usage{
 f.canopy.interception(
   meteo_hourly,
   lat,
   t.d,
   DOY,
-  n_layers,
-  Height,
-  LAI,
-  chi.l = 0.9
+  nlayers,
+  dLAI,
+  Rho = 0.1,
+  Tau = 0.05,
+  Rho_nir = 0.45,
+  Tau_nir = 0.25,
+  Rho_soil_dir = 0.1,
+  Rho_soil_dif = 0.1,
+  chil = 0.25,
+  clumpfac = 0.66,
+  model = "Norman"
 )
 }
 \arguments{
-\item{meteo_hourly}{Hourly weather data frame with at least the column at (air temperature in degree C) tl (leaf temperature in degree C) rh (humidity in pc) and sr the total PAR in micro mol m-2 s-1}
+\item{meteo_hourly}{Hourly weather data frame with at least the column Tair (air temperature in degree C) Tleaf (leaf temperature in degree C) RH (humidity in pc) and PFD the total PFD in micro mol m-2 s-1 and NIR the NIR radiation in watt m-2}
 
 \item{lat}{Latitude of the canopy to model (see lightME from biocro)}
 
@@ -24,24 +31,38 @@ f.canopy.interception(
 
 \item{DOY}{Day of Year (see lightME from biocro)}
 
-\item{n_layers}{Number of layers inside the canopy (max = 50, see sunML from biocro)}
+\item{nlayers}{Number of layers inside the canopy (max = 50)}
 
-\item{Height}{Total height of the canopy (see sunML from biocro)}
+\item{dLAI}{LAI of each one of the n layers of vegetation in the canopy}
 
-\item{LAI}{Total LAI of the cnaopy (see sunML from biocro)}
+\item{Rho}{Leaf reflectance in the visible wavelengths}
 
-\item{chi.l}{Orientation of the leaves (see sunML from biocro)}
+\item{Tau}{Leaf transmittance in the visible wavelengths}
+
+\item{Rho_nir}{in the nir wavelengths}
+
+\item{Tau_nir}{in the nir wavelengths}
+
+\item{Rho_soil_dir}{Direct reflectance of the ground (soil)}
+
+\item{Rho_soil_dif}{Diffuse reflectance of the ground (soil)}
+
+\item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6}
+
+\item{clumpfac}{Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)}
+
+\item{model}{Model for the radiation interception model, default is Norman (only Norman implemented so far)}
 }
 \value{
 
 }
 \description{
-Wrapper of biocro lightME and sunML function to describe the light levels inside the canopy
+Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy
 }
 \examples{
 ##Simulation of weather data
-meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=sin(seq(0,pi,pi/23))*2000,tl=25)
+meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,SW=0)
 meteo_hourly[!meteo_hourly$time\%in\%7:17,'sr']=0
 ##Representation of the light interception inside the canopy
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,n_layers = 50,Height = 26,LAI = 6)
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI=c(rep(6/50,50)))
 }

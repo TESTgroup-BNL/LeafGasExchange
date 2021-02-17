@@ -6,7 +6,7 @@
 \usage{
 f.MinusLogL(
   data,
-  sigma_b,
+  sigma,
   TBM = 0,
   R = 0.75,
   O2 = 0.75,
@@ -57,6 +57,8 @@ f.MinusLogL(
 )
 }
 \arguments{
+\item{sigma}{Sigma value}
+
 \item{TBM}{Type of model (FATES, ORCHIDEE, CLM4.5 or JULES). Default is FATES}
 
 \item{R}{Ideal gas constant}
@@ -120,11 +122,9 @@ f.MinusLogL(
 \item{gmHa}{Energy of activation for gm in J.mol-1}
 
 \item{gmHd}{Energy of deactivation for gm in J.mol-1}
-
-\item{sigma}{Sigma value}
 }
 \value{
-
+-sum(y) returns the negative log-liklihood of the fit
 }
 \description{
 Title
