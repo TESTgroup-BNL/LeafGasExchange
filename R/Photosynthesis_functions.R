@@ -813,7 +813,7 @@ f.SumSq<-function(Fixed,data,Start){
 #'
 #' @inheritParams f.make.param
 #' @param sigma Sigma value
-#' @return
+#' @return -sum(y) returns the negative log-liklihood of the fit
 #' @export
 #' @keywords internal
 #'

@@ -1,13 +1,19 @@
 Package: LeafGasExchange
-Title: Modeling photosynthesis at the leaf level
-Version: 0.0.0.9000
+Title: A package containing functions for fitting photosynthetic response curves, simulat leaf and canopy photosynthesis.
+Version: 1.0.1
 Authors@R: 
-    person(given = "Julien",
+    c(person(given = "Julien",
            family = "Lamour",
            role = c("aut", "cre"),
-           email = "jlamour@bnl.gov")
+           email = "jlamour@bnl.gov",
+           comment = c(ORCID = "0000-0002-4410-507X")),
+    person(given = "Shawn",
+           family = "Serbin",
+           role = c("ctb"),
+           email = "sserbin@bnl.gov",
+           comment = c(ORCID = "0000-0003-4136-8971")))
 Description: Model gas exchanges at the leaf level using a coupled stomatal conductance model (USO) and photosynthesis model (Farquhar) using analytical solutions of the different equations. It is also possible to include leaf energy balance and mesophyll conductance. This package also gathers functions to import data from LICORS 6400 and 6800, fit and display the main types of curves obtained with a gas exchange device: AQ, Aci, Mcurves and simulate data.
-License: What license it uses
+License: GNU General Public License v3.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
