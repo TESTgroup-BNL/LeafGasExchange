@@ -31,10 +31,9 @@ PAR=1800
 RH=80
 simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
-# Here we include a normal error with a standard deviation proportionnal to the gross photosynthesis (as it is often observed)
+# Here we include a normal error 
 
-noise=unlist(lapply(X = simul$Ag,FUN = function(x){rnorm(n=1,mean=0,sd=0.035*(x))}))
-simul$A=simul$A+noise
+simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.6)
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
 ```
 
@@ -61,7 +60,7 @@ In a second example we now also fit TpRef
 fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1,TpRef=9),param=f.make.param(),modify.init=TRUE,do.plot=TRUE,type='Aci')
 ```
 
-The fitting corresponds to a list of 2 objects. The first object corresponds to the fitting using a minimum square function whereas the second object corresponds to a maximum likelihood which is made using the package mle2. This latter method is usefull because it allowes us to calculate the confidence interval of the parameters. The mean parameters used to simulate the curves (VcmaxRef = 50,JmaxRef=85,TpRef=5, RdRef=1.43 and sigma_b= 0.035) should be in the confidence interval.
+The fitting corresponds to a list of 2 objects. The first object corresponds to the fitting using a minimum square function whereas the second object corresponds to a maximum likelihood which is made using the package mle2. This latter method is usefull because it allowes us to calculate the confidence interval of the parameters. The mean parameters used to simulate the curves (VcmaxRef = 50,JmaxRef=85,TpRef=5, RdRef=1.43 and sigma= 0.6) should be in the confidence interval.
 
 ```{r warning=FALSE}
 confint(fitting2[[2]])
@@ -78,7 +77,7 @@ It is also possible to calculate the interval of confidence and prediction of th
 
 ```{r}
 var_cov=fitting2[[2]]@vcov
-random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma_b','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
+random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
 
 random_simul=matrix(data = NA,nrow = 1000,ncol = nrow(measures))
 for(i in 1:1000){
@@ -88,7 +87,7 @@ for(i in 1:1000){
 fit_pred=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],RdRef=fitting2[[2]]@coef[c('RdRef')]))
 
 sd_mean=apply(X = random_simul,MARGIN = 2,FUN =sd)
-sd_res=fitting2[[2]]@coef['sigma_b']*fit_pred$Ag
+sd_res=fitting2[[2]]@coef['sigma']
 sd_tot=sqrt(sd_mean^2+sd_res^2)
 simul_confint=rbind(fit_pred$A-1.96*sd_mean,fit_pred$A+1.96*sd_mean)
 simul_pred=rbind(fit_pred$A-1.96*sd_tot,fit_pred$A+1.96*sd_tot)
