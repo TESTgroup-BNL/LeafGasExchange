@@ -23,3 +23,6 @@ you can install `LeafGasExchange` from [GitHub](https://github.com/) with:
 ``` r
 devtools::install_github("TESTgroup-BNL/LeafGasExchange", dependencies=TRUE)
 ```
+
+### Source Code Citation/DOI
+[![DOI](https://zenodo.org/badge/255713515.svg)](https://zenodo.org/badge/latestdoi/255713515)
