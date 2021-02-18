@@ -17,9 +17,10 @@ License: GNU General Public License v3.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Depends: stats4, bbmle, readxl, stringr, tidyverse, readr, tealeaves,reshape2,ggplot2, BioCro
+Depends: stats4, polynom, bbmle, readxl, stringr, tidyverse, readr, tealeaves,reshape2,ggplot2, BioCro
 Imports: 
     stats4,
+    polynom,
     bbmle,
     readxl,
     stringr,
