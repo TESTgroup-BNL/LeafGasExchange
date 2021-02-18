@@ -1,0 +1,63 @@
+---
+title: "Guide to use the LeagGasExchange package to simulate leaf conductance"
+author: "Julien LAMOUR"
+date: "2/18/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(LeafGasExchange)
+library(mvtnorm)
+```
+
+## Overview of the conductance models
+Several empirical models can be used to describe the conductance of leaves in various environmental conditions. The most famous one is probably the Ball et al., (1987), but several models were also published later (Leuning, 1995; Medlyn et al. 2011).
+
+All those models are implemented and coupled with the Farquhar et al. 1980 photosynthesis model.
+
+## Simulation of simple conductance values
+
+The "BWB" model (Ball et al. 1987) is:
+gs=g0+g1*A*RH/CO2s
+With g0 the intercept for A == 0, and g1 the slope parameter
+
+```{r}
+f.gs(A = 0:20,cs = 400,RH = 70,g0 = 0.01,g1 = 6,model='BWB')
+```
+
+The "USO" model (Medlyn et al. 2011) is: 
+gs = g0+ 1.6 * (1 + g1 * A / (ds^0.5 * CO2s)) and can be simplified in the "USO_simpl" model :  
+gs = g0+ 1.6 * g1 *A / (ds^0.5 * CO2s)
+
+```{r}
+f.gs(A = 0:20,cs = 400,ds = 1000,g0 = 0.01,g1 = 6,model='USO')
+```
+
+```{r}
+f.gs(A = 0:20,cs = 400,ds = 1000,g0 = 0.01,g1 = 6,model='USO_simpl')
+```
+
+## Using the photosynthesis model
+
+
+```{r}
+PFD=0:2000
+USO_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=00,g1=3,model.gs = "USO"))
+USO_simpl_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0,g1=3,model.gs = "USO_simpl"))
+BWB_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.0,g1=5,model.gs = "BWB"))
+
+plot(x=PFD,y=USO_simulation$gs,type='l',ylab='Conductance mol m-2 s-1',col='lightblue')
+lines(x=PFD,y=USO_simpl_simulation$gs,col='slateblue3')
+lines(x=PFD,y=BWB_simulation$gs,col='orchid1')
+
+```
+
+
+
+## References
+Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
+
+Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C., Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L. (2011), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17: 2134-2144. 
+

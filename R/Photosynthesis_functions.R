@@ -18,19 +18,16 @@ f.ds<-function(Tleaf,Tair,RH){
 #' @param A Net assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration
 #' @param cs CO2 at the surface of the leaf in ppm
 #' @param ds Leaf surface to air vapour pressure deficit in Pa
-#' @param Gstar CO2 compensation point for the leuning model
 #' @param Rd Dark respiration for the non linear model. Be carefull that the net assimilation is implemented in all the models except the non linear where the gross assimilation is used (A + Rd)
 #' @param RH Humidity at the surface of the leaf (0 - 100). ds or RH as to be specified
 #' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
 #' @param power Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication
-#' @param d0 Parameter of the leuning model in Pa (for example 1000 or 1500 )
-#' @param model Stomatal model ("USO", "USO_simpl" or "BWB" or "Leuning" or "Nonlinear")
+#' @param model Stomatal model ("USO", "USO_simpl" or "BWB" or "Nonlinear")
 #' @export
 #' @details USO : #gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
 #' USO_simpl : gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs
 #' BWB : gs=g0+g1*(A*RH/100)/cs
-#' Leuning : gs = g0 + g1*(A)/((cs-Gstar)(1+ds/d0))
 #' Nonlinear: gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs
 #' @return This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1
 #' @references Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
@@ -38,15 +35,13 @@ f.ds<-function(Tleaf,Tair,RH){
 #'  Leuning, R., Kelliher, F. M., De Pury, D. G. G., & Schulze, E. D. (1995). Leaf nitrogen, photosynthesis, conductance and transpiration: scaling from leaves to canopies. Plant, Cell & Environment, 18(10), 1183-1200.
 #'  Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
 #' @examples gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
-f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,Gstar=NULL,g0,g1,power=0.5,d0=NULL,model="USO"){
+f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,Gstar=NULL,g0,g1,power=0.5,model="USO"){
   if(model=="USO"|model==0){
     gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
   } else if(model=="USO_simpl"|model==1){
     gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs
   } else if(model=="BWB"|model==2){
     gs=g0+g1*(A*RH/100)/cs
-  } else if(model=="Leuning"|model==3){
-    gs = g0 + g1*A/((cs-Gstar)*(1+ds/d0))
   } else if(model=="Nonlinear"|model==4){
     gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs
   } 
@@ -231,15 +226,15 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   if(param[['TBM']]%in%c(0,2)){
     
     # Analytical solution of the system of equations {E1 : A=f(ci), E2 : gs=f(A,cs) and ci=f(cs)}
-    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[["model.gs"]])
+    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
     Wc=(cic-Gstar)*Vcmax/(cic+Kc*(1+param[['O2']]/Ko))
     
-    cij=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[["model.gs"]])
+    cij=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
     Wj=(cij-Gstar)*J/(4*cij+8*Gstar)
     
     Tp=f.modified.arrhenius(PRef=param[['TpRef']],param[['TpHa']],param[['TpHd']],param[['TpS']],Tleaf)
     Wp=3*Tp
-    cip=f.solv(x=3*Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[["model.gs"]])
+    cip=f.solv(x=3*Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
     
     ci=cij
     if(!is.null(which(Wc<Wj))&length(cic)==length(cij)){ci[which(Wc<Wj)]=cic[which(Wc<Wj)]}
@@ -248,7 +243,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     if(!is.null(which(Wp<W))){ci[which(Wp<W)]=cip[which(Wp<W)]}
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
-    gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],model =param[['model.gs']])
+    gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
     output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
   }
@@ -266,18 +261,18 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Vcmax=f.Q10.modified(Pref = param[['VcmaxRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     Tau=f.arrhenius(param[['TauRef']],param[['TauQ10']],Tleaf,TRef=param[['TRef']])
     Gstar=param[['O2']]/(2*Tau)
-    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[["model.gs"]])
+    cic=f.solv(x=Vcmax,y=Kc*(1+param[['O2']]/Ko),cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
     Wc=Vcmax*cic/(cic+Kc*(1+param[['O2']]/Ko))
     J=param[['abso']]*param[['aQY']]*PFD
     
-    cij=f.solv(x=J,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],d0=param[['d0']],RH=RH,ds=ds,model=param[["model.gs"]])
+    cij=f.solv(x=J,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],RH=RH,ds=ds,model=param[["model.gs"]])
     Wj=J*(cij-Gstar)/(cij+2*Gstar)
     
     ci=cij
     Tp=f.Q10.modified(Pref = param[['TpRef']],Q10 = param[['VcmaxQ10']],Tlow = param[['Tlow']],Tup = param[['Tup']],Tleaf=Tleaf,TRef=param[['TRef']])
     
     Wp=3*Tp
-    cip=f.solv(x=Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],d0=param[['d0']],RH=RH,ds=ds,model=param[["model.gs"]])
+    cip=f.solv(x=Tp,y=-Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],RH=RH,ds=ds,model=param[["model.gs"]])
     
     if(!is.null(which(Wc<Wj))&length(cic)==length(cij)){ci[which(Wc<Wj)]=cic[which(Wc<Wj)]}
     if(!is.null(which(Wc<Wj))&length(cic)!=length(cij)){ci[which(Wc<Wj)]=cic}
@@ -285,7 +280,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     if(!is.null(which(Wp<W))){ci[which(Wp<W)]=cip[which(Wp<W)]}
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
-    gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],model =param[['model.gs']])
+    gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
     output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
     
@@ -295,9 +290,9 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   if(param[['TBM']]==1){
     ci=NA
     gm=f.modified.arrhenius(PRef=param[['gmRef']],param[['gmHa']],param[['gmHd']],param[['gmS']],Tleaf)
-    ccc=f.solv.Acc(g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[['model.gs']],gm=gm,Rd=Rd,Gstar=Gstar,x1=Vcmax,x2=Kc*(1+param[['O2']]/Ko),cs=cs)
+    ccc=f.solv.Acc(g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,RH=RH,model=param[['model.gs']],gm=gm,Rd=Rd,Gstar=Gstar,x1=Vcmax,x2=Kc*(1+param[['O2']]/Ko),cs=cs)
     Wc=Vcmax*ccc/(ccc+Kc*(1+param[['O2']]/Ko))
-    ccj=f.solv.Acc(g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],ds=ds,RH=RH,model=param[['model.gs']],gm=gm,Rd=Rd,Gstar=Gstar,x1=J/4,x2=2*Gstar,cs=cs)
+    ccj=f.solv.Acc(g0=param[['g0']],g1=param[['g1']],power=param[['power']],ds=ds,RH=RH,model=param[['model.gs']],gm=gm,Rd=Rd,Gstar=Gstar,x1=J/4,x2=2*Gstar,cs=cs)
     Wj=J*ccj/(4*ccj+8*Gstar)
     cc=ccj
     if(!is.null(which(Wc<Wj))&length(ccc)==length(ccj)){cc[which(Wc<Wj)]=ccc[which(Wc<Wj)]}
@@ -305,7 +300,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Wc=Wc*(1-Gstar/cc)
     Wj=Wj*(1-Gstar/cc)
     A=pmin(Wc,Wj)-Rd
-    gs=f.gs(A=A,cs=cs,ds=ds,RH=RH,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],d0=param[['d0']],model =param[['model.gs']])
+    gs=f.gs(A=A,cs=cs,ds=ds,RH=RH,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
     
     output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,Ag=A+Rd,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
@@ -423,7 +418,6 @@ f.solv.poly<-function(data){
 #' @param Gstar
 #' @param g0
 #' @param g1
-#' @param d0
 #' @param ds
 #' @param model
 #'
@@ -432,15 +426,13 @@ f.solv.poly<-function(data){
 #' @keywords internal
 #'
 #' @examples
-f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,d0,power,ds,RH,model){
+f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
   if(model=="USO"|model==0){
     m=1.6*(1+g1/(ds/1000)^power)
   }else if(model=="USO_simpl"|model==1){
     m=1.6*(g1/(ds/1000)^power)
   }else if(model=="BWB"|model==2){
     m=(g1*RH/100)
-  }else if (model=='Leuning'|model==3){
-    m=g1/((cs-Gstar)*(1+ds/d0))
   }
   if(model=='Nonlinear'|model==4){
     a1=5*g0*cs*sqrt(ds)+8*g1*x^2
@@ -480,15 +472,13 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,d0,power,ds,RH,model){
 #' @export
 #' @keywords internal
 #' @examples
-f.solv.Acc=function(x1,x2,g0,g1,power,d0,ds,RH,model,gm,Rd,Gstar,cs){
+f.solv.Acc=function(x1,x2,g0,g1,power,ds,RH,model,gm,Rd,Gstar,cs){
   if(model=="USO"|model==0){
     m=1.6*(1+g1/(ds/1000)^power)
   }else if(model=="USO_simpl"|model==1){
     m=1.6*(g1/(ds/1000)^power)
   }else if(model=="BWB"|model==2){
     m=(g1*RH/100)
-  }else if (model=='Leuning'|model==3){
-    m=g1/((cs-Gstar)*(1+ds/d0))
   }else{
     print(paste("model:",model,'is not in the list of implemented stomatal models'))
   }
@@ -543,8 +533,7 @@ f.solv.Acc=function(x1,x2,g0,g1,power,d0,ds,RH,model,gm,Rd,Gstar,cs){
 #' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
 #' @param power Power of VPDl in USO model. By default power=0.5 as in Medlyn article
-#' @param d0 Parameter of the Leuning 1995 conductance model in Pa (1000 or 1500 for example)
-#' @param model.gs Type of conductance model (USO, USO_simpl,BWB, Leuning or Nonlinear). Do not chose Nonlinear with Orchidee TBM
+#' @param model.gs Type of conductance model (USO, USO_simpl,BWB or Nonlinear). Do not chose Nonlinear with Orchidee TBM
 #' @param gmRef Mesophyll conductance at Tref (25 deg C) mol m-2 s-1
 #' @param gmS Entropy term for gm J K-1 mol-1
 #' @param gmHa Energy of activation for gm in J.mol-1
@@ -604,13 +593,12 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                        g0=NA,
                        g1=NA,
                        power=NA,
-                       d0=NA,
                        gmRef=NA,
                        gmS=NA,
                        gmHa=NA,
                        gmHd=NA){
   if(!TBM%in%c('FATES','ORCHIDEE','CLM4.5','JULES')){print(paste('TBM',TBM,'is not in the list FATES, ORCHIDEE, CLM4.5, JULES'))}
-  if(!is.na(model.gs)&model.gs=="USO"){model.gs=0}else if(!is.na(model.gs)&model.gs=="USO_simpl"){model.gs=1}else if(!is.na(model.gs)&model.gs=="BWB"){model.gs=2}else if(!is.na(model.gs)&model.gs=="Leuning"){model.gs=3}else if(!is.na(model.gs)&model.gs=="Nonlinear"){model.gs=4}else if(!is.na(model.gs)&!model.gs%in%c("USO","USO_simpl","BWB","Leuning","Nonlinear")){print("Unknown model.gs")}
+  if(!is.na(model.gs)&model.gs=="USO"){model.gs=0}else if(!is.na(model.gs)&model.gs=="USO_simpl"){model.gs=1}else if(!is.na(model.gs)&model.gs=="BWB"){model.gs=2}else if(!is.na(model.gs)&model.gs=="Nonlinear"){model.gs=3}else if(!is.na(model.gs)&!model.gs%in%c("USO","USO_simpl","BWB","Nonlinear")){print("Unknown model.gs")}
   if(TBM=='FATES'){
     param=list(TBM=0,R=8.314,O2=210,TRef=298.16,Patm=101,
                JmaxRef=	83.5,JmaxHa=	43540,JmaxHd=	152040,JmaxS	=495,
@@ -619,7 +607,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                thetacj=0.999,thetaip=0.999,
                RdRef=	1.43,RdHa=	46390,RdHd=150650,RdS=490,
                KcRef=	404.9,KcHa=	79430,KoRef=	278.4,KoHa=	36380,GstarRef=	42.75,GstarHa	=37830,
-               abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5,d0=1500)
+               abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5)
   }
   if(TBM=='ORCHIDEE'){
     param=list(TBM=1,R=8.314,O2=210,TRef=298.16,Patm=101,
@@ -638,7 +626,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                thetacj=0.98,thetaip=0.95,
                RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,
                KcRef=	404.9,KcHa=	79430,KoRef=	278.4,KoHa=	36380,GstarRef=	42.75,GstarHa	=37830,
-               abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5,d0=1500)
+               abso=	0.85,aQY=	0.425,Theta=(0.7),g0=0.02,g1=4.1,model.gs=0,power=0.5)
   }
   if(TBM=='JULES'){
     param=list(TBM=3,R=8.314,O2=210,TRef=298.16,Patm=101,
@@ -648,7 +636,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                RdRef=	0.552,
                KcRef=	303,KcQ10=2.1,KoQ10=1.2,KoRef=	303,
                TauRef=2600/1010,TauQ10=0.57,
-               abso=	0.85,aQY=	0.08,g0=0.02,g1=4.1,model.gs=0,power=0.5,d0=1500)
+               abso=	0.85,aQY=	0.08,g0=0.02,g1=4.1,model.gs=0,power=0.5)
   }
   
   param_fun=list(TBM=TBM,R=R,O2=O2,TRef=TRef,Patm=Patm,JmaxRef=JmaxRef,JmaxHa=	JmaxHa,
@@ -659,7 +647,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
                  RdRef=RdRef,RdHa=RdHa, RdHd=RdHd,RdS=RdS,
                  KcRef= KcRef,KcHa=	KcHa,KcQ10=KcQ10,KoRef=KoRef,KoHa=	KoHa,KoQ10=KoQ10,GstarRef=	GstarRef,TauRef=TauRef,TauQ10=TauQ10,
                  GstarHa	=GstarHa,abso=	abso,aQY=aQY,Theta=Theta,g0=g0,
-                 g1=g1,model.gs=model.gs,power=power,d0=d0,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
+                 g1=g1,model.gs=model.gs,power=power,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
   modified=which(lapply(X=param_fun,FUN = is.na)==FALSE)
   if(length(modified)>1){
     for(i in 2: length(modified)){param[names(modified[i])]=param_fun[modified[i]]}
@@ -910,7 +898,6 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
                       g0=0.75,
                       g1=0.75,
                       power=0.75,
-                      d0=0.75,
                       gmRef=0.75,
                       gmS=0.75,
                       gmHa=0.75,
@@ -924,7 +911,7 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
              RdRef=RdRef,RdHa=RdHa, RdHd=RdHd,RdS=RdS,
              KcRef= KcRef,KcHa=	KcHa,KcQ10=KcQ10,KoRef=KoRef,KoHa=	KoHa,KoQ10=KoQ10,GstarRef=	GstarRef,TauRef=TauRef,TauQ10=TauQ10,
              GstarHa	=GstarHa,abso=	abso,aQY=aQY,Theta=Theta,model.gs=model.gs,
-             g0=g0,g1=g1,power=power,d0=d0,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
+             g0=g0,g1=g1,power=power,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
   A_pred=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)
   
   y<-dnorm(x=data$Photo,mean=A_pred$A,sd=(sigma),log=TRUE)
