@@ -12,10 +12,7 @@ library(LeafGasExchange)
 library(mvtnorm)
 ```
 
-## Overview of the conductance models
-Several empirical models can be used to describe the conductance of leaves in various environmental conditions. The most famous one is probably the Ball et al., (1987), but several models were also published later (Leuning, 1995; Medlyn et al. 2011).
 
-All those models are implemented and coupled with the Farquhar et al. 1980 photosynthesis model.
 
 ## Simulation of simple conductance values
 

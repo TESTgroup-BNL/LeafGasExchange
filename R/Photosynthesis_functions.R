@@ -42,7 +42,7 @@ f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,Gstar=NULL,g0,g1,power=0.5,model="US
     gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs
   } else if(model=="BWB"|model==2){
     gs=g0+g1*(A*RH/100)/cs
-  } else if(model=="Nonlinear"|model==4){
+  } else if(model=="Nonlinear"|model==3){
     gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs
   } 
   else{print(paste("Parameter model =",model,"is not in the list of implemented models"))}
@@ -66,7 +66,7 @@ f.gsmin<-function(RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,Tleaf=300,cs=400,
     gsmin=g0-1.6*g1*Rd/(cs*(ds/1000)^power)
   } else if(model=="BWB"|model==2){
     gsmin=g0-g1*(Rd*RH/100)/cs
-  } else if(model=="Nonlinear"|model==4){
+  } else if(model=="Nonlinear"|model==3){
     gsmin=g0
   } 
   else{print(paste("Parameter model =",model,"is not in the list of implemented models"))}
@@ -434,7 +434,7 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
   }else if(model=="BWB"|model==2){
     m=(g1*RH/100)
   }
-  if(model=='Nonlinear'|model==4){
+  if(model=='Nonlinear'|model==3){
     a1=5*g0*cs*sqrt(ds)+8*g1*x^2
     a2=-16*Gstar*g1*x^2-5*sqrt(ds)*cs^2*g0+10*sqrt(ds)*cs*g0*y-8*cs*g1*x^2-8*sqrt(ds)*Rd*cs+8*sqrt(ds)*cs*x
     a3=8*Gstar^2*g1*x^2+16*Gstar*cs*g1*x^2-10*sqrt(ds)*cs^2*g0*y+5*sqrt(ds)*cs*g0*y^2-8*Gstar*sqrt(ds)*cs*x-16*sqrt(ds)*Rd*cs*y+8*sqrt(ds)*cs*x*y
