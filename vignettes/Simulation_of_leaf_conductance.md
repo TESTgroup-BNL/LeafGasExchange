@@ -9,7 +9,7 @@ output: github_document
 
 
 
-## Simulation of simple conductance values
+## Simulation of conductance knowing the photosynthesis rate
 
 It is possible to simulate the leaf water stomatal conductance using the function f.gs. The function allows to simulate different conductance models: the one from Ball et al. (1987) noted "BWB", the two versions from Medlyn et al. (2011), i.e. the USO model "USO" and the approximation of the USO model "USO_simpl" which is similar to previously published empirical models (such as the BWB model). A new version is also included which is nonlinear "Nonlinear". 
 
@@ -66,11 +66,16 @@ g1_Nonlinear=0.23
 Nonlinear_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_Nonlinear, Rd=Rd,model='Nonlinear')
 ```
 
+
+## Estimation of the conductance parameters g0 and g1 using linear regressions
+
+
 The parameters g0 and g1 of the 4 models can be estimated using linear regressions:
 
-![equation](https://latex.codecogs.com/gif.latex?Y%3Dg_0&plus;g_1X)
+![equation](https://latex.codecogs.com/gif.latex?Y%3Dg_0&plus;g_1X&plus;%5Cvarepsilon)
 
-with X called the regressor and Y the response variable. For all the models except "USO" Y corresponds to the conductance. 
+with Y the response variable, X the regressor and epsilon the residual. For all the models except "USO" Y corresponds to the conductance. 
+
 
 
 
@@ -120,6 +125,7 @@ lm(Nonlinear_gs~X_Nonlinear)
 ##        0.02         0.23
 ```
 
+In those examples you see that g0 and g1 were correctly estimated, i.e. they were the same as the ones used to simulate the data.
 
 For the non simplified USO model, a linear regression can also be performed but with : 
 
