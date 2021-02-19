@@ -12,8 +12,11 @@ output: github_document
 ## Simulation of simple conductance values
 
 The "BWB" model (Ball et al. 1987) is:
-gs=g0+g1*A*RH/CO2s
-With g0 the intercept for A == 0, and g1 the slope parameter
+
+![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;g_1*A_n*RH/CO_%7B2s%7D)
+
+With g0 the intercept for A == 0, and g1 the slope parameter. RH corresponds to the relative humidity and CO2s to the CO2 concentration at the leaf surface. 
+
 
 
 ```r
