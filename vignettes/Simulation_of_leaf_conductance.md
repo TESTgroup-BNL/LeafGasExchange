@@ -11,6 +11,8 @@ output: github_document
 
 ## Simulation of simple conductance values
 
+It is possible to simulate the leaf water stomatal conductance using the function f.gs. The function allows to simulate different conductance models: the one from Ball et al. (1987) noted "BWB", the two versions from Medlyn et al. (2011), i.e. the USO model "USO" and the approximation of the USO model "USO_simpl" which is similar to previously published empirical models (such as the BWB model). A new version is also included which is nonlinear "Nonlinear". 
+
 The "BWB" model (Ball et al. 1987) is:
 
 ![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;g_1*A_n*RH/CO_%7B2s%7D)
@@ -30,11 +32,14 @@ BWB_gs=f.gs(A = A,cs = cs,RH = RH,g0 = g0,g1 = g1_BWB,model='BWB')
 
 The "USO" model (Medlyn et al. 2011) is: 
 
-gs = g0+ 1.6 * (1 + g1 * A / (ds^0.5 * CO2s)) 
+![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6%281&plus;g_1%5Cfrac%7BA_n%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D%29)
 
 It can be simplified in the "USO_simpl" model :  
 
-gs = g0+ 1.6 * g1 *A / (ds^0.5 * CO2s)
+![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6g_1%5Cfrac%7BA_n%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D)
+
+Those models don't use the relative humidity but the leaf to air vapor pressure deficit (not clear in the paper, could also be the Air vapor pressure deficit VPDA, in this model, the VPDleaf is used)
+
 
 
 ```r
@@ -47,9 +52,12 @@ USO_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO')
 USO_simpl_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO_simpl')
 ```
 
-Finally, a "Nonlinear" version of the USO_simpl conductance model is implemented: 
+Finally, a "Nonlinear" version of the USO_simpl conductance model is also implemented: 
 
-gs = g0 + g1 * 1.6 * (A + Rd)^2 / (CO2s * ds^0.5)
+![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6%281&plus;g_1%5Cfrac%7BA_g%5E2%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D%29)
+
+Note that the gross assimilation (Ag = An + Rdark) is used instead of the net assimilation. 
+
 
 
 ```r
@@ -58,7 +66,12 @@ g1_Nonlinear=0.23
 Nonlinear_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_Nonlinear, Rd=Rd,model='Nonlinear')
 ```
 
-The parameters g0 and g1 can be estimated using linear regressions:
+The parameters g0 and g1 of the 4 models can be estimated using linear regressions:
+
+![equation](https://latex.codecogs.com/gif.latex?Y%3Dg_0&plus;g_1X)
+
+with X called the regressor and Y the response variable. For all the models except "USO" Y corresponds to the conductance. 
+
 
 
 ```r
@@ -106,11 +119,15 @@ lm(Nonlinear_gs~regressor_Nonlinear)
 ##         (Intercept)  regressor_Nonlinear  
 ##                0.02                 0.23
 ```
-For the non simplified USO model, it is necessary to change change the variables to be able to perform a linear regression. Indeed: 
 
-gs - 1.6 * A/ (ds^0.5 * CO2s)) = g0+ 1.6 * g1 * A / (ds^0.5 * CO2s)
 
-corresponds to a linear model with Y = gs - 1.6 * A/ (ds^0.5 * CO2s)), and X = 1.6 * A / (ds^0.5 * CO2s)
+For the non simplified USO model, a linear regression can also be performed but with : 
+
+![equation](https://latex.codecogs.com/gif.latex?Y%3Dg_%7Bsw%7D-%5Cfrac%7B1.6A_n%7D%7BCO_%7B2s%7D%7D)
+
+![equation](https://latex.codecogs.com/gif.latex?X%3D%5Cfrac%7B1.6A_n%7D%7B%5Csqrt%7BVPD_%7Bleaf%7D%7DCO_%7B2s%7D%7D)
+
+
 
 
 ```r
@@ -132,7 +149,7 @@ lm(Y_USO~regressor_USO)
 
 ## Simulation of conductance using a coupled photosynthesis - conductance model
 
-In the previous examples, the conductance was simulated using the photosynthesis (A) as an input variable. However, in reality both the conductance and the photosynthesis are linked and influence each other. It is possible to simulate the photosynthesis and the conductance together using the f.A function which simulates the leaf gas exchange.
+In the previous examples, the conductance was simulated using the photosynthesis (An or Ag) as an input variable. However, in reality both the conductance and the photosynthesis are linked and influence each other. It is possible to simulate the photosynthesis and the conductance together using the f.A function which simulates the leaf gas exchange.
 
 
 
@@ -150,7 +167,8 @@ legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty
 ```
 
 ![plot of chunk unnamed-chunk-7](Simulation_of_leaf_conductance_files/unnamed-chunk-7-1.png)
-The same figure is now performed for the transpirated water:
+
+The transpiration is also an output of the f.A function:
 
 
 ```r
