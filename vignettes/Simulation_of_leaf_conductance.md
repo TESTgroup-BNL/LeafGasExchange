@@ -38,7 +38,7 @@ It can be simplified in the "USO_simpl" model :
 
 ![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6g_1%5Cfrac%7BA_n%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D)
 
-Those models don't use the relative humidity but the leaf to air vapor pressure deficit (not clear in the paper, could also be the Air vapor pressure deficit VPDA, in this model, the VPDleaf is used)
+Those models don't use the relative humidity but the leaf to air vapor pressure deficit (not clear in the paper, could also be the Air vapor pressure deficit VPDA. In this model, the VPDleaf is used)
 
 
 
@@ -75,49 +75,49 @@ with X called the regressor and Y the response variable. For all the models exce
 
 
 ```r
-regressor_BWB=A*RH/100/cs
-regressor_USO_simpl=1.6*A/cs/sqrt(ds/1000)
-regressor_Nonlinear=1.6*(A+Rd)^2/sqrt(ds/1000)/cs
+X_BWB=A*RH/100/cs
+X_USO_simpl=1.6*A/cs/sqrt(ds/1000)
+X_Nonlinear=1.6*(A+Rd)^2/sqrt(ds/1000)/cs
 
-lm(BWB_gs~regressor_BWB)
+lm(BWB_gs~X_BWB)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = BWB_gs ~ regressor_BWB)
+## lm(formula = BWB_gs ~ X_BWB)
 ## 
 ## Coefficients:
-##   (Intercept)  regressor_BWB  
-##          0.02           6.00
+## (Intercept)        X_BWB  
+##        0.02         6.00
 ```
 
 ```r
-lm(USO_simpl_gs~regressor_USO_simpl)
+lm(USO_simpl_gs~X_USO_simpl)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = USO_simpl_gs ~ regressor_USO_simpl)
+## lm(formula = USO_simpl_gs ~ X_USO_simpl)
 ## 
 ## Coefficients:
-##         (Intercept)  regressor_USO_simpl  
-##                0.02                 6.00
+## (Intercept)  X_USO_simpl  
+##        0.02         6.00
 ```
 
 ```r
-lm(Nonlinear_gs~regressor_Nonlinear)
+lm(Nonlinear_gs~X_Nonlinear)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = Nonlinear_gs ~ regressor_Nonlinear)
+## lm(formula = Nonlinear_gs ~ X_Nonlinear)
 ## 
 ## Coefficients:
-##         (Intercept)  regressor_Nonlinear  
-##                0.02                 0.23
+## (Intercept)  X_Nonlinear  
+##        0.02         0.23
 ```
 
 
@@ -132,19 +132,19 @@ For the non simplified USO model, a linear regression can also be performed but 
 
 ```r
 Y_USO= USO_gs - 1.6 * A/cs
-regressor_USO=regressor_USO_simpl
+X_USO=regressor_USO_simpl
 
-lm(Y_USO~regressor_USO)
+lm(Y_USO~X_USO)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = Y_USO ~ regressor_USO)
+## lm(formula = Y_USO ~ X_USO)
 ## 
 ## Coefficients:
-##   (Intercept)  regressor_USO  
-##          0.02           6.00
+## (Intercept)        X_USO  
+##        0.02         6.00
 ```
 
 ## Simulation of conductance using a coupled photosynthesis - conductance model
