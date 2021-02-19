@@ -405,6 +405,9 @@ f.AT<-function(PFD,NIR=NA,cs,Tair,RH,wind,precision=0.1,max_it=10,param,abso_s=0
 #' @examples
 f.solv.poly<-function(data){
   solution=t(apply(X = data,MARGIN = 1,FUN=function(x){solve(polynomial(x))}))
+  if(is.list(solution)){
+    solution=t(sapply(solution, function(x) x[1:3],simplify = "array"))
+  }
   solution[Im(solution)!=0]=NA
   solution=Re(solution)
   return(solution)
