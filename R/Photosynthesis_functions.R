@@ -438,10 +438,10 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
     m=(g1*RH/100)
   }
   if(model=='Nonlinear'|model==3){
-    a1=5*g0*cs*sqrt(ds)+8*g1*x^2
-    a2=-16*Gstar*g1*x^2-5*sqrt(ds)*cs^2*g0+10*sqrt(ds)*cs*g0*y-8*cs*g1*x^2-8*sqrt(ds)*Rd*cs+8*sqrt(ds)*cs*x
-    a3=8*Gstar^2*g1*x^2+16*Gstar*cs*g1*x^2-10*sqrt(ds)*cs^2*g0*y+5*sqrt(ds)*cs*g0*y^2-8*Gstar*sqrt(ds)*cs*x-16*sqrt(ds)*Rd*cs*y+8*sqrt(ds)*cs*x*y
-    a4=-8*Gstar^2*cs*g1*x^2-5*sqrt(ds)*cs^2*g0*y^2-8*Gstar*sqrt(ds)*cs*x*y-8*sqrt(ds)*Rd*cs*y^2
+    a1=5*g0*cs*sqrt(ds/1000)+8*g1*x^2
+    a2=-16*Gstar*g1*x^2-5*sqrt(ds/1000)*cs^2*g0+10*sqrt(ds/1000)*cs*g0*y-8*cs*g1*x^2-8*sqrt(ds/1000)*Rd*cs+8*sqrt(ds/1000)*cs*x
+    a3=8*Gstar^2*g1*x^2+16*Gstar*cs*g1*x^2-10*sqrt(ds/1000)*cs^2*g0*y+5*sqrt(ds/1000)*cs*g0*y^2-8*Gstar*sqrt(ds/1000)*cs*x-16*sqrt(ds/1000)*Rd*cs*y+8*sqrt(ds/1000)*cs*x*y
+    a4=-8*Gstar^2*cs*g1*x^2-5*sqrt(ds/1000)*cs^2*g0*y^2-8*Gstar*sqrt(ds/1000)*cs*x*y-8*sqrt(ds/1000)*Rd*cs*y^2
     coef_pol=cbind(a4,a3,a2,a1)
     res=f.solv.poly(coef_pol)
     return(pmax(res[,1],res[,2],res[,3],na.rm = TRUE))

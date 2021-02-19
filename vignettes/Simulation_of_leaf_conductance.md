@@ -1,62 +1,169 @@
-Guide to use the LeagGasExchange package to simulate leaf conductance
-================
-Julien LAMOUR
-2/18/2021
+---
+title: "Guide to use the LeagGasExchange package to simulate leaf conductance"
+author: "Julien LAMOUR"
+date: "2/18/2021"
+output: github_document
+---
+
+
+
+
 
 ## Simulation of simple conductance values
 
-The “BWB” model (Ball et al. 1987) is: gs=g0+g1*A*RH/CO2s With g0 the
-intercept for A == 0, and g1 the slope parameter
+The "BWB" model (Ball et al. 1987) is:
+gs=g0+g1*A*RH/CO2s
+With g0 the intercept for A == 0, and g1 the slope parameter
 
-``` r
-f.gs(A = 0:20,cs = 400,RH = 70,g0 = 0.01,g1 = 6,model='BWB')
+
+```r
+A=-2:20
+cs=400
+RH=70
+g0=0.02
+g1_BWB=6
+BWB_gs=f.gs(A = A,cs = cs,RH = RH,g0 = g0,g1 = g1_BWB,model='BWB')
 ```
 
-    ##  [1] 0.0100 0.0205 0.0310 0.0415 0.0520 0.0625 0.0730 0.0835 0.0940 0.1045
-    ## [11] 0.1150 0.1255 0.1360 0.1465 0.1570 0.1675 0.1780 0.1885 0.1990 0.2095
-    ## [21] 0.2200
+The "USO" model (Medlyn et al. 2011) is: 
 
-The “USO” model (Medlyn et al. 2011) is: gs = g0+ 1.6 \* (1 + g1 \* A /
-(ds^0.5 \* CO2s)) and can be simplified in the “USO\_simpl” model :  
-gs = g0+ 1.6 \* g1 *A / (ds^0.5 * CO2s)
+gs = g0+ 1.6 * (1 + g1 * A / (ds^0.5 * CO2s)) 
 
-``` r
-f.gs(A = 0:20,cs = 400,ds = 1000,g0 = 0.01,g1 = 6,model='USO')
+It can be simplified in the "USO_simpl" model :  
+
+gs = g0+ 1.6 * g1 *A / (ds^0.5 * CO2s)
+
+
+```r
+ds=1000
+USO_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO')
 ```
 
-    ##  [1] 0.010 0.038 0.066 0.094 0.122 0.150 0.178 0.206 0.234 0.262 0.290 0.318
-    ## [13] 0.346 0.374 0.402 0.430 0.458 0.486 0.514 0.542 0.570
 
-``` r
-f.gs(A = 0:20,cs = 400,ds = 1000,g0 = 0.01,g1 = 6,model='USO_simpl')
+```r
+USO_simpl_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO_simpl')
 ```
 
-    ##  [1] 0.010 0.034 0.058 0.082 0.106 0.130 0.154 0.178 0.202 0.226 0.250 0.274
-    ## [13] 0.298 0.322 0.346 0.370 0.394 0.418 0.442 0.466 0.490
+Finally, a "Nonlinear" version of the USO_simpl conductance model is implemented: 
 
-## Using the photosynthesis model
+gs = g0 + g1 * 1.6 * (A + Rd)^2 / (CO2s * ds^0.5)
 
-``` r
+
+```r
+Rd=2
+g1_Nonlinear=0.23
+Nonlinear_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_Nonlinear, Rd=Rd,model='Nonlinear')
+```
+
+The parameters g0 and g1 can be estimated using linear regressions:
+
+
+```r
+regressor_BWB=A*RH/100/cs
+regressor_USO_simpl=1.6*A/cs/sqrt(ds/1000)
+regressor_Nonlinear=1.6*(A+Rd)^2/sqrt(ds/1000)/cs
+
+lm(BWB_gs~regressor_BWB)
+```
+
+```
+## 
+## Call:
+## lm(formula = BWB_gs ~ regressor_BWB)
+## 
+## Coefficients:
+##   (Intercept)  regressor_BWB  
+##          0.02           6.00
+```
+
+```r
+lm(USO_simpl_gs~regressor_USO_simpl)
+```
+
+```
+## 
+## Call:
+## lm(formula = USO_simpl_gs ~ regressor_USO_simpl)
+## 
+## Coefficients:
+##         (Intercept)  regressor_USO_simpl  
+##                0.02                 6.00
+```
+
+```r
+lm(Nonlinear_gs~regressor_Nonlinear)
+```
+
+```
+## 
+## Call:
+## lm(formula = Nonlinear_gs ~ regressor_Nonlinear)
+## 
+## Coefficients:
+##         (Intercept)  regressor_Nonlinear  
+##                0.02                 0.23
+```
+For the non simplified USO model, it is necessary to change change the variables to be able to perform a linear regression. Indeed: 
+
+gs - 1.6 * A/ (ds^0.5 * CO2s)) = g0+ 1.6 * g1 * A / (ds^0.5 * CO2s)
+
+corresponds to a linear model with Y = gs - 1.6 * A/ (ds^0.5 * CO2s)), and X = 1.6 * A / (ds^0.5 * CO2s)
+
+
+```r
+Y_USO= USO_gs - 1.6 * A/cs
+regressor_USO=regressor_USO_simpl
+
+lm(Y_USO~regressor_USO)
+```
+
+```
+## 
+## Call:
+## lm(formula = Y_USO ~ regressor_USO)
+## 
+## Coefficients:
+##   (Intercept)  regressor_USO  
+##          0.02           6.00
+```
+
+## Simulation of conductance using a coupled photosynthesis - conductance model
+
+In the previous examples, the conductance was simulated using the photosynthesis (A) as an input variable. However, in reality both the conductance and the photosynthesis are linked and influence each other. It is possible to simulate the photosynthesis and the conductance together using the f.A function which simulates the leaf gas exchange.
+
+
+
+```r
 PFD=0:2000
-USO_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=00,g1=3,model.gs = "USO"))
-USO_simpl_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0,g1=3,model.gs = "USO_simpl"))
-BWB_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.0,g1=5,model.gs = "BWB"))
-
-plot(x=PFD,y=USO_simulation$gs,type='l',ylab='Conductance mol m-2 s-1',col='lightblue')
+USO_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=3,model.gs = "USO"))
+USO_simpl_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=2.67,model.gs = "USO_simpl"))
+BWB_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=5,model.gs = "BWB"))
+Nonlinear_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=0.23,model.gs = "Nonlinear",VcmaxRef=55,RdRef=0.015*55,JmaxRef=1.67*55,TpRef = 20,TBM = "CLM4.5"))
+plot(x=PFD,y=USO_simulation$gs,type='l',ylab=expression(Conductance~ mol~m^-2~s^-1),col='lightblue')
 lines(x=PFD,y=USO_simpl_simulation$gs,col='slateblue3')
 lines(x=PFD,y=BWB_simulation$gs,col='orchid1')
+lines(x=PFD,y=Nonlinear_simulation$gs,col='deeppink2')
+legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty = c(1,1,1,1),legend=c("USO","USO_simpl","BWB","Nonlinear"))
 ```
 
-![](Simulation_of_leaf_conductance_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![plot of chunk unnamed-chunk-7](Simulation_of_leaf_conductance_files/unnamed-chunk-7-1.png)
+The same figure is now performed for the transpirated water:
+
+
+```r
+plot(x=PFD,y=USO_simulation$Transp,type='l',ylab=expression(Transpiration~ mL~m^-2~s^-1),col='lightblue')
+lines(x=PFD,y=USO_simpl_simulation$Transp,col='slateblue3')
+lines(x=PFD,y=BWB_simulation$Transp,col='orchid1')
+lines(x=PFD,y=Nonlinear_simulation$Transp,col='deeppink2')
+legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty = c(1,1,1,1),legend=c("USO","USO_simpl","BWB","Nonlinear"))
+```
+
+![plot of chunk unnamed-chunk-8](Simulation_of_leaf_conductance_files/unnamed-chunk-8-1.png)
+
+
 
 ## References
+Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
 
-Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting
-stomatal conductance and its contribution to the control of
-photosynthesis under different environmental conditions. In Progress in
-photosynthesis research (pp. 221-224). Springer, Dordrecht.
+Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C., Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L. (2011), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17: 2134-2144. 
 
-Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C.,
-Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L.
-(2011), Reconciling the optimal and empirical approaches to modelling
-stomatal conductance. Global Change Biology, 17: 2134-2144.
