@@ -9,6 +9,7 @@ output: github_document
 
 knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
+#ezknitr::ezknit("Canopy_scaling.Rmd",fig_dir = "Canopy_scaling_files",keep_md = TRUE,keep_html=FALSE )
 ```
 
 # Canopy Scaling
