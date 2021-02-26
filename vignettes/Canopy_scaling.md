@@ -25,14 +25,14 @@ The canopy radiation interception simulates the light levels that each leaf rece
 
 ## Simulation of the canopy structure
 
-We first model the canopy structure, ie the leaf photosynthetic gradients, the LAI and the total height of the canopy. We consider 50 vertical levels inside the canopy.
+We first model the canopy structure, ie the leaf photosynthetic gradients, the LAI and the total height of the canopy. We consider 100 vertical levels inside the canopy.
 
 
 ```r
 # Modeling of the LAI inside the 50 levels of the canopy, with a total LAI of 6.2
 LAItot = 6
-nlayers=50
-dLAI=rep(6/50,nlayers)
+nlayers=100
+dLAI=rep(6/nlayers,nlayers)
 LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
 
 # Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
@@ -55,7 +55,7 @@ meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=dnorm(x = seq(0,23,1),mean =
 plot(x=meteo_hourly$time,y=meteo_hourly$PFD,xlab='Time of the day',ylab='PPFD in micro mol m-2 s-1')
 ```
 
-![plot of chunk unnamed-chunk-2](Canopy_scaling_files/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-11](Canopy_scaling_files/unnamed-chunk-11-1.png)
 
 
 We now represent the light levels inside the canopy. The function is a wrapper of lightME function from BioCro and the f.Norman.Radiation developped by Gordon Bonan (Bonan 2019). We encourage you to go and see the help of those functions. To summarize, they calculate the sun angle on a position on the earth to calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
@@ -69,7 +69,7 @@ DOY = 60
 canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI)
 ```
 
-![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-12](Canopy_scaling_files/unnamed-chunk-12-1.png)
 
 ```
 ## [1] "Radiation model for a total LAI of  6"
@@ -98,7 +98,7 @@ canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY =
 ## [1] "Radiation model for a total LAI of  6"
 ```
 
-![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-2.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-3.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-4.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-5.png)
+![plot of chunk unnamed-chunk-12](Canopy_scaling_files/unnamed-chunk-12-2.png)![plot of chunk unnamed-chunk-12](Canopy_scaling_files/unnamed-chunk-12-3.png)![plot of chunk unnamed-chunk-12](Canopy_scaling_files/unnamed-chunk-12-4.png)![plot of chunk unnamed-chunk-12](Canopy_scaling_files/unnamed-chunk-12-5.png)
 
 ## Simulation of the GPP without leaf energy budget
 
@@ -112,11 +112,11 @@ canopy_gasEx=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
                    canopy=canopy,gsmin = 0.01)
 ```
 
-![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-1.png)![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-2.png)
+![plot of chunk unnamed-chunk-13](Canopy_scaling_files/unnamed-chunk-13-1.png)![plot of chunk unnamed-chunk-13](Canopy_scaling_files/unnamed-chunk-13-2.png)
 
 ```
-## [1] "GPP =  2845.16547813614 g CO2 m-2 Ground Y-1"
-## [1] "ET =  978.304270376725 L H20 m-2 Ground Y-1"
+## [1] "GPP =  2798.9868640371 g CO2 m-2 Ground Y-1"
+## [1] "ET =  974.648224545682 L H20 m-2 Ground Y-1"
 ```
 
 For now, the GPP calculation uses the f.A function, so the photosynthesis model without the leaf energy balance. 

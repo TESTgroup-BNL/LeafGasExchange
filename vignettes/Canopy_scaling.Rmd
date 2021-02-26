@@ -30,13 +30,13 @@ The canopy radiation interception simulates the light levels that each leaf rece
 
 ## Simulation of the canopy structure
 
-We first model the canopy structure, ie the leaf photosynthetic gradients, the LAI and the total height of the canopy. We consider 50 vertical levels inside the canopy.
+We first model the canopy structure, ie the leaf photosynthetic gradients, the LAI and the total height of the canopy. We consider 100 vertical levels inside the canopy.
 
 ```{r}
 # Modeling of the LAI inside the 50 levels of the canopy, with a total LAI of 6.2
 LAItot = 6
-nlayers=50
-dLAI=rep(6/50,nlayers)
+nlayers=100
+dLAI=rep(6/nlayers,nlayers)
 LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
 
 # Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
