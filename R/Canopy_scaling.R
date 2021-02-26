@@ -78,7 +78,7 @@ f.tridiagonal.solver=function(a,b,c,d,n){
 #' @export
 #'
 #' @examples
-#' f.Norman.Radiation(Rho=0.1, Tau=0.05, PARdir=1000,PARdif=200,dLAI=c(rep(6/20,20)),Rho_soil_dif = 0.1,Rho_soil_dir = 0.1,cosz = 0.88,chil = 0.1,clumpfac = 0.8)
+#' f.Norman.Radiation(Rho=0.1, Tau=0.05, PARdir=1000,PARdif=200,dLAI=c(rep(6/20,20)),nlayers=20,Rho_soil_dif = 0.1,Rho_soil_dir = 0.1,cosz = 0.88,chil = 0.1,clumpfac = 0.8)
 
 f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1,cosz,chil,clumpfac,dLAI,nlayers,PARdir=0.8,PARdif=0.2){
   if(length(dLAI)!=nlayers){print('Error: the input parameters nlayers does not correspond to the length of the input vector dLAI')}
@@ -111,11 +111,11 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
   laisha = lai - laisun
   
   tb = exp(-Kb * dLAI * clumpfac)
-  
+  td=rep(0,length(dLAI))
   for (j in 1:9){
     angle = (5 + (j - 1) * 10) * pi / 180
     gdirj = phi1 + phi2 * cos(angle)
-    td = exp(-gdirj / cos(angle) *dLAI * clumpfac) * sin(angle) * cos(angle)
+    td = td+exp(-gdirj / cos(angle) *dLAI * clumpfac) * sin(angle) * cos(angle)
   }
   td = td * 2 * (10 * pi / 180)
   
@@ -334,16 +334,16 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #'
 #' @examples
 #' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,SW=0)
+#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI=c(rep(6/50,50)))
-f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau=0.05,Rho_nir=0.45,Tau_nir=0.25,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
+f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau=0.05,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
   Light_carac=lightME(lat = lat,t.d = t.d,DOY = DOY)# This gives the proportion of diffuse light and direct light
   PFD_dir=meteo_hourly$PFD*Light_carac$propIdir
   PFD_dif=meteo_hourly$PFD*Light_carac$propIdiff
-  NIR_dir=meteo_hourly$NIR*Light_carac$propIdir
-  NIR_dif=meteo_hourly$NIR*Light_carac$propIdiff
+  #NIR_dir=meteo_hourly$NIR*Light_carac$propIdir
+  #NIR_dif=meteo_hourly$NIR*Light_carac$propIdiff
   cos.th=Light_carac$cos.th
   
   plot(x=t.d,y=PFD_dir,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='red')
@@ -354,33 +354,33 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau
   Canopy_time_dir=Canopy_time_dif=Canopy_time_NIR_dir=Canopy_time_NIR_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(t.d),dimnames = list(Layer=1:nlayers,time=t.d))
   for(i in 1:length(t.d)){
     Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,Rho = Rho,Tau = Tau,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
-    Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,Rho =Rho_nir,Tau=Tau_nir,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
+    #Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cos.th[i],chil=chil,clumpfac = clumpfac,Rho =Rho_nir,Tau=Tau_nir,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
     Canopy_time_dir[,i]=(Light_Profile$PARsun)
     Canopy_time_dif[,i]=(Light_Profile$PARsha)
-    Canopy_time_NIR_dir[,i]=(Light_Profile_NIR$PARsun)
-    Canopy_time_NIR_dif[,i]=(Light_Profile_NIR$PARsha)
+    #Canopy_time_NIR_dir[,i]=(Light_Profile_NIR$PARsun)
+    #Canopy_time_NIR_dif[,i]=(Light_Profile_NIR$PARsha)
     f_sun[,i]=(Light_Profile$fracsun)
     f_shade[,i]=(Light_Profile$fracsha)
   }
   
   Light=Canopy_time_dir*f_sun+Canopy_time_dif*(1-f_sun)
   figure_light_dir=melt(Canopy_time_dir)
-  #print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
-  #     +scale_y_reverse()
-  #     +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-  #     +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
+  print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
+       +scale_y_reverse()
+       +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+       +labs(fill=expression(Direct~light~(mu~mol~m^-2~s^-1))))
   
   figure_light_dif=melt(Canopy_time_dif)
-  #print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
-  #      +scale_y_reverse()
-  #      +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
-  #      +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
-  #
+  print(ggplot(data=figure_light_dif,aes(x=time,y=Layer,fill=value))
+        +scale_y_reverse()
+        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+        +labs(fill=expression(Diffuse~light~(mu~mol~m^-2~s^-1))))
+  
   figure_f_sun=melt(f_sun)
-  #print(ggplot(data=figure_f_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
-  # +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
-  #  +ggtitle('Fraction of leaves in direct light')
-  #+labs(fill='f_sun %'))
+  print(ggplot(data=figure_f_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
+   +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
+    +ggtitle('Fraction of leaves in direct light')
+  +labs(fill='f_sun %'))
   
   figure_light_tot=melt(Light)
   print(ggplot(data=figure_light_tot,aes(x=time,y=Layer,fill=value))
@@ -388,7 +388,8 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau
         +scale_y_reverse()
         +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
         +labs(fill=expression(PFD~(mu~mol~m^-2~s^-1))))
-  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI)))
+  #Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif
+  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI)))
 }
 
 
@@ -471,7 +472,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                                      JmaxRef=Jmax_Profile[Layer],
                                      TpRef=Tp_Profile[Layer],
                                      g0=g0_Profile[Layer],
-                                     g1=g1_Profile[Layer],...
+                                     g1=g1_Profile[Layer],
+                                     abso=1,...
                 ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
@@ -481,7 +483,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                              TpRef=Tp_Profile[Layer],
                                                                                                                                                              g0=1,
-                                                                                                                                                             g1=g1_Profile[Layer]
+                                                                                                                                                             g1=g1_Profile[Layer],
+                                                                                                                                                             abso=1,...
     ))$A[ls.gs]
     #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
@@ -498,7 +501,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                                      JmaxRef=Jmax_Profile[Layer],
                                      TpRef=Tp_Profile[Layer],
                                      g0=g0_Profile[Layer],
-                                     g1=g1_Profile[Layer],...
+                                     g1=g1_Profile[Layer],
+                                     abso=1,...
                 ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
@@ -508,7 +512,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                              TpRef=Tp_Profile[Layer],
                                                                                                                                                              g0=1,
-                                                                                                                                                             g1=g1_Profile[Layer]
+                                                                                                                                                             g1=g1_Profile[Layer],
+                                                                                                                                                             abso=1,...
     ))$A[ls.gs]
     Photosynthesis_rate_dif[Layer,]=res_dif$A
     gs_dif[Layer,]=res_dif$gs
