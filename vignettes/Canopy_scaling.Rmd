@@ -35,7 +35,7 @@ We first model the canopy structure, ie the leaf photosynthetic gradients, the L
 # Modeling of the LAI inside the 50 levels of the canopy, with a total LAI of 6.2
 LAItot = 6
 nlayers=50
-dLAI=rep(6/50,50)
+dLAI=rep(6/50,nlayers)
 LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
 
 # Modeling of the vertical structure of the Vcmax at 25 deg C (see the help of the function)
@@ -53,13 +53,13 @@ We first model the meterological conditions of a 24 h day. It would be better to
 
 ```{r}
 ##Simulation of weather data
-meteo_hourly=data.frame(time=0:23,rh=80,at=25,sr=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,tl=25)
-plot(x=meteo_hourly$time,y=meteo_hourly$sr,xlab='Time of the day',ylab='PPFD in micro mol m-2 s-1')
+meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,Tleaf=25)
+plot(x=meteo_hourly$time,y=meteo_hourly$PFD,xlab='Time of the day',ylab='PPFD in micro mol m-2 s-1')
 
 ```
 
 
-We now represent the light levels inside the canopy. The function is a wrapper of lightME function from BioCro and the f.Norman.Radiation function from this package. We encourage you to go and see the help of those functions. To summarize, they calculate the sun angle on a position on the earth to calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
+We now represent the light levels inside the canopy. The function is a wrapper of lightME function from BioCro and the f.Norman.Radiation developped by Gordon Bonan (Bonan 2019). We encourage you to go and see the help of those functions. To summarize, they calculate the sun angle on a position on the earth to calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
 
 ```{r}
 lat=9.2801048
