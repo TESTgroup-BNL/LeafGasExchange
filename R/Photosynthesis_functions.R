@@ -769,8 +769,9 @@ f.solv.cc=function(x1,x2,gm,Rd,Gstar,ci){
 #' plot(A1,type='l')
 #' lines(A2)
 #' lines(Asmooth,col='blue')
-f.smooth=function(A1,A2,theta){
-  return(((A1+A2)-sqrt((A1+A2)^2-4*theta*A1*A2))/(2*theta))
+f.smooth=function(A1,A2,theta,root=1){
+  if(root==1){sol=((A1+A2)-sqrt((A1+A2)^2-4*theta*A1*A2))/(2*theta)}else{sol=((A1+A2)+sqrt((A1+A2)^2-4*theta*A1*A2))/(2*theta)}
+   return(sol)
 }
 
 #' @title Intracellular CO2 threshold between electron transport and carboxylation limitations
