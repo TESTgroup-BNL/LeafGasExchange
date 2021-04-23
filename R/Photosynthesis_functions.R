@@ -798,8 +798,8 @@ f.ci.treshold<-function(PFD,Tleaf,param){
 
 #' @title Plot data and model
 #' @description Plot a generic graphic with observed data and predictions. Be careful to sort the data.frame beforehand.
-#' @param measures Data frame obtained from CO2 or light curve with at least columns Photo, Ci, PARi and Tleaf
-#' Data frame obtained from CO2 or light curve with at least columns Photo, Ci, PARi and Tleaf
+#' @param measures Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf
+#' Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf
 #' @param type Type of the curve to plot (light curve: Aq or CO2 curve Aci)
 #' @param list_legend Named list where the name and values will appear in the legend
 #' @inheritParams f.A
@@ -810,27 +810,27 @@ f.ci.treshold<-function(PFD,Tleaf,param){
 #'
 #' @examples
 #' param=f.make.param()
-#' Photo=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,50),param=param)$A+rnorm(n = 30,mean = 0,sd = 0.5)
-#' data=data.frame(Tleaf=rep(300,30),Ci=seq(40,1500,50),PARi=rep(2000,30),Photo=Photo)
+#' A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,50),param=param)$A+rnorm(n = 30,mean = 0,sd = 0.5)
+#' data=data.frame(Tleaf=rep(300,30),Ci=seq(40,1500,50),Qin=rep(2000,30),A=A)
 #' f.plot(measures=data,param=param,list_legend=param['VcmaxRef'],name='Example 01',type='Aci')
 
 f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci'){
   # Plot all data points
   if(type=='Aci'){x=measures$Ci
   xlab="Ci in ppm"}
-  if(type%in%c('Aq','AQ')){x=measures$PARi
-  xlab="PARi"}
+  if(type%in%c('Aq','AQ')){x=measures$Qin
+  xlab="Qin"}
   if(!type%in%c('Aci','AQ','Aq')){print('type should be Aci or Aq')}
-  plot(x=x,y=measures$Photo, main=name, xlab=xlab, ylab="Photo in micromol.m-2.s-1",ylim=c(min(measures$Photo,na.rm = TRUE),1.15*max(measures$Photo,na.rm = TRUE)))
+  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab="A in micromol.m-2.s-1",ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)))
   if(!is.null(list_legend)){
     list_legend=list_legend[order(names(list_legend))]
     legend("bottomright",legend=mapply(FUN = function(x, i){paste(i,'=', round(x,2))}, list_legend, names(list_legend)),bty="n",cex=1)
   }
-  legend("topleft",legend=c("Rubisco","RuBP","TPU","Photo","Obs"),lty=c(2,2,2,1,0),
+  legend("topleft",legend=c("Rubisco","RuBP","TPU","A","Obs"),lty=c(2,2,2,1,0),
          pch=c(NA,NA,NA,NA,21),
          col=c("dark blue","dark red","dark green","dark grey","black"),bty="n",lwd=c(2,2,2,1,1),
          seg.len=2,cex=1,pt.cex=1)
-  result=f.Aci(ci=measures$Ci,Tleaf=measures$Tleaf,PFD=measures$PARi,param=param)
+  result=f.Aci(ci=measures$Ci,Tleaf=measures$Tleaf,PFD=measures$Qin,param=param)
   lines(x=x,y=result$A,col="dark grey",lwd=1)
   lines(x=x,y=result$Ac,lwd=2,col="dark blue",lty=2)
   lines(x=x,y=result$Aj,lwd=2,col="dark red",lty=2)
@@ -842,7 +842,7 @@ f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci'){
 #' @title Compute the sum square of the difference between obervations and predictions
 #' @description Function used to fit the parameters of a CO2 curve
 #' @param x List of parameters to fit
-#' @param data Data frame obtained from CO2 curve with at least columns Photo, Ci, PARi and Tleaf
+#' @param data Data frame obtained from CO2 curve with at least columns A, Ci, Qin and Tleaf
 #' @keywords internal
 #' @return Sum square of the difference between predictions and observations
 #' @export
@@ -850,7 +850,7 @@ f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci'){
 #' @examples
 f.SumSq<-function(Fixed,data,Start){
   param=c(Fixed,Start)
-  y<-data$Photo-f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)$A
+  y<-data$A-f.Aci(ci=data$Ci,PFD=data$Qin,Tleaf=data$Tleaf,param=param)$A
   return(sum(y^2))
 }
 
@@ -916,9 +916,9 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
              KcRef= KcRef,KcHa=	KcHa,KcQ10=KcQ10,KoRef=KoRef,KoHa=	KoHa,KoQ10=KoQ10,GstarRef=	GstarRef,TauRef=TauRef,TauQ10=TauQ10,
              GstarHa	=GstarHa,abso=	abso,aQY=aQY,Theta=Theta,model.gs=model.gs,
              g0=g0,g1=g1,power=power,gmRef=gmRef,gmS=gmS,gmHa=gmHa,gmHd=gmHd)
-  A_pred=f.Aci(ci=data$Ci,PFD=data$PARi,Tleaf=data$Tleaf,param=param)
+  A_pred=f.Aci(ci=data$Ci,PFD=data$Qin,Tleaf=data$Tleaf,param=param)
   
-  y<-dnorm(x=data$Photo,mean=A_pred$A,sd=(sigma),log=TRUE)
+  y<-dnorm(x=data$A,mean=A_pred$A,sd=(sigma),log=TRUE)
   return(-sum(y))
 }
 
@@ -926,7 +926,7 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
 #' @description Function to fit model to data. The parameters to fit have to be described in the list Start.
 #' All the other parameters of the f.Aci functions have to be in param. If the parameters from Start are repeated in param, the later one will be ignored.
 #' This function uses two methods to fit the data. First by minimizing the residual sum-of-squares of the residuals and then by maximizing the likelihood function. The first method is more robust but the second one allows to calculate the confident interval of the parameters.
-#' @param measures Data frame of measures obtained from gas exchange analyser with at least the columns Photo, Ci, PARi and Tleaf (in K)
+#' @param measures Data frame of measures obtained from gas exchange analyser with at least the columns A, Ci, Qin and Tleaf (in K)
 #' @param id.name Name of the colums in measures with the identifier for the curve.
 #' @param Start List of parameters to fit with their initial values.
 #' @param param See f.make.param() for details.
@@ -937,14 +937,14 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
 #'
 #' @examples ##Simulation of a CO2 curve
 #' data=data.frame(Tleaf=rep(300,20),
-#' Ci=seq(40,1500,75),PARi=rep(2000,20),Photo=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
+#' Ci=seq(40,1500,75),Qin=rep(2000,20),A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
 #' param=f.make.param(TBM='FATES'))$A+rnorm(n = 20,mean = 0,sd = 0.5))
 #'
 #' f.fitting(measures=data,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(TBM='FATES'))
 f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(),modify.init=TRUE,do.plot=TRUE,type='Aci'){
   Fixed=param[!names(param)%in%names(Start)]
   if(modify.init){
-    if('JmaxRef'%in%names(Start)){Start[['JmaxRef']]=f.modified.arrhenius.inv(P = 6*(max(measures$Photo,na.rm=TRUE)+1),Ha = param[['JmaxHa']],Hd = param[['JmaxHd']],s = param[['JmaxS']],Tleaf = mean(measures$Tleaf,na.rm=TRUE),TRef = param[['TRef']],R = param[['R']])}
+    if('JmaxRef'%in%names(Start)){Start[['JmaxRef']]=f.modified.arrhenius.inv(P = 6*(max(measures$A,na.rm=TRUE)+1),Ha = param[['JmaxHa']],Hd = param[['JmaxHd']],s = param[['JmaxS']],Tleaf = mean(measures$Tleaf,na.rm=TRUE),TRef = param[['TRef']],R = param[['R']])}
     if('JmaxRef'%in%names(Start)&'VcmaxRef'%in%names(Start)){Start[['VcmaxRef']]=Start[['JmaxRef']]/2}
     grille=expand.grid(lapply(X = Start,FUN = function(x){x*c(0.2,1,2)}))
     grille.list=apply(X=grille,MARGIN = 1,FUN=as.list)
