@@ -1,7 +1,7 @@
 ---
 title: "Aci_fitting"
 author: "Julien LAMOUR"
-date: "2021/02/17"
+date: "2021/04/23"
 output: github_document
 ---
 
@@ -10,6 +10,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
 library(mvtnorm)
+#library(ezknitr)
+#ezknitr::ezknit("Aci_fitting.Rmd",fig_dir = "Aci_fitting_files",keep_md = TRUE)
 ```
 
 # Load the R libraries
@@ -44,7 +46,7 @@ simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 # Here we include a normal error 
 
 simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.6)
-measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
+measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 ```
 
 We display this simulated curve using the function f.plot
@@ -101,11 +103,11 @@ random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma','JmaxRef','VcmaxRef'
 
 random_simul=matrix(data = NA,nrow = 1000,ncol = nrow(measures))
 for(i in 1:1000){
-  random_simul[i,]=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=random_param[i,'VcmaxRef'],JmaxRef=random_param[i,'JmaxRef'],TpRef=random_param[i,'TpRef'],
+  random_simul[i,]=f.Aci(PFD = measures$Qin,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=random_param[i,'VcmaxRef'],JmaxRef=random_param[i,'JmaxRef'],TpRef=random_param[i,'TpRef'],
                                                                                                          RdRef=random_param[i,'RdRef']))$A
 }
 
-fit_pred=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],
+fit_pred=f.Aci(PFD = measures$Qin,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],
                                                                                                RdRef=fitting2[[2]]@coef[c('RdRef')]))
 
 sd_mean=apply(X=random_simul,MARGIN=2,FUN=sd)

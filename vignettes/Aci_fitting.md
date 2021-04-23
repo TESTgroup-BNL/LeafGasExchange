@@ -1,34 +1,35 @@
-Aci\_fitting
-================
-Julien LAMOUR
-2021/02/17
+---
+title: "Aci_fitting"
+author: "Julien LAMOUR"
+date: "2021/04/23"
+output: github_document
+---
+
+
 
 # Load the R libraries
 
-``` r
+```r
 library(LeafGasExchange)
 library(mvtnorm)
 ```
 
 # Fitting an Aci curve
 
-The objective of this tutorial is to illustrate how to fit an A-Ci curve
-using the “LeafGasExchange” package. In this tutorial, we first simulate
-an A-Ci curve with known photosynthetic parameters and noise. This curve
-is then fitted to retrieve the parameters.
+The objective of this tutorial is to illustrate how to fit an A-Ci curve using the "LeafGasExchange" package. In this tutorial, 
+we first simulate an A-Ci curve with known photosynthetic parameters and noise. This curve is then fitted to retrieve the parameters.
+
 
 ## Simulating an Aci curve
 
-For this example we first simulate a photosynthesis curve, but it would
-work the same if the data were not simulated but measured. The data
-simulation is done using the function f.A. This function needs a list of
-photosynthetic parameters which are produced using the function
-f.make.param() and a list of input variables (CO2 at the surface of the
-leaf, leaf temperature, incident light, RH). Too have more information
-on the function f.make.param, you can use the command ?f.make.param in R
-console.
+For this example we first simulate a photosynthesis curve, but it would work the same if the data were not simulated but measured. The data simulation is 
+done using the function f.A. This function needs a list of photosynthetic parameters which are produced using the function f.make.param() and a list of 
+input variables (CO2 at the surface of the leaf, leaf temperature, incident light, RH). Too have more information on the function f.make.param, you can 
+use the command ?f.make.param in R console.
 
-``` r
+
+
+```r
 param=f.make.param(VcmaxRef = 50,JmaxRef=50*1.7,TpRef=50/10)
 CO2=seq(50,1500,50)
 Tleaf=30+273.16
@@ -40,139 +41,150 @@ simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 # Here we include a normal error 
 
 simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.6)
-measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,PARi=PAR,Photo=simul$A)
+measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 ```
 
 We display this simulated curve using the function f.plot
 
-``` r
+
+```r
 f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
 ```
 
-![](Aci_fitting_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![plot of chunk unnamed-chunk-3](Aci_fitting_files/unnamed-chunk-3-1.png)
+
+
 
 ## Fitting an Aci curve
 
-To fit an Aci curve, it is necessary to detail the parameter that we
-want to estimate. All the parameters present in f.make.param can
-potentially be fitted even if it would not always make sense. We do a
-first fitting with only the parameters VcmaxRef, JmaxRef and RdRef.
-Those parameters have to be given in the list Start, with initial
-values. The method will look for different initial values around those
-values so it is not necessary to give very good ones, just not too
-stupid ones. The photosynthetic parameters have to be given in the list
-param. This is used to determine what should be the parameters for the
-temperature dependence, for the leaf absorbance, theta, etc. By default,
-the equations and parameters used in the TBM FATES to simulate the
-photosynthesis are used. In this example, we also give a very high value
-to TpRef so the TPU limitation is not considered when fitting the curve.
+To fit an Aci curve, it is necessary to detail the parameter that we want to estimate. All the parameters present in f.make.param can potentially be 
+fitted even if it would not always make sense. We do a first fitting with only the parameters VcmaxRef, JmaxRef and RdRef. Those parameters have to be 
+given in the list Start, with initial values. The method will look for different initial values around those values so it is not necessary to give very 
+good ones, just not too stupid ones. The photosynthetic parameters have to be given in the list param. This is used to determine what should be the parameters 
+for the temperature dependence, for the leaf absorbance, theta, etc. By default, the equations and parameters used in the TBM FATES to simulate the photosynthesis 
+are used. In this example, we also give a very high value to TpRef so the TPU limitation is not considered when fitting the curve.
 
-``` r
+
+
+```r
 fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1),param=f.make.param(),
                    modify.init=TRUE,do.plot=TRUE,type='Aci')
 ```
 
-    ## $par
-    ##   JmaxRef  VcmaxRef     RdRef 
-    ## 81.585069 49.479077  1.554501 
-    ## 
-    ## $value
-    ## [1] 15.71636
-    ## 
-    ## $counts
-    ## function gradient 
-    ##      108       NA 
-    ## 
-    ## $convergence
-    ## [1] 0
-    ## 
-    ## $message
-    ## NULL
-    ## 
-    ## [1] "sd 0.723794678948796"
-    ## Length  Class   Mode 
-    ##      1   mle2     S4
+```
+## $par
+##  JmaxRef VcmaxRef    RdRef 
+## 80.67034 47.98076  1.36076 
+## 
+## $value
+## [1] 14.52257
+## 
+## $counts
+## function gradient 
+##      152       NA 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## NULL
+## 
+## [1] "sd 0.695762758782813"
+## Length  Class   Mode 
+##      1   mle2     S4
+```
 
-![](Aci_fitting_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![plot of chunk unnamed-chunk-4](Aci_fitting_files/unnamed-chunk-4-1.png)
 
 In a second example we now also fit TpRef
 
-``` r
+
+```r
 fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50, RdRef = 1, TpRef=9),param=f.make.param(),
                    modify.init=TRUE,do.plot=TRUE,type='Aci')
 ```
 
-    ## $par
-    ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 87.249281 50.285508  1.748622  5.167327 
-    ## 
-    ## $value
-    ## [1] 10.11004
-    ## 
-    ## $counts
-    ## function gradient 
-    ##      373       NA 
-    ## 
-    ## $convergence
-    ## [1] 0
-    ## 
-    ## $message
-    ## NULL
-    ## 
-    ## [1] "sd 0.58051804369667"
-    ## Length  Class   Mode 
-    ##      1   mle2     S4
+```
+## $par
+##   JmaxRef  VcmaxRef     RdRef     TpRef 
+## 87.490349 48.402365  1.517134  5.067892 
+## 
+## $value
+## [1] 9.301036
+## 
+## $counts
+## function gradient 
+##      415       NA 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## NULL
+## 
+## [1] "sd 0.556807447233842"
+## Length  Class   Mode 
+##      1   mle2     S4
+```
 
-![](Aci_fitting_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![plot of chunk unnamed-chunk-5](Aci_fitting_files/unnamed-chunk-5-1.png)
 
-The fitting returns a list of 2 objects. The first object corresponds to
-the fitting using a minimum square function whereas the second object
-corresponds to a maximum likelihood derived using the mle2 package. This
-latter method is useful because it allows us to calculate the confidence
-interval of the parameters.
+The fitting returns a list of 2 objects. The first object corresponds to the fitting using a minimum square function whereas the 
+second object corresponds to a maximum likelihood derived using the mle2 package. This latter method is useful because it allows us to 
+calculate the confidence interval of the parameters. 
 
-``` r
+
+```r
 confint(fitting2[[2]])
 ```
 
-    ##               2.5 %     97.5 %
-    ## sigma     0.4598561  0.7653007
-    ## JmaxRef  82.1910419 92.9025887
-    ## VcmaxRef 46.0065608 55.3189246
-    ## TpRef     4.9111645  5.4351208
-    ## RdRef     1.0563949  2.4612326
+```
+## Profiling...
+```
 
-It is possible to compare the AIC of the two models using the base
-function AIC. The lower AIC corresponds to the best model, showing that
-in this case and as expected, the TPU limitation is useful to improve
-the fit of the model.
+```
+##               2.5 %    97.5 %
+## sigma     0.4410739  0.734043
+## JmaxRef  82.0165269        NA
+## VcmaxRef 44.6111075 52.935460
+## TpRef     4.8235522  5.331058
+## RdRef     0.8715999  2.183341
+```
 
-``` r
+It is possible to compare the AIC of the two models using the base function AIC. The lower AIC corresponds to the best model, 
+showing that in this case and as expected, the TPU limitation is useful to improve the fit of the model.
+
+
+```r
 AIC(fitting1[[2]])
 ```
 
-    ## [1] 73.74146
+```
+## [1] 71.37152
+```
 
-``` r
+```r
 AIC(fitting2[[2]])
 ```
 
-    ## [1] 62.50622
+```
+## [1] 60.00416
+```
 
-It is also possible to calculate the interval of confidence and
-prediction of the Aci curve from the outputs of the fitting.
+It is also possible to calculate the interval of confidence and prediction of the Aci curve from the outputs of the fitting.
 
-``` r
+
+```r
 var_cov=fitting2[[2]]@vcov
 random_param=rmvnorm(1000,mean=fitting2[[2]]@coef[c('sigma','JmaxRef','VcmaxRef','TpRef','RdRef')],sigma = var_cov)
 
 random_simul=matrix(data = NA,nrow = 1000,ncol = nrow(measures))
 for(i in 1:1000){
-  random_simul[i,]=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=random_param[i,'VcmaxRef'],JmaxRef=random_param[i,'JmaxRef'],TpRef=random_param[i,'TpRef'],
+  random_simul[i,]=f.Aci(PFD = measures$Qin,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=random_param[i,'VcmaxRef'],JmaxRef=random_param[i,'JmaxRef'],TpRef=random_param[i,'TpRef'],
                                                                                                          RdRef=random_param[i,'RdRef']))$A
 }
 
-fit_pred=f.Aci(PFD = measures$PARi,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],
+fit_pred=f.Aci(PFD = measures$Qin,ci = measures$Ci,Tleaf =measures$Tleaf,param = f.make.param(VcmaxRef=fitting2[[2]]@coef[c('VcmaxRef')],JmaxRef=fitting2[[2]]@coef[c('JmaxRef')],TpRef=fitting2[[2]]@coef[c('TpRef')],
                                                                                                RdRef=fitting2[[2]]@coef[c('RdRef')]))
 
 sd_mean=apply(X=random_simul,MARGIN=2,FUN=sd)
@@ -188,4 +200,5 @@ polygon(c(measures$Ci ,rev(measures$Ci)),c(simul_confint[1,], rev(simul_confint[
         col=adjustcolor("#99CC99",alpha.f=0.5),border=NA)
 ```
 
-![](Aci_fitting_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![plot of chunk unnamed-chunk-8](Aci_fitting_files/unnamed-chunk-8-1.png)
+
