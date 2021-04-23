@@ -817,16 +817,16 @@ f.ci.treshold<-function(PFD,Tleaf,param){
 f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci'){
   # Plot all data points
   if(type=='Aci'){x=measures$Ci
-  xlab="Ci in ppm"}
+  xlab=expression(italic(C)[i]~ppm)}
   if(type%in%c('Aq','AQ')){x=measures$Qin
-  xlab="Qin"}
+  xlab=expression(italic(Q)['in']~mu*mol~m^-2~s^-1)}
   if(!type%in%c('Aci','AQ','Aq')){print('type should be Aci or Aq')}
-  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab="A in micromol.m-2.s-1",ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)))
+  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab=expression(italic(A)~mu*mol~m^-2~s^-1),ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)))
   if(!is.null(list_legend)){
     list_legend=list_legend[order(names(list_legend))]
     legend("bottomright",legend=mapply(FUN = function(x, i){paste(i,'=', round(x,2))}, list_legend, names(list_legend)),bty="n",cex=1)
   }
-  legend("topleft",legend=c("Rubisco","RuBP","TPU","A","Obs"),lty=c(2,2,2,1,0),
+  legend("topleft",legend=c(expression(italic(A)[c]),expression(italic(A)[j]),expression(italic(A)[p]),expression(italic(A)),"Obs"),lty=c(2,2,2,1,0),
          pch=c(NA,NA,NA,NA,21),
          col=c("dark blue","dark red","dark green","dark grey","black"),bty="n",lwd=c(2,2,2,1,1),
          seg.len=2,cex=1,pt.cex=1)
@@ -926,18 +926,18 @@ f.MinusLogL<-function(data,sigma,TBM=0,R=0.75,O2=0.75,TRef=0.75,
 #' @description Function to fit model to data. The parameters to fit have to be described in the list Start.
 #' All the other parameters of the f.Aci functions have to be in param. If the parameters from Start are repeated in param, the later one will be ignored.
 #' This function uses two methods to fit the data. First by minimizing the residual sum-of-squares of the residuals and then by maximizing the likelihood function. The first method is more robust but the second one allows to calculate the confident interval of the parameters.
-#' @param measures Data frame of measures obtained from gas exchange analyser with at least the columns A, Ci, Qin and Tleaf (in K)
+#' @param measures Data frame of measures obtained from gas exchange analyser with at least the columns A, Ci, Qin and Tleaf (in K). If RHs, Tair, Patm, VPDleaf are also present, there mean will be added in the output, but those columns are not needed to estimate the parameters
 #' @param id.name Name of the colums in measures with the identifier for the curve.
 #' @param Start List of parameters to fit with their initial values.
 #' @param param See f.make.param() for details.
 #' @param modify.init TRUE or FALSE, allows to modify the Start values before fitting the data
 #' @param do.plot TRUE or FALSE, plot data and fitted curves ?
-#' @return
+#' @return Return a list with 3 components, 1 the result of the optim function which is used to estimate the parameters, 2 the output of the function bbmle, 3 the mean variable of the environment during the measurement
 #' @export
 #'
 #' @examples ##Simulation of a CO2 curve
 #' data=data.frame(Tleaf=rep(300,20),
-#' Ci=seq(40,1500,75),Qin=rep(2000,20),A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
+#' Ci=seq(40,1500,75),Qin=rep(2000,20),Tair=300,RHs=70,VPDleaf=2,Patm=101,A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
 #' param=f.make.param(TBM='FATES'))$A+rnorm(n = 20,mean = 0,sd = 0.5))
 #'
 #' f.fitting(measures=data,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(TBM='FATES'))
@@ -977,7 +977,11 @@ f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRe
     for(i in names(Estimation2@coef[names(Estimation2@coef)%in%names(param)])){param[i]=Estimation2@coef[i]}
     if(do.plot){f.plot(measures=measures,name=name,param =param,list_legend = as.list(Estimation2@coef),type=type)}
   })
-  return(list(MoindresCarres,Estimation2))
+  Envir=NA
+  try({
+    Envir=c(Tair=mean(measures$Tair,na.rm=TRUE),Tleaf=mean(measures$Tleaf,na.rm=TRUE),RHs=mean(measures$RHs,na.rm=TRUE),VPDleaf=mean(measures$VPDleaf,na.rm=TRUE),Qin=mean(measures$Qin,na.rm=TRUE),Patm=mean(measures$Patm,na.rm=TRUE))
+  })
+   return(list(MoindresCarres,Estimation2,Envir))
 }
 
 

@@ -129,9 +129,12 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 
 ![plot of chunk unnamed-chunk-5](Aci_fitting_files/unnamed-chunk-5-1.png)
 
-The fitting returns a list of 2 objects. The first object corresponds to the fitting using a minimum square function whereas the 
+The fitting returns a list of 3 objects. The first object corresponds to the fitting using a minimum square function whereas the 
 second object corresponds to a maximum likelihood derived using the mle2 package. This latter method is useful because it allows us to 
 calculate the confidence interval of the parameters. 
+
+The third object correspond to the mean environmental values present in the input data file of the function (see the help of f.fitting for more info).
+
 
 
 ```r
