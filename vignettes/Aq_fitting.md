@@ -14,7 +14,7 @@ library(LeafGasExchange)
 library(mvtnorm)
 ```
 
-# Fitting an Aci curve
+# Fitting an Aq curve
 
 The objective of this tutorial is to illustrate how to fit an A-Q curve using the "LeafGasExchange" package. In this tutorial, 
 we first simulate an A-Q curve with known photosynthetic parameters and noise. This curve is then fitted to retrieve the parameters.
