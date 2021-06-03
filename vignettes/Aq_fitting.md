@@ -312,6 +312,8 @@ fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ```
 
 ![plot of chunk unnamed-chunk-9](Aq_fitting_files/unnamed-chunk-9-2.png)
+
+
 As previously we can compare the fitting with or without VcmaxRef:
 
 
