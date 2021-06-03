@@ -54,7 +54,7 @@ f.plot(measures = measures,type = 'Aq',list_legend = param[c('VcmaxRef','JmaxRef
 
 ![plot of chunk unnamed-chunk-3](Aq_fitting_files/unnamed-chunk-3-1.png)
 
-In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in mormal environmental conditions, Ac and Aj have similar rate. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light. 
+In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in usual environmental conditions, Ac and Aj have similar rate. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light. 
 
 FOr example:
 
@@ -79,7 +79,7 @@ fitted even if it would not always make sense. We do a first fitting with only t
 given in the list Start, with initial values. The method will look for different initial values around those values so it is not necessary to give very 
 good ones, just not too stupid ones. The photosynthetic parameters have to be given in the list param. This is used to determine what should be the parameters 
 for the temperature dependence, for the leaf absorbance, theta, etc. By default, the equations and parameters used in the TBM FATES to simulate the photosynthesis 
-are used. In this example, we also give a high value for VcmaxRef so it is not limiting the photsoynthesis rates. We'll revisit this asumption later.
+are used. In this example, we also give a high value for VcmaxRef so it is not limiting the photsoynthesis rate. We'll revisit this asumption later.
 
 
 
