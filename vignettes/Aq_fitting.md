@@ -54,7 +54,7 @@ f.plot(measures = measures,type = 'Aq',list_legend = param[c('VcmaxRef','JmaxRef
 
 ![plot of chunk unnamed-chunk-3](Aq_fitting_files/unnamed-chunk-3-1.png)
 
-In this case, you see that the top Assimilation values are colimited by Ac and Aj. THis coordination is thought to be often present in plants. In other cases Ac can be limiting at high light. 
+In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in mormal environmental conditions, Ac and Aj have similar rate. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light. 
 
 FOr example:
 
