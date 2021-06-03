@@ -14,7 +14,7 @@ library(LeafGasExchange)
 library(mvtnorm)
 ```
 
-# Fitting an Aq curve
+# Fitting an AQ curve
 
 The objective of this tutorial is to illustrate how to fit an A-Q curve using the "LeafGasExchange" package. In this tutorial, 
 we first simulate an A-Q curve with known photosynthetic parameters and noise. This curve is then fitted to retrieve the parameters.
@@ -22,7 +22,7 @@ we first simulate an A-Q curve with known photosynthetic parameters and noise. T
 
 ## Simulating an AQ curve
 
-For this example we first simulate a photosynthesis curve, but it would work the same if the data were not simulated but measured. The data simulation is 
+For this example we first simulate a photosynthesis curve, but it would work the same if the data was not simulated but measured. The data simulation is 
 done using the function f.A. This function needs a list of photosynthetic parameters which are produced using the function f.make.param() and a list of 
 input variables (CO2 at the surface of the leaf, leaf temperature, incident light, RH). To have more information on the function f.make.param, you can 
 use the command ?f.make.param in R console.
@@ -41,7 +41,7 @@ simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
 # Here we include a normal error 
 
-simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.3)
+simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.2)
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 ```
 
@@ -54,9 +54,9 @@ f.plot(measures = measures,type = 'Aq',list_legend = param[c('VcmaxRef','JmaxRef
 
 ![plot of chunk unnamed-chunk-3](Aq_fitting_files/unnamed-chunk-3-1.png)
 
-In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in usual environmental conditions, Ac and Aj have similar rate. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light. 
+In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in usual environmental conditions, Ac and Aj have similar rates. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light.
 
-FOr example:
+For example:
 
 
 ```r
@@ -79,7 +79,7 @@ fitted even if it would not always make sense. We do a first fitting with only t
 given in the list Start, with initial values. The method will look for different initial values around those values so it is not necessary to give very 
 good ones, just not too stupid ones. The photosynthetic parameters have to be given in the list param. This is used to determine what should be the parameters 
 for the temperature dependence, for the leaf absorbance, theta, etc. By default, the equations and parameters used in the TBM FATES to simulate the photosynthesis 
-are used. In this example, we also give a high value for VcmaxRef so it is not limiting the photsoynthesis rate. We'll revisit this asumption later.
+are used. In this example, we also give a high value for VcmaxRef so it is not limiting the photosynthesis rates. We'll revisit this assumption later.
 
 
 
@@ -91,14 +91,14 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Thet
 ```
 ## $par
 ##    JmaxRef      RdRef      Theta 
-## 89.5324440  1.1234471  0.7384382 
+## 89.1935559  1.0297619  0.6996975 
 ## 
 ## $value
-## [1] 1.598659
+## [1] 0.4946647
 ## 
 ## $counts
 ## function gradient 
-##      110       NA 
+##       98       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -106,7 +106,7 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Thet
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.326461761955215"
+## [1] "sd 0.181597490422558"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
@@ -124,15 +124,15 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30,VcmaxRef=40, Rd
 
 ```
 ## $par
-##     JmaxRef    VcmaxRef       RdRef       Theta 
-##  89.4919283 340.9644454   1.1239040   0.7383948 
+##    JmaxRef   VcmaxRef      RdRef      Theta 
+## 91.1386641 62.1888937  1.0132787  0.6729676 
 ## 
 ## $value
-## [1] 1.598608
+## [1] 0.4710319
 ## 
 ## $counts
 ## function gradient 
-##      453       NA 
+##      355       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -140,29 +140,9 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30,VcmaxRef=40, Rd
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.326456575019435"
+## [1] "sd 0.177206450348648"
 ## Length  Class   Mode 
 ##      1   mle2     S4
-```
-
-```
-## Warning in mean.default(measures$Tair, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$RHs, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$VPDleaf, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$Patm, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
 ```
 
 ![plot of chunk unnamed-chunk-6](Aq_fitting_files/unnamed-chunk-6-1.png)
@@ -185,10 +165,10 @@ confint(fitting1[[2]])
 
 ```
 ##              2.5 %     97.5 %
-## sigma    0.2373058  0.4900842
-## JmaxRef 86.5884054 92.6237922
-## RdRef    0.8053796  1.4369706
-## Theta    0.6182055  0.8278076
+## sigma    0.1320035  0.2726141
+## JmaxRef 87.5106139 90.9273817
+## RdRef    0.8519132  1.2063340
+## Theta    0.6314111  0.7575820
 ```
 
 It is possible to compare the AIC of the two models using the base function AIC or BIC. The lower AIC or BIC corresponds to the best model. It shows in this case that adding VcmaxRef is not usefull.
@@ -199,7 +179,7 @@ BIC(fitting1[[2]])
 ```
 
 ```
-## [1] 14.53006
+## [1] -3.065546
 ```
 
 ```r
@@ -207,7 +187,7 @@ BIC(fitting2[[2]])
 ```
 
 ```
-## [1] 15.91585
+## [1] -2.41357
 ```
 
 We can redo this procedure for the second simulated curve:
@@ -221,14 +201,14 @@ fitting3=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ```
 ## $par
 ##    JmaxRef      RdRef      Theta 
-## 89.3064226  1.1203331  0.8420642 
+## 89.0757771  1.1283781  0.8113092 
 ## 
 ## $value
-## [1] 0.6901503
+## [1] 1.864643
 ## 
 ## $counts
 ## function gradient 
-##      112       NA 
+##      154       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -236,29 +216,9 @@ fitting3=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.21449946177971"
+## [1] "sd 0.352575551233708"
 ## Length  Class   Mode 
 ##      1   mle2     S4
-```
-
-```
-## Warning in mean.default(measures$Tair, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$RHs, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$VPDleaf, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$Patm, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
 ```
 
 ![plot of chunk unnamed-chunk-9](Aq_fitting_files/unnamed-chunk-9-1.png)
@@ -271,14 +231,14 @@ fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ```
 ## $par
 ##     JmaxRef       RdRef       Theta    VcmaxRef 
-## 102.8214219   1.0005334   0.6903262  60.0832839 
+## 108.5110284   0.9611996   0.5447890  59.2941862 
 ## 
 ## $value
-## [1] 0.2939875
+## [1] 0.9291445
 ## 
 ## $counts
 ## function gradient 
-##      397       NA 
+##      185       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -286,35 +246,15 @@ fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.139997014399646"
+## [1] "sd 0.248883440751959"
 ## Length  Class   Mode 
 ##      1   mle2     S4
-```
-
-```
-## Warning in mean.default(measures$Tair, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$RHs, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$VPDleaf, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
-```
-
-```
-## Warning in mean.default(measures$Patm, na.rm = TRUE): argument is not numeric or logical:
-## returning NA
 ```
 
 ![plot of chunk unnamed-chunk-9](Aq_fitting_files/unnamed-chunk-9-2.png)
 
 
-As previously we can compare the fitting with or without VcmaxRef:
+As previously we can compare the fitting with or without VcmaxRef as a parameter to estimate:
 
 
 ```r
@@ -322,7 +262,7 @@ BIC(fitting3[[2]])
 ```
 
 ```
-## [1] 1.92989
+## [1] 16.83862
 ```
 
 ```r
@@ -330,14 +270,14 @@ BIC(fitting4[[2]])
 ```
 
 ```
-## [1] -9.484422
+## [1] 7.776505
 ```
 
 In this case, the model with VcmaxRef is better.
 
 Generally it is interesting to test the fitting with or without VcmaxRef, and sometimes with or without Theta. Note that Theta can be difficult to estimate and can also reach negative values (June, 2005).
 
-Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the A-Ci curves are generally prefered. 
+Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the estimation of those parameters is generally using A-Ci curves. 
 
 
 
