@@ -343,7 +343,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,N
   cs=ca
   RHs=RHa
   Tleaf=Tair+1
-  ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RH/100 ## water pressure in the air
+  ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RHa/100 ## water pressure in the air
   n=1
   delta=precision+1
   while(delta>0.1&n<10){
@@ -362,7 +362,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,N
     
     leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(leaf_size), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((abso_s))))
     if(is.na(NIR))(SW=PFD/(4.57*0.45)) else (SW=PFD/4.57+NIR)
-    enviro_par <- make_enviropar(replace=list(S_sw=set_units(SW,"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
+    enviro_par <- make_enviropar(replace=list(S_sw=set_units(SW,"W/m^2"),RH=set_units(RHa/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
     constants <- make_constants()
     leaf_budget=tleaf(leaf_par, enviro_par, constants,quiet = TRUE,set_units = FALSE)
     Tleaf_mod <- as.numeric(leaf_budget$T_leaf)

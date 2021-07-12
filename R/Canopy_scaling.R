@@ -569,9 +569,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
 #' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
 #' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,wind=2,NIR=sin(seq(0,pi,pi/23))*2000/4.57)
+#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,wind=2,NIR=NA)
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'PFD']=0
-#' meteo_hourly[!meteo_hourly$time%in%7:17,'NIR']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 15,dLAI = dLAI)
 #' GPP_sc1=f.GPPT(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
@@ -584,11 +583,11 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   for(Layer in 1:nrow(canopy$Canopy_time_dir)){
     print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
     res_dir=f.AT(PFD = canopy$Canopy_time_dir[Layer,],
-                 NIR=canopy$Canopy_time_NIR_dir[Layer,],
-                 cs = 400,
+                 NIR=NA,
+                 ca = 400,
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind= meteo_hourly[,'wind'],
-                 RH = meteo_hourly[,"RH"],
+                 RHa = meteo_hourly[,"RH"],
                  abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
@@ -600,7 +599,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],cs = 400,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
@@ -614,11 +613,11 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
     gs_dir[Layer,]=res_dir$gs
     Tleaf_dir[Layer,]=res_dir$Tleaf
     res_dif=f.AT(PFD = canopy$Canopy_time_dif[Layer,],
-                 NIR=canopy$Canopy_time_NIR_dif[Layer,],
-                 cs = 400,
+                 NIR=NA,
+                 ca = 400,
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind=meteo_hourly[,'wind'],
-                 RH = meteo_hourly[,"RH"],
+                 RHa = meteo_hourly[,"RH"],
                  abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
@@ -626,11 +625,11 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
                                       g0=g0_Profile[Layer],
-                                      g1=g1_Profile[Layer],abso=1,...
+                                      g1=g1_Profile[Layer],abso=1
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],cs = 400,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
