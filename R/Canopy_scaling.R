@@ -312,7 +312,7 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 
 
 #' @title Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy
-#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C) Tleaf (leaf temperature in degree C) RH (humidity in pc) and PFD the total PFD in micro mol m-2 s-1 and NIR the NIR radiation in watt m-2
+#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C), RH (humidity in pc) and PFD the total PFD in micro mol m-2 s-1 and eventually NIR the NIR radiation in watt m-2
 #' @param lat Latitude of the canopy to model (see lightME from biocro)
 #' @param t.d time of the day (see lightME from biocro)
 #' @param DOY Day of Year (see lightME from biocro)
