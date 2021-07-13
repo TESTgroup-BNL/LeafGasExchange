@@ -318,6 +318,7 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' @param DOY Day of Year (see lightME from biocro)
 #' @param nlayers Number of layers inside the canopy (max = 50)
 #' @param dLAI LAI of each one of the n layers of vegetation in the canopy
+#' @param LAI Cumulated LAI in the midle of each layer
 #' @param Rho Leaf reflectance in the visible wavelengths
 #' @param Tau Leaf transmittance in the visible wavelengths
 #' @param Rho_nir in the nir wavelengths
@@ -338,7 +339,7 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' meteo_hourly[!meteo_hourly$time%in%7:17,'sr']=0
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI=c(rep(6/50,50)))
-f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau=0.05,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
+f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,LAI,Rho=0.1,Tau=0.05,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.25,clumpfac=0.66,model='Norman'){
   Light_carac=lightME(lat = lat,t.d = t.d,DOY = DOY)# This gives the proportion of diffuse light and direct light
   PFD_dir=meteo_hourly$PFD*Light_carac$propIdir
   PFD_dif=meteo_hourly$PFD*Light_carac$propIdiff
@@ -389,7 +390,7 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,Rho=0.1,Tau
         +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
         +labs(fill=expression(PFD~(mu~mol~m^-2~s^-1))))
   #Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif
-  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI)))
+  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI),LAI=LAI))
 }
 
 
@@ -586,7 +587,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  NIR=NA,
                  ca = 400,
                  Tair = meteo_hourly[,"Tair"]+273.15,
-                 wind= meteo_hourly[,'wind'],
+                 wind= meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
                  abso_s=1,
                  param = f.make.param(TBM=TBM,
@@ -595,17 +596,17 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
                                       g0=g0_Profile[Layer],
-                                      g1=g1_Profile[Layer],abso=1
+                                      g1=g1_Profile[Layer],abso=1,...
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = NA,ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
                                                                                                                                                       g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer],abso=1
+                                                                                                                                                      g1=g1_Profile[Layer],abso=1,...
     ))$A[ls.gs]
     #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
@@ -616,7 +617,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  NIR=NA,
                  ca = 400,
                  Tair = meteo_hourly[,"Tair"]+273.15,
-                 wind=meteo_hourly[,'wind'],
+                 wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
                  abso_s=1,
                  param = f.make.param(TBM=TBM,
@@ -625,17 +626,17 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
                                       g0=g0_Profile[Layer],
-                                      g1=g1_Profile[Layer],abso=1
+                                      g1=g1_Profile[Layer],abso=1,...
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = meteo_hourly[,"NIR"],ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind'],abso_s=1,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = NA,ca = 400,Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
                                                                                                                                                       g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer],abso=1
+                                                                                                                                                      g1=g1_Profile[Layer],abso=1,...
     ))$A[ls.gs]
     Photosynthesis_rate_dif[Layer,]=res_dif$A
     gs_dif[Layer,]=res_dif$gs
