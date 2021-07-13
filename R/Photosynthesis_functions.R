@@ -312,13 +312,17 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @title Coupled conductance photosynthesis model and energy balance model
 #' @details This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
 #' The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
-#' Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
-#' @inheritParams f.A
+#' Here the minimum conductance is considered to be equal to g0. 
+#' @param PFD Photosynthetic light at the leaf surface in micro mol m-2 s-1
+#' @param ca CO2 concentration in the air
+#' @param RHa Relative humidity in the air (between 0 and 100)
+#' @param Tair Air temperature in Kelvin
 #' @param param List of parameters given by f.make.param()
 #' @param precision Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.
 #' @param max_it Maximum number of iterations to find the solution
 #' @param wind Wind speed at the surface of the leaf in m.s-1
 #' @param abso_s absorptance of the leaves in shortwave, see documentation of tealeaves package
+#' @param leaf_size Dimension of the leaf in m (see Tealeaves package)
 #' @param NIR NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57 )
 #' @return
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1
@@ -333,30 +337,40 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @keywords internal
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 
 #'Yun, S. H., Park, C. Y., Kim, E. S., & Lee, D. K. (2020). A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure. Forests, 11(11), 1164.
-#' @examples f.ATnotvectorised(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
-f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param,NIR=NA,abso_s=0.5){
+#' @examples f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
+f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,NIR=NA,abso_s=0.5,leaf_size=0.04){
+  #Defining the initial conditions at the leaf surface
+  cs=ca
+  RHs=RHa
   Tleaf=Tair+1
+  ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RHa/100 ## water pressure in the air
   n=1
   delta=precision+1
   while(delta>0.1&n<10){
-    Leaf_physio=f.A(PFD=PFD,Tleaf=Tleaf,Tair=Tair,cs = cs,RH = RH,param=param)
-    ds=f.ds(Tleaf,Tair,RH)
-    gs=Leaf_physio$gs-param[['g0']]
+    Leaf_physio=f.A(PFD=PFD,Tleaf=Tleaf,Tair=Tair,cs = cs,RH = RHs,param=param)
+    ds=f.ds(Tleaf,Tair,RHs)
+    gs=Leaf_physio$gs-param[['g0']] ## The package Tealeaves separates the cuticular and the leaf conductance. Here I consider that the cuticular conductance is 0.1* g0 which is an approximation
     if(gs<param[['g0']]){gs=param[['g0']]}
     g_sw <- set_units(gs, "mol/m^2/s")  ##Stomatal conductance
     g_uw<- set_units(param[['g0']], "mol/m^2/s")   ##Cuticular conductance
     g_sw=convert_conductance(g_sw,
                              Temp = set_units(Tair, "K"),
-                             P = set_units(101.3246, "kPa"))$`umol/m^2/s/Pa`
+                             P = set_units(param[['Patm']], "kPa"))$`umol/m^2/s/Pa`
     g_uw=convert_conductance(g_uw,
                              Temp = set_units(Tair, "K"),
-                             P = set_units(101.3246, "kPa"))$`umol/m^2/s/Pa`
+                             P = set_units(param[['Patm']], "kPa"))$`umol/m^2/s/Pa`
     
-    leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(0.04), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((abso_s))))
+    leaf_par <- make_leafpar(replace = list(leafsize=set_units(c(leaf_size), "m"),g_sw=g_sw,g_uw=g_uw,abs_s=set_units((abso_s))))
     if(is.na(NIR))(SW=PFD/(4.57*0.45)) else (SW=PFD/4.57+NIR)
-    enviro_par <- make_enviropar(replace=list(S_sw=set_units(SW,"W/m^2"),RH=set_units(RH/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
+    enviro_par <- make_enviropar(replace=list(S_sw=set_units(SW,"W/m^2"),RH=set_units(RHa/100),T_air = set_units(Tair, "K"),wind=set_units(wind,"m/s")))## see A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure for 4.57 and 0.45
     constants <- make_constants()
-    Tleaf_mod <- as.numeric(tleaf(leaf_par, enviro_par, constants,quiet = TRUE)$T_leaf)
+    leaf_budget=tleaf(leaf_par, enviro_par, constants,quiet = TRUE,set_units = FALSE)
+    Tleaf_mod <- as.numeric(leaf_budget$T_leaf)
+    gbw=leaf_budget$g_bw*param[['Patm']]*1000/(param[['R']]*(Tair)) ## Converting the boundary layer value from m/s to mol/m-2/s-1
+    Leaf_physio$gbw=gbw
+    Leaf_physio$cs=ca-1.4/gbw*Leaf_physio$A ## Calculating the new CO2 concentration at the leaf surface using fick s law
+    es=(gbw*ea+Leaf_physio$gs*0.6108*exp(17.27*(Tleaf_mod-273.16)/(Tleaf_mod-273.16+237.3)))/(gbw+Leaf_physio$gs)
+    Leaf_physio$RHs=es/(0.6108*exp(17.27*(Tleaf_mod-273.16)/(Tleaf_mod-273.16+237.3)))*100
     delta=abs(Tleaf-Tleaf_mod)
     Tleaf=Tleaf_mod
     n=n+1
@@ -384,14 +398,14 @@ f.ATnotvectorised<-function(PFD,cs,Tair,RH,wind,precision=0.1,max_it=10,param,NI
 #'  - Tleaf: Leaf Temperature in K
 #' @export
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
-#' @examples leaf_physio=f.AT(PFD=seq(0,1500,50),cs=400,Tair=300,wind=2,RH=70,param=f.make.param())
+#' @examples leaf_physio=f.AT(PFD=seq(0,1500,50),ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
 #' plot(x=seq(0,1500,50),y=leaf_physio$A)
 
-f.AT<-function(PFD,NIR=NA,cs,Tair,RH,wind,precision=0.1,max_it=10,param,abso_s=0.5){
-  input_variable=data.frame(PFD=PFD,cs=cs,Tair=Tair,RH=RH,wind=wind,NIR=NIR,abso_s=abso_s)
+f.AT<-function(PFD,NIR=NA,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,abso_s=0.5,leaf_size=0.04){
+  input_variable=data.frame(PFD=PFD,ca=ca,Tair=Tair,RHa=RHa,wind=wind,NIR=NIR,abso_s=abso_s,leaf_size=leaf_size)
   result=apply(X = input_variable,1,FUN = function(x){
-    f.ATnotvectorised(PFD = x['PFD'],cs = x['cs'],Tair = x['Tair'],RH = x['RH'],wind = x['wind'],NIR=x['NIR'],abso_s=x['abso_s'],
-                      precision = precision,max_it = max_it,param = param )})
+    f.ATnotvectorised(PFD = x['PFD'],ca = x['ca'],Tair = x['Tair'],RHa = x['RHa'],wind = x['wind'],NIR=x['NIR'],abso_s=x['abso_s'],
+                      precision = precision,max_it = max_it,param = param, leaf_size=x['leaf_size'])})
   return(as.data.frame(matrix(unlist(result),ncol = length(result[[1]]),byrow = TRUE,dimnames = list(NULL,names(result[[1]])))))
 }
 
