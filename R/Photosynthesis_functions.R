@@ -244,7 +244,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,Rd=Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
   }
   
@@ -281,7 +281,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,Rd=Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
     
   }
@@ -302,7 +302,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     A=pmin(Wc,Wj)-Rd
     gs=f.gs(A=A,cs=cs,ds=ds,RH=RH,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
     
-    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,Ag=A+Rd,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
+    output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=NA,Ag=A+Rd,Rd=Rd,gs=gs,ci=ci,cc=cc,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
     return(output)
   }
 }

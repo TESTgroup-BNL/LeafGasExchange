@@ -462,6 +462,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
+  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_mean=0} ## This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     res_dir=f.A(PFD = canopy$Canopy_time_dir[Layer,],
                 cs = meteo_hourly[,"cs"],
@@ -479,16 +480,16 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.A(PFD = 0,cs = meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
+    
+    res_dir$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dir[Layer,],cs = meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                              TpRef=Tp_Profile[Layer],
-                                                                                                                                                             g0=1,
-                                                                                                                                                             g1=g1_Profile[Layer],
+                                                                                                                                                             g0=gsmin,
+                                                                                                                                                             g1=g1_min,
                                                                                                                                                              abso=1,...
     ))$A[ls.gs]
-    #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
     VpdL_dir[Layer,]=res_dir$ds/1000
     gs_dir[Layer,]=res_dir$gs
@@ -508,13 +509,13 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.A(PFD = 0,cs =meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dif[Layer,],cs =meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                              TpRef=Tp_Profile[Layer],
-                                                                                                                                                             g0=1,
-                                                                                                                                                             g1=g1_Profile[Layer],
+                                                                                                                                                             g0=gsmin,
+                                                                                                                                                             g1=g1_min,
                                                                                                                                                              abso=1,...
     ))$A[ls.gs]
     Photosynthesis_rate_dif[Layer,]=res_dif$A
@@ -581,8 +582,9 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 
 f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
-  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
+  VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
+  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_mean=0} ## This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
     res_dir=f.AT(PFD = canopy$Canopy_time_dir[Layer,],
@@ -602,18 +604,19 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = 0,NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
-                                                                                                                                                      g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer],abso=1,...
+                                                                                                                                                      g0=0,
+                                                                                                                                                      g1=g1_min,abso=1,...
     ))$A[ls.gs]
     #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
     Photosynthesis_rate_dir[Layer,]=res_dir$A
     VpdL_dir[Layer,]=res_dir$ds/1000
     gs_dir[Layer,]=res_dir$gs
+    rd_dir[Layer,]=res_dir$Rd
     Tleaf_dir[Layer,]=res_dir$Tleaf
     RHs_dir[Layer,]=res_dir$RHs
     cs_dir[Layer,]=res_dir$cs
@@ -634,16 +637,17 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = 0,NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
-                                                                                                                                                      g0=1,
-                                                                                                                                                      g1=g1_Profile[Layer],abso=1,...
+                                                                                                                                                      g0=gsmin,
+                                                                                                                                                      g1=g1_min,abso=1,...
     ))$A[ls.gs]
     Photosynthesis_rate_dif[Layer,]=res_dif$A
     gs_dif[Layer,]=res_dif$gs
+    rd_dif[Layer,]=res_dif$Rd
     VpdL_dif[Layer,]=res_dif$ds/1000
     Tleaf_dif[Layer,]=res_dif$Tleaf
     RHs_dif[Layer,]=res_dif$RHs
@@ -679,7 +683,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   totalET= mean(Trans,na.rm=TRUE)*canopy$LAItot*365*3600*24*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
-  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,GPP=totalGPP,ET=totalET,VpdL_dif=VpdL_dif,VpdL_dir=VpdL_dir,RHs_dif=RHs_dif,RHs_dir=RHs_dir,cs_dif=cs_dif,cs_dir=cs_dir,fig_A=a,fig_gs=b,fig_Tleaf=c))
+  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,Rd_dir=rd_dir,Rd_dif=rd_dif,GPP=totalGPP,ET=totalET,VpdL_dif=VpdL_dif,VpdL_dir=VpdL_dir,RHs_dif=RHs_dif,RHs_dir=RHs_dir,cs_dif=cs_dif,cs_dir=cs_dir,fig_A=a,fig_gs=b,fig_Tleaf=c))
 }
 
 

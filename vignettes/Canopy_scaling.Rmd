@@ -23,9 +23,9 @@ Basically, in most of the TBMs, the photosynthesis is modeled at the leaf level 
 
 The leaf level photosynthesis is modeled using the function f.A. This function allows to simulate the leaf gas exchange using input environmental variables surrounding the leaves (PARi, RH, Tair, Tleaf) and the leaf photosynthetic parameters (produced using the function f.make.param()). This function couples 2 different models:  (i) The Farquhar et al. 1980 model itself which describes the rate of photosynthesis from the intracellular CO2 concentration, and (ii) the conductance model, which calculates the intracellular CO2 from the leaf surface CO2 and environmental factors that modify the conductance of the stomata. 
 
-The canopy structure corresponds to the vertical organization of the forest the size of the leaves, and their orientation. The vertical gradients of leaf properties are also represented, and notably the vertical structure of Vcmax, Jmax, TPU and Rd. For those representations, different equations can be used, see for example Clark et al. 2011, Lloyd et al. 2010 or Krinner et al. 2005. 
+The canopy structure corresponds to the vertical organization of the forest, the size of the leaves and their orientation. The vertical gradients of leaf properties are also represented, and notably the vertical structure of Vcmax, Jmax, TPU and Rd. For those representations, different equations can be used, see for example Clark et al. 2011, Lloyd et al. 2010 or Krinner et al. 2005. 
 
-The canopy radiation interception simulates the light levels that each leaf receive inside the canopy. The light can be diffuse (shaded leaves) or direct (sunlit leaves) depending on the position. The Norman radiation interception model (Norman 1979) is implemented as described in Bonan (2019).
+The canopy radiation interception simulates the light levels that each leaf receives inside the canopy. The light can be diffuse (shaded leaves) or direct (sunlit leaves) depending on the position. The Norman radiation interception model (Norman 1979) is implemented as described in Bonan (2019).
 
 
 ## Simulation of the canopy structure
@@ -104,7 +104,7 @@ canopy_gasExT=f.GPPT(TBM = "FATES",meteo_hourly =meteo_hourly,
                    canopy=canopy,gsmin = 0.01)
 ```
 
-By default three figures are produced which give the vertical and temporal variation of gsw, An and Tleaf in the canopy. Other figures can be produced using the output if needed.
+By default three figures are produced which give the vertical and temporal variation of gsw, An and Tleaf in the canopy. Other figures can be produced using the outputs if needed.
 
 For example, if we want to compute a figure with the CO2 at the leaf surface: 
 
