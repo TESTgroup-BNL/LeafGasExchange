@@ -87,7 +87,7 @@ print(param)
 Prediction of the photosynthesis using the previous list of parameters and different leaf conditions is done in the following way:
 
 ```{r,echo=TRUE}
-Leaf_photo=f.AT(PFD = 1500,cs = 400,Tair = 273.15+29,RH = 70,wind = 2,param = param)
+Leaf_photo=f.AT(PFD = 1500,ca = 400,Tair = 273.15+29,RHa = 70,wind = 2,param = param)
 print(Leaf_photo)
 ```
 
@@ -108,7 +108,7 @@ plot(x=0:2000,y = Leaf_photo3$A,xlab='PFD',ylab='Anet',type='l')
 Similarly, it is possible to simulate a light curve by considering the leaf energy budget. The simulation is more computational intensive than without the energy budget. So it is important to reduce the number of simulation cases. Here the light curve is simulated with a resolution of 50 PFD between each point of the curve, instead of a resolution of 1 as done previously. 
 
 ```{r,echo=TRUE}
-Leaf_photo4=f.AT(PFD = seq(0,2000,50),cs = 400,Tair = 273.15+29,wind=2,RH = 80,param = param)
+Leaf_photo4=f.AT(PFD = seq(0,2000,50),ca = 400,Tair = 273.15+29,wind=2,RHa = 80,param = param)
 plot(x=seq(0,2000,50),y = Leaf_photo4$A,xlab='PFD',ylab='Anet',type='l')
 ```
 

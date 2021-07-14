@@ -139,18 +139,18 @@ For the non simplified USO model, a linear regression can also be performed but 
 ```r
 Y_USO= USO_gs - 1.6 * A/cs
 X_USO=regressor_USO_simpl
+```
 
+```
+## Error in eval(expr, envir, enclos): object 'regressor_USO_simpl' not found
+```
+
+```r
 lm(Y_USO~X_USO)
 ```
 
 ```
-## 
-## Call:
-## lm(formula = Y_USO ~ X_USO)
-## 
-## Coefficients:
-## (Intercept)        X_USO  
-##        0.02         6.00
+## Error in eval(predvars, data, env): object 'X_USO' not found
 ```
 
 ## Simulation of conductance using a coupled photosynthesis - conductance model
