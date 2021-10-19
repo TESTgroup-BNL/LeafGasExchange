@@ -58,7 +58,7 @@ USO_simpl_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO_simpl')
 
 Finally, a "Nonlinear" version of the USO_simpl conductance model is also implemented: 
 
-![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6%281&plus;g_1%5Cfrac%7BA_g%5E2%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D%29)
+![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6g_1%5Cfrac%7BA_g%5E2%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D)
 
 Note that the gross assimilation (Ag = An + Rdark) is used instead of the net assimilation. 
 
