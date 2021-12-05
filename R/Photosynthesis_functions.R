@@ -1,9 +1,9 @@
 #' @title Leaf to air water vapour pressure deficit calculation
-#' @description This function calculates the leaf water pressure deficit (VPDleaf or Ds) using the temperature of the leaf, the temperature of the air and its relative humidity
+#' @description This function calculates the leaf water pressure deficit (VPDleaf or Ds) using the temperature of the leaf, the temperature of the air and its relative humidity. The saturation vapor pressure of water is approximated usung the Tetens 1930 equation. 
 #' @param Tleaf Temperature of the leaf in Kelvin
 #' @param Tair Temperature of the air in Kelvin
 #' @param RH Humidity of the air (0 to 100)
-#'
+#' @references Tetens O. 1930. Uber einige meteorologische Begriffe. Z. geophys 6: 297-309.
 #' @return Ds in Pascal
 #' @export
 #' @examples f.ds(Tleaf=273.16 + 30, Tair=273.16+28, RH=70)
@@ -338,18 +338,18 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 
 #'Yun, S. H., Park, C. Y., Kim, E. S., & Lee, D. K. (2020). A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure. Forests, 11(11), 1164.
 #' @examples f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
-f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,NIR=NA,abso_s=0.5,leaf_size=0.04){
+f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,NIR=NA,abso_s=0.5,leaf_size=0.04){
   #Defining the initial conditions at the leaf surface
   cs=ca
   RHs=RHa
   Tleaf=Tair+1
-  ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RHa/100 ## water pressure in the air
+  ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RHa/100 ## water pressure in the air (using Tetens 1930 equation, see f.ds doc)
   n=1
   delta=precision+1
   while(delta>0.1&n<10){
     Leaf_physio=f.A(PFD=PFD,Tleaf=Tleaf,Tair=Tair,cs = cs,RH = RHs,param=param)
     ds=f.ds(Tleaf,Tair,RHs)
-    gs=Leaf_physio$gs-param[['g0']] ## The package Tealeaves separates the cuticular and the leaf conductance. Here I consider that the cuticular conductance is 0.1* g0 which is an approximation
+    gs=Leaf_physio$gs-param[['g0']] ## The package Tealeaves separates the cuticular and the leaf conductance. Here I consider that the cuticular conductance is g0 which is a (wrong..) approximation
     if(gs<param[['g0']]){gs=param[['g0']]}
     g_sw <- set_units(gs, "mol/m^2/s")  ##Stomatal conductance
     g_uw<- set_units(param[['g0']], "mol/m^2/s")   ##Cuticular conductance
@@ -368,7 +368,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,N
     Tleaf_mod <- as.numeric(leaf_budget$T_leaf)
     gbw=leaf_budget$g_bw*param[['Patm']]*1000/(param[['R']]*(Tair)) ## Converting the boundary layer value from m/s to mol/m-2/s-1
     Leaf_physio$gbw=gbw
-    Leaf_physio$cs=ca-1.4/gbw*Leaf_physio$A ## Calculating the new CO2 concentration at the leaf surface using fick s law
+    Leaf_physio$cs=ca-1.37/gbw*Leaf_physio$A ## Calculating the new CO2 concentration at the leaf surface using fick s law
     es=(gbw*ea+Leaf_physio$gs*0.6108*exp(17.27*(Tleaf_mod-273.16)/(Tleaf_mod-273.16+237.3)))/(gbw+Leaf_physio$gs)
     Leaf_physio$RHs=es/(0.6108*exp(17.27*(Tleaf_mod-273.16)/(Tleaf_mod-273.16+237.3)))*100
     delta=abs(Tleaf-Tleaf_mod)
@@ -401,7 +401,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,N
 #' @examples leaf_physio=f.AT(PFD=seq(0,1500,50),ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
 #' plot(x=seq(0,1500,50),y=leaf_physio$A)
 
-f.AT<-function(PFD,NIR=NA,ca,Tair,RHa,wind,precision=0.1,max_it=10,param,abso_s=0.5,leaf_size=0.04){
+f.AT<-function(PFD,NIR=NA,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,abso_s=0.5,leaf_size=0.04){
   input_variable=data.frame(PFD=PFD,ca=ca,Tair=Tair,RHa=RHa,wind=wind,NIR=NIR,abso_s=abso_s,leaf_size=leaf_size)
   result=apply(X = input_variable,1,FUN = function(x){
     f.ATnotvectorised(PFD = x['PFD'],ca = x['ca'],Tair = x['Tair'],RHa = x['RHa'],wind = x['wind'],NIR=x['NIR'],abso_s=x['abso_s'],
@@ -547,7 +547,7 @@ f.solv.Acc=function(x1,x2,g0,g1,power,ds,RH,model,gm,Rd,Gstar,cs){
 #' @param abso Absorptance of the leaf in the photosynthetic active radiation wavelenghts
 #' @param aQY Apparent quantum yield
 #' @param Theta Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.
-#' @param g0 Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1
+#' @param g0 Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)
 #' @param power Power of VPDl in USO model. By default power=0.5 as in Medlyn article
 #' @param model.gs Type of conductance model (USO, USO_simpl,BWB or Nonlinear). Do not chose Nonlinear with Orchidee TBM
@@ -683,7 +683,7 @@ f.make.param<-function(TBM='FATES',R=NA,O2=NA,TRef=NA,
 #'
 #' @examples ci=seq(40,1500,10)
 #' plot(x=ci,y=f.Aci(PFD=2000,ci=ci,Tleaf=300,param=f.make.param())$A)
-f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
+f.Aci<-function(PFD,ci,Tleaf,param=f.make.param()){
   
   Kc=f.arrhenius(param[['KcRef']],param[['KcHa']],Tleaf)
   Ko=f.arrhenius(param[['KoRef']],param[['KoHa']],Tleaf)
@@ -721,7 +721,7 @@ f.Aci=function(PFD,ci,Tleaf,param=f.make.param()){
     Wp=3*Tp
     Wc=Vcmax*(ci-Gstar)/(ci+Kc*(1+param[['O2']]/Ko))
     Wj=J/4*(ci-Gstar)/(ci+2*Gstar)
-    Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
+    Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])*as.numeric(ci>Gstar)+f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']],root = 2)*as.numeric(ci<=Gstar)
     A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
   }
   
