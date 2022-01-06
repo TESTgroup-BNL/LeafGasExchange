@@ -584,6 +584,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
+  param=f.make.param()
   if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_mean=0} ## This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
@@ -593,7 +594,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind= meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
-                 abso_s=1,
+                 abso_s=0.5,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
@@ -604,12 +605,12 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=0.5,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
                                                                                                                                                       TpRef=Tp_Profile[Layer],
-                                                                                                                                                      g0=0,
+                                                                                                                                                      g0=gsmin,
                                                                                                                                                       g1=g1_min,abso=1,...
     ))$A[ls.gs]
     #((-g0_Profile[Layer])*400*sqrt(f.ds(Tleaf = meteo_hourly[,"tl"]+273.15,Tair = meteo_hourly[,"at"]+273.15,RH = meteo_hourly[,"RH"])/1000)/(1.6*g1_Profile[Layer]))[ls.gs]
@@ -626,7 +627,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
-                 abso_s=1,
+                 abso_s=0.5,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
@@ -637,7 +638,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=0.5,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],

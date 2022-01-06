@@ -446,6 +446,7 @@ f.solv.poly<-function(data){
 f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
   if(model=="USO"|model==0){
     m=1.6*(1+g1/(ds/1000)^power)
+    if(g1==-1){m=0}
   }else if(model=="USO_simpl"|model==1){
     m=1.6*(g1/(ds/1000)^power)
   }else if(model=="BWB"|model==2){
