@@ -6,7 +6,7 @@ This package works using 4 main functions:
 
 * The function f.Aci allows to simulate photosynthetic rate using as input variables the leaf temperature, the intercellular CO2, the light intensity.
 
-* The function f.A couples the photosynthetic model with a conductance model (USO, USO_simpl, BWB, ...) and simulates the photosynthetic rate using the air temperature, leaf temperature, light intensity, leaf surface CO2 and humidity.
+* The function f.A couples the photosynthetic model with a conductance model (USO, USO_simpl, BWB, ...) and simulates the photosynthetic rate using the air temperature, leaf temperature, light intensity, leaf surface CO2 and humidity. A documentation for simulation and fitting stomatal conductance data is given in [Simulation_of_leaf_conductance](https://github.com/TESTgroup-BNL/LeafGasExchange/tree/master/vignettes/Simulation_of_leaf_conductance.md).
 
 * Eventually, the function f.AT uses, in addition to the stomata model and the photosynthesis model, a leaf energy budget using package tealeaves. It allows to simulate the photosynthetic rates with environment variables as sole inputs (Air temperature, humidity, wind speed and light intensity).
 A particular documentation for this function is given in [Simulation_of_leaf_photosynthesis](https://github.com/TESTgroup-BNL/LeafGasExchange/tree/master/vignettes/Simulation_of_leaf_photosynthesis.md). 
