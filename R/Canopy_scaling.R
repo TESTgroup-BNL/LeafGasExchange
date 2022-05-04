@@ -57,7 +57,7 @@ f.tridiagonal.solver=function(a,b,c,d,n){
 }
 
 #' @title Norman 1979 Radiation interception model
-#'
+#' Converted into a R code from the original code of Gordon Bonan: Bonan, G. (2019). Climate Change and Terrestrial Ecosystem Modeling. Cambridge: Cambridge University Press. doi:10.1017/9781107339217
 #' @param Rho Leaf reflectance
 #' @param Tau Leaf transmittance
 #' @param Rho_soil_dir Direct beam albedo of ground (soil)
