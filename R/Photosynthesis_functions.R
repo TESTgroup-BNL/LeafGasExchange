@@ -346,7 +346,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,
   ea=0.6108*exp(17.27*(Tair-273.16)/(Tair-273.16+237.3))*RHa/100 ## water pressure in the air (using Tetens 1930 equation, see f.ds doc)
   n=1
   delta=precision+1
-  while(delta>0.1&n<10){
+  while(delta>precision&n<max_it){
     Leaf_physio=f.A(PFD=PFD,Tleaf=Tleaf,Tair=Tair,cs = cs,RH = RHs,param=param)
     ds=f.ds(Tleaf,Tair,RHs)
     gs=Leaf_physio$gs-param[['g0']] ## The package Tealeaves separates the cuticular and the leaf conductance. Here I consider that the cuticular conductance is g0 which is a (wrong..) approximation
@@ -374,7 +374,7 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,
     delta=abs(Tleaf-Tleaf_mod)
     Tleaf=Tleaf_mod
     n=n+1
-    if(n>10&delta>0.1){
+    if(n>max_it&delta>precision){
       Tleaf=NA
       print(paste("Temperature convergence limit"))}
     Leaf_physio$Tleaf=Tleaf
