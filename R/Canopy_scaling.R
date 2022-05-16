@@ -321,6 +321,10 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' @param LAI Cumulated LAI in the midle of each layer
 #' @param Rho Leaf reflectance in the visible wavelengths
 #' @param Tau Leaf transmittance in the visible wavelengths
+#' @param Rho_soil Soil reflectance in the visible wavelengths
+#' @param Rho_NIR Leaf reflectance in the NIR wavelengths
+#' @param Tau_NIR Leaf transmittance in the NIR wavelengths
+#' @param Rho_soil_NIR Soil reflectance in the NIR wavelengths
 #' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6
 #' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)
 
@@ -339,12 +343,11 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,cs=400,PFD=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,Tleaf=25)
 #' ##Simulation of position and moment of the simulation
 #' lat=9.2801048
-#'t.d = 0:23
-#'DOY = 60
+#' DOY = 60
 #' ##Representation of the light interception inside the canopy
 #' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
-f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,LAI,Rho=0.11,Tau=0.06,Rho_soil_dir=0.1,Rho_soil_dif=0.1,chil=0.32,clumpfac=0.85,model='Norman'){
-  #if(is.null(meteo_hourly$NIR)){meteo_hourly$NIR=meteo_hourly$PFD/4.57}
+f.canopy.interception=function(meteo_hourly,lat,t.d=0:23,DOY,nlayers,dLAI,LAI,Rho=0.11,Tau=0.06,Rho_soil=0.1,Rho_NIR=0.46,Tau_NIR=0.33,Rho_soil_NIR=0.33,chil=0.32,clumpfac=0.85,model='Norman'){
+  if(is.null(meteo_hourly$NIR)){meteo_hourly$NIR=meteo_hourly$PFD/4.57}
   
   ##Calculation of cosz according to Miguel et al. 2009
   phi=lat*pi/180
@@ -362,14 +365,14 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,LAI,Rho=0.1
   PFD_dir=prop_dir*meteo_hourly$PFD
   PFD_dif=meteo_hourly$PFD-PFD_dir
   
-  #b0=0.29548
-  #b1=0.00504
-  #b2=-1.4957*10-5
-  #b3=1.4881*10-8
-  #
-  #prop_NIR_dir=pmax(0.01,pmin(0.99,b0+b1*meteo_hourly$NIR+b2*(meteo_hourly$NIR)^2+b3*(meteo_hourly$NIR)^3))
-  #NIR_dir=prop_NIR_dir*meteo_hourly$NIR
-  #NIR_dif=meteo_hourly$NIR-NIR_dir
+  b0=0.29548
+  b1=0.00504
+  b2=-1.4957*10-5
+  b3=1.4881*10-8
+  
+  prop_NIR_dir=pmax(0.01,pmin(0.99,b0+b1*meteo_hourly$NIR+b2*(meteo_hourly$NIR)^2+b3*(meteo_hourly$NIR)^3))
+  NIR_dir=prop_NIR_dir*meteo_hourly$NIR
+  NIR_dif=meteo_hourly$NIR-NIR_dir
    
   #########################
   plot(x=t.d,y=meteo_hourly$PFD,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='black')
@@ -379,16 +382,17 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,LAI,Rho=0.1
   ### Creation of matrices with 50 vertical layers and 24 hours
   Canopy_time_dir=Canopy_time_dif=Canopy_time_NIR_dir=Canopy_time_NIR_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(t.d),dimnames = list(Layer=1:nlayers,time=t.d))
   for(i in 1:length(t.d)){
-    Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho = Rho,Tau = Tau,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
-    #Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho =Rho_nir,Tau=Tau_nir,Rho_soil_dif =Rho_soil_dif,Rho_soil_dir=Rho_soil_dir)
+    Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho = Rho,Tau = Tau,Rho_soil_dif =Rho_soil,Rho_soil_dir=Rho_soil)
+    Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho =Rho_NIR,Tau=Tau_NIR,Rho_soil_dif =Rho_soil_NIR,Rho_soil_dir=Rho_soil_NIR)
     Canopy_time_dir[,i]=(Light_Profile$PARsun)
     Canopy_time_dif[,i]=(Light_Profile$PARsha)
-    #Canopy_time_NIR_dir[,i]=(Light_Profile_NIR$PARsun)
-    #Canopy_time_NIR_dif[,i]=(Light_Profile_NIR$PARsha)
+    Canopy_time_NIR_dir[,i]=(Light_Profile_NIR$PARsun)
+    Canopy_time_NIR_dif[,i]=(Light_Profile_NIR$PARsha)
     f_sun[,i]=(Light_Profile$fracsun)
     f_shade[,i]=(Light_Profile$fracsha)
   }
   
+  ## VIS
   Light=Canopy_time_dir*f_sun+Canopy_time_dif*(1-f_sun)
   figure_light_dir=melt(Canopy_time_dir)
   print(ggplot(data=figure_light_dir,aes(x=time,y=Layer,fill=value))
@@ -414,8 +418,29 @@ f.canopy.interception=function(meteo_hourly,lat,t.d,DOY,nlayers,dLAI,LAI,Rho=0.1
         +scale_y_reverse()
         +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
         +labs(fill=expression(PFD~(mu~mol~m^-2~s^-1))))
-  #Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif
-  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI),LAI=LAI))
+  
+  ## NIR
+  NIR=Canopy_time_NIR_dir*f_sun+Canopy_time_NIR_dif*(1-f_sun)
+  figure_NIR_dir=melt(Canopy_time_NIR_dir)
+  print(ggplot(data=figure_NIR_dir,aes(x=time,y=Layer,fill=value))
+        +scale_y_reverse()
+        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+        +labs(fill=expression(Direct~NIR~(W~m^-2))))
+  
+  figure_NIR_dif=melt(Canopy_time_NIR_dif)
+  print(ggplot(data=figure_NIR_dif,aes(x=time,y=Layer,fill=value))
+        +scale_y_reverse()
+        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+        +labs(fill=expression(Diffuse~NIR~(W~m^-2))))
+  
+  figure_NIR_tot=melt(NIR)
+  print(ggplot(data=figure_NIR_tot,aes(x=time,y=Layer,fill=value))
+        +ggtitle('Mean NIR of an average leaf')
+        +scale_y_reverse()
+        +geom_raster()+scale_fill_distiller(palette = "Spectral", direction = -1)
+        +labs(fill=expression(NIR~(W~m^-2))))
+  
+  return(list(Canopy_time_dir=Canopy_time_dir,Canopy_time_tot=Canopy_time_tot,Canopy_time_dif=Canopy_time_dif,Canopy_time_NIR_dir=Canopy_time_NIR_dir,Canopy_time_NIR_dif=Canopy_time_NIR_dif,f_sun=f_sun,f_shade=f_shade,Light_Profile=Light_Profile,LAItot=sum(dLAI),LAI=LAI))
 }
 
 
@@ -475,7 +500,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
-  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_mean=0} ## This trick is used to fix gsw to gswmin
+  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_min=0} ## This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     res_dir=f.A(PFD = canopy$Canopy_time_dir[Layer,],
                 cs = meteo_hourly[,"cs"],
@@ -585,16 +610,16 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
   param=f.make.param()
-  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_mean=0} ## This trick is used to fix gsw to gswmin
+  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_min=0} ## This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
     res_dir=f.AT(PFD = canopy$Canopy_time_dir[Layer,],
-                 NIR=NA,
+                 NIR= canopy$Canopy_time_NIR_dir[Layer,],
                  ca = meteo_hourly[,"cs"],
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind= meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
-                 abso_s=0.5,
+                 abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
@@ -605,7 +630,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=0.5,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = canopy$Canopy_time_NIR_dir[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
@@ -622,12 +647,12 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
     RHs_dir[Layer,]=res_dir$RHs
     cs_dir[Layer,]=res_dir$cs
     res_dif=f.AT(PFD = canopy$Canopy_time_dif[Layer,],
-                 NIR=NA,
+                 NIR= canopy$Canopy_time_NIR_dif[Layer,],
                  ca = meteo_hourly[,"cs"],
                  Tair = meteo_hourly[,"Tair"]+273.15,
                  wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
-                 abso_s=0.5,
+                 abso_s=1,
                  param = f.make.param(TBM=TBM,
                                       VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
@@ -638,7 +663,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = NA,ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=0.5,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = canopy$Canopy_time_NIR_dif[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],

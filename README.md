@@ -13,6 +13,7 @@ A particular documentation for this function is given in [Simulation_of_leaf_pho
 
 Other functions are also implemented to import gas exchange data from LiCor (f.import_licor6400 and f.import_licor6800) and to fit Aci curve and Aq curves (f.fitting). A particular documentation of this function is given in [Aci_fitting](https://github.com/TESTgroup-BNL/LeafGasExchange/tree/master/vignettes/Aci_fitting.md)
 
+A documentation of the equations and parameters used for FATES like photosynthesis module for broadleaf tropical species is presented [here](https://github.com/TESTgroup-BNL/LeafGasExchange/tree/master/Description%20of%20the%20model.pdf). 
 ### Installation
 `LeafGasExchange` is not currently on CRAN, but
 you can install `LeafGasExchange` from [GitHub](https://github.com/) with:
