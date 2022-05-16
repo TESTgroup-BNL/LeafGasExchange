@@ -454,7 +454,7 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 #' @title Canopy scale GPP calculation
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 #' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C) tl (leaf temperature in degree C) RH (humidity in pc) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
 #' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
@@ -470,19 +470,7 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 #' @export
 #'
 #' @examples
-#'## Simulation of photosynthetic gradients
-#' LAI=seq(0,6.2,6.2/49)
-#' dLAI=rep(6.2/50,50)
-#' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
-#' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
-#' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25)
-#' meteo_hourly[!meteo_hourly$time%in%7:17,'PFD']=0
-#' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI = dLAI)
-#' GPP_sc1=f.GPP(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
-#' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
-#' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
+#' See vignettes on github
 f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
@@ -565,8 +553,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
      +labs(fill=expression(g[sw]~(mol~m^-2~s^-1))))
   print(a)
   print(b)
-  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*canopy$LAItot*365*3600*24*44/10^6
-  totalET= mean(Trans,na.rm=TRUE)*canopy$LAItot*365*3600*24*18*10^-3
+  totalGPP= sum(Photosynthesis_rate*dLAI,na.rm=TRUE)*365*3600*44/10^6
+  totalET= sum(Trans*dLAI,na.rm=TRUE)*365*3600*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
   return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,GPP=totalGPP,ET=totalET,fig_A=a,fig_gs=b))
@@ -575,7 +563,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' @title Canopy scale GPP calculation, with leaf energy budget
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 #' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly Hourly weather data frame with at least the column at (air temperature in degree C) RH (humidity in pc) and sr the total PAR in micro mol m-2 s-1
+#' @param meteo_hourly See f.canopy.interception
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
 #' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
@@ -591,20 +579,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' @export
 #'
 #' @examples
-#'## Simulation of photosynthetic gradients
-#' LAI=seq(0,6,6/14)
-#' dLAI=rep(6/15,15)
-#' Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
-#' Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
-#' ##Simulation of weather data
-#' meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,wind=2,NIR=NA)
-#' meteo_hourly[!meteo_hourly$time%in%7:17,'PFD']=0
-#' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 15,dLAI = dLAI)
-#' GPP_sc1=f.GPPT(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
-#' Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
-#' g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
-
+#' See github vignettes
 f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
@@ -705,8 +680,8 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   print(a)
   print(b)
   print(c)
-  totalGPP=mean(Photosynthesis_rate,na.rm=TRUE)*canopy$LAItot*365*3600*24*44/10^6
-  totalET= mean(Trans,na.rm=TRUE)*canopy$LAItot*365*3600*24*18*10^-3
+  totalGPP= sum(Photosynthesis_rate*dLAI,na.rm=TRUE)*365*3600*44/10^6
+  totalET= sum(Trans*dLAI,na.rm=TRUE)*365*3600*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
   return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,Rd_dir=rd_dir,Rd_dif=rd_dif,GPP=totalGPP,ET=totalET,VpdL_dif=VpdL_dif,VpdL_dir=VpdL_dir,RHs_dif=RHs_dif,RHs_dir=RHs_dir,cs_dif=cs_dif,cs_dir=cs_dir,fig_A=a,fig_gs=b,fig_Tleaf=c))
