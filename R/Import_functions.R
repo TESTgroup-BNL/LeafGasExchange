@@ -48,8 +48,8 @@ f.import_licor6400<-function(file,column_display=c('Photo','Cond','PARi','Ci','L
 #' @examples
 f.import_licor6800<-function(file,column_display=c('A','gsw','Qin','Ci','Species','Canopy','Pheno_Age','Barcode','file')){
   print(file)
-  header=make.names(as.data.frame(readxl::read_excel(path = file,skip = 14,n_max = 1,col_names = FALSE)))
-  data_6800=as.data.frame(readxl::read_excel(path = file,skip = 16,col_names = header))
+  header=make.names(as.data.frame(readxl::read_excel(path = file,skip = 16,n_max = 1,col_names = FALSE)))
+  data_6800=as.data.frame(readxl::read_excel(path = file,skip = 18,col_names = header))
   data_6800[,'date']=data_6800[1,'date']
   data_6800=cbind(data_6800,file=rep(file,nrow(data_6800)))
   print(head(data_6800[,column_display]))
