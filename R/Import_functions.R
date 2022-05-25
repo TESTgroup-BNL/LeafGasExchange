@@ -37,19 +37,20 @@ f.import_licor6400<-function(file,column_display=c('Photo','Cond','PARi','Ci','L
   return(imported)
 }
 
-#' @title Import Licor 6800 excel file
-#' @description This functions allows to import the excel file produced by LICOR as a data.frame. The files have to be open in Excel and saved before using his function so the result of the formula are calculated. The formula are sotred into the Excel file but not computed until the file is open.
-#'
-#' @inherit f.import_licor6400
-#'
-#' @return dataframe
-#' @export
+
+#' @title Import Licor 6800 file
+#' @description This functions allows to import the excel files produced by LICOR as a data.frame.
+#' IMPORTANT: The excel files must be opened and saved before using this function (the Excel calculations are not done until the file is open, so the calculated colums will show 0s if not saved before being imported)
+#' @param nskip_header Number of lines to skip in the Excel files to find the column names
+#' @param nskip_data Number of lines to skip in the Excel files to find the data
+#' @param file File path
+#' @param column_display Column you want to display after the import to verufy if it worked correctly
 #'
 #' @examples
-f.import_licor6800<-function(file,column_display=c('A','gsw','Qin','Ci','Species','Canopy','Pheno_Age','Barcode','file')){
+f.import_licor6800<-function(nskip_header=16,nskip_data=18,file,column_display=c('A','gsw','Qin','Ci','Species','Canopy','Pheno_Age','Barcode','file')){
   print(file)
-  header=make.names(as.data.frame(readxl::read_excel(path = file,skip = 16,n_max = 1,col_names = FALSE)))
-  data_6800=as.data.frame(readxl::read_excel(path = file,skip = 18,col_names = header))
+  header=make.names(as.data.frame(readxl::read_excel(path = file,skip = nskip_header,n_max = 1,.name_repair = 'minimal',col_names = FALSE)))##'minimal' to speed up the import
+  data_6800=as.data.frame(readxl::read_excel(path = file,skip = nskip_data,col_names = header,.name_repair = 'minimal'))
   data_6800[,'date']=data_6800[1,'date']
   data_6800=cbind(data_6800,file=rep(file,nrow(data_6800)))
   print(head(data_6800[,column_display]))
