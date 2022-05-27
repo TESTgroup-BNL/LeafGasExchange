@@ -7,8 +7,8 @@
 f.plot(measures = NULL, list_legend, param, name = "", type = "Aci")
 }
 \arguments{
-\item{measures}{Data frame obtained from CO2 or light curve with at least columns Photo, Ci, PARi and Tleaf
-Data frame obtained from CO2 or light curve with at least columns Photo, Ci, PARi and Tleaf}
+\item{measures}{Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf
+Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf}
 
 \item{list_legend}{Named list where the name and values will appear in the legend}
 
@@ -24,7 +24,7 @@ Plot a generic graphic with observed data and predictions. Be careful to sort th
 }
 \examples{
 param=f.make.param()
-Photo=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,50),param=param)$A+rnorm(n = 30,mean = 0,sd = 0.5)
-data=data.frame(Tleaf=rep(300,30),Ci=seq(40,1500,50),PARi=rep(2000,30),Photo=Photo)
+A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,50),param=param)$A+rnorm(n = 30,mean = 0,sd = 0.5)
+data=data.frame(Tleaf=rep(300,30),Ci=seq(40,1500,50),Qin=rep(2000,30),A=A)
 f.plot(measures=data,param=param,list_legend=param['VcmaxRef'],name='Example 01',type='Aci')
 }

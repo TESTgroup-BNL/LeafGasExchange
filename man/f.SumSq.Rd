@@ -7,7 +7,7 @@
 f.SumSq(Fixed, data, Start)
 }
 \arguments{
-\item{data}{Data frame obtained from CO2 curve with at least columns Photo, Ci, PARi and Tleaf}
+\item{data}{Data frame obtained from CO2 curve with at least columns A, Ci, Qin and Tleaf}
 
 \item{x}{List of parameters to fit}
 }

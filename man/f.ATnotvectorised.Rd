@@ -6,18 +6,27 @@
 \usage{
 f.ATnotvectorised(
   PFD,
-  cs,
+  ca,
   Tair,
-  RH,
+  RHa,
   wind,
-  precision = 0.1,
+  precision = 0.05,
   max_it = 10,
   param,
   NIR = NA,
-  abso_s = 0.5
+  abso_s = 0.5,
+  leaf_size = 0.04
 )
 }
 \arguments{
+\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1}
+
+\item{ca}{CO2 concentration in the air}
+
+\item{Tair}{Air temperature in Kelvin}
+
+\item{RHa}{Relative humidity in the air (between 0 and 100)}
+
 \item{wind}{Wind speed at the surface of the leaf in m.s-1}
 
 \item{precision}{Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.}
@@ -29,6 +38,8 @@ f.ATnotvectorised(
 \item{NIR}{NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57 )}
 
 \item{abso_s}{absorptance of the leaves in shortwave, see documentation of tealeaves package}
+
+\item{leaf_size}{Dimension of the leaf in m (see Tealeaves package)}
 }
 \value{
 - A: Raw assimilation of the leaf in micromol.m-2.s-1
@@ -46,10 +57,10 @@ Coupled conductance photosynthesis model and energy balance model
 \details{
 This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
 The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
-Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
+Here the minimum conductance is considered to be equal to g0.
 }
 \examples{
-f.ATnotvectorised(PFD=1500,cs=400,Tair=299,wind=2,RH=70,param=f.make.param())
+f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
 }
 \references{
 tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 

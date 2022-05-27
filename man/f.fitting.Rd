@@ -15,7 +15,7 @@ f.fitting(
 )
 }
 \arguments{
-\item{measures}{Data frame of measures obtained from gas exchange analyser with at least the columns Photo, Ci, PARi and Tleaf (in K)}
+\item{measures}{Data frame of measures obtained from gas exchange analyser with at least the columns A, Ci, Qin and Tleaf (in K). If RHs, Tair, Patm, VPDleaf are also present, there mean will be added in the output, but those columns are not needed to estimate the parameters}
 
 \item{id.name}{Name of the colums in measures with the identifier for the curve.}
 
@@ -28,7 +28,7 @@ f.fitting(
 \item{do.plot}{TRUE or FALSE, plot data and fitted curves ?}
 }
 \value{
-
+Return a list with 3 components, 1 the result of the optim function which is used to estimate the parameters, 2 the output of the function bbmle, 3 the mean variable of the environment during the measurement
 }
 \description{
 Function to fit model to data. The parameters to fit have to be described in the list Start.
@@ -38,7 +38,7 @@ This function uses two methods to fit the data. First by minimizing the residual
 \examples{
 ##Simulation of a CO2 curve
 data=data.frame(Tleaf=rep(300,20),
-Ci=seq(40,1500,75),PARi=rep(2000,20),Photo=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
+Ci=seq(40,1500,75),Qin=rep(2000,20),Tair=300,RHs=70,VPDleaf=2,Patm=101,A=f.Aci(PFD=2000,Tleaf=300,ci=seq(40,1500,75),
 param=f.make.param(TBM='FATES'))$A+rnorm(n = 20,mean = 0,sd = 0.5))
 
 f.fitting(measures=data,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRef=1),param=f.make.param(TBM='FATES'))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.solv}
 \alias{f.solv}
-\title{Analytical solution of the coupled photosynthesis and USO model}
+\title{Analytical solution of the coupled photosynthesis and conductance models}
 \usage{
 f.solv(x, y, cs, Rd, Gstar, g0, g1, power, ds, RH, model)
 }
@@ -13,6 +13,6 @@ f.solv(x, y, cs, Rd, Gstar, g0, g1, power, ds, RH, model)
 
 }
 \description{
-Analytical solution of the coupled photosynthesis and USO model
+Analytical solution of the coupled photosynthesis and conductance models
 }
 \keyword{internal}

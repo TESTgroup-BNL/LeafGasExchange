@@ -2,7 +2,7 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.ds}
 \alias{f.ds}
-\title{Leaf water vapour pressure deficit calculation}
+\title{Leaf to air water vapour pressure deficit calculation}
 \usage{
 f.ds(Tleaf, Tair, RH)
 }
@@ -17,8 +17,11 @@ f.ds(Tleaf, Tair, RH)
 Ds in Pascal
 }
 \description{
-This function calculates the leaf water pressure deficit (VPDl or Ds) using the temperature of the leaf, the temperature of the air and its relative humidity
+This function calculates the leaf water pressure deficit (VPDleaf or Ds) using the temperature of the leaf, the temperature of the air and its relative humidity. The saturation vapor pressure of water is approximated usung the Tetens 1930 equation.
 }
 \examples{
 f.ds(Tleaf=273.16 + 30, Tair=273.16+28, RH=70)
+}
+\references{
+Tetens O. 1930. Uber einige meteorologische Begriffe. Z. geophys 6: 297-309.
 }

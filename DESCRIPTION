@@ -16,7 +16,7 @@ Description: Model gas exchanges at the leaf level using a coupled stomatal cond
 License: GNU General Public License v3.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Depends: stats4, polynom, bbmle, readxl, stringr, tidyverse, readr, tealeaves, reshape2, ggplot2
 Imports: 
     stats4,

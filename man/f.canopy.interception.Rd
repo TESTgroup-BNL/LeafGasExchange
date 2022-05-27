@@ -2,50 +2,50 @@
 % Please edit documentation in R/Canopy_scaling.R
 \name{f.canopy.interception}
 \alias{f.canopy.interception}
-\title{Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy}
+\title{Function to describe the light levels inside the canopy}
 \usage{
 f.canopy.interception(
   meteo_hourly,
   lat,
-  t.d,
   DOY,
   nlayers,
   dLAI,
-  Rho = 0.1,
-  Tau = 0.05,
-  Rho_nir = 0.45,
-  Tau_nir = 0.25,
-  Rho_soil_dir = 0.1,
-  Rho_soil_dif = 0.1,
-  chil = 0.25,
-  clumpfac = 0.66,
+  LAI,
+  Rho = 0.11,
+  Tau = 0.06,
+  Rho_soil = 0.1,
+  Rho_NIR = 0.46,
+  Tau_NIR = 0.33,
+  Rho_soil_NIR = 0.33,
+  chil = 0.32,
+  clumpfac = 0.85,
   model = "Norman"
 )
 }
 \arguments{
-\item{meteo_hourly}{Hourly weather data frame with at least the column Tair (air temperature in degree C) Tleaf (leaf temperature in degree C) RH (humidity in pc) and PFD the total PFD in micro mol m-2 s-1 and NIR the NIR radiation in watt m-2}
+\item{meteo_hourly}{Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.}
 
-\item{lat}{Latitude of the canopy to model (see lightME from biocro)}
+\item{lat}{Latitude of the canopy to model}
 
-\item{t.d}{time of the day (see lightME from biocro)}
-
-\item{DOY}{Day of Year (see lightME from biocro)}
+\item{DOY}{Day of Year}
 
 \item{nlayers}{Number of layers inside the canopy (max = 50)}
 
 \item{dLAI}{LAI of each one of the n layers of vegetation in the canopy}
 
+\item{LAI}{Cumulated LAI in the midle of each layer}
+
 \item{Rho}{Leaf reflectance in the visible wavelengths}
 
 \item{Tau}{Leaf transmittance in the visible wavelengths}
 
-\item{Rho_nir}{in the nir wavelengths}
+\item{Rho_soil}{Soil reflectance in the visible wavelengths}
 
-\item{Tau_nir}{in the nir wavelengths}
+\item{Rho_NIR}{Leaf reflectance in the NIR wavelengths}
 
-\item{Rho_soil_dir}{Direct reflectance of the ground (soil)}
+\item{Tau_NIR}{Leaf transmittance in the NIR wavelengths}
 
-\item{Rho_soil_dif}{Diffuse reflectance of the ground (soil)}
+\item{Rho_soil_NIR}{Soil reflectance in the NIR wavelengths}
 
 \item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6}
 
@@ -57,12 +57,19 @@ f.canopy.interception(
 
 }
 \description{
-Wrapper of biocro lightME and f.Norman.Radiation function to describe the light levels inside the canopy
+Function to describe the light levels inside the canopy
 }
 \examples{
-##Simulation of weather data
-meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25,SW=0)
-meteo_hourly[!meteo_hourly$time\%in\%7:17,'sr']=0
+##Simulation of the vegetation
+LAItot = 6
+nlayers=20
+dLAI=rep(6/nlayers,nlayers)
+LAI=cumsum(dLAI)-dLAI/2 # LAI in the midle of each layer
+##Simulation of the weather
+meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,cs=400,PFD=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,Tleaf=25)
+##Simulation of position and moment of the simulation
+lat=9.2801048
+DOY = 60
 ##Representation of the light interception inside the canopy
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI=c(rep(6/50,50)))
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,time = time,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
 }

@@ -22,7 +22,7 @@ f.GPP(
 \arguments{
 \item{TBM}{Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)}
 
-\item{meteo_hourly}{Hourly weather data frame with at least the column Tair (air temperature in degree C) tl (leaf temperature in degree C) RH (humidity in pc) and sr the total PAR in micro mol m-2 s-1}
+\item{meteo_hourly}{See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf}
 
 \item{Vcmax_Profile}{Vector of the values of Vcmax at the reference temperature at each layer of the canopy}
 
@@ -51,17 +51,5 @@ f.GPP(
 Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 }
 \examples{
-## Simulation of photosynthetic gradients
-LAI=seq(0,6.2,6.2/49)
-dLAI=rep(6.2/50,50)
-Vcmax=f.VcmaxRef.LAI(kn=0.11,LAI=LAI,Vcmax0=70)
-Jmax=1.7*Vcmax; Tp=1/5*Vcmax; Rd=0.03*Vcmax
-##Simulation of weather data
-meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,PFD=sin(seq(0,pi,pi/23))*2000,Tleaf=25)
-meteo_hourly[!meteo_hourly$time\%in\%7:17,'PFD']=0
-##Representation of the light interception inside the canopy
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = 9.2801048,t.d = 0:23,DOY = 60,nlayers = 50,dLAI = dLAI)
-GPP_sc1=f.GPP(TBM = "FATES",meteo_hourly = meteo_hourly,Vcmax_Profile = Vcmax,
-Jmax_Profile =Jmax ,Rd_Profile =Rd ,Tp_Profile = Tp,
-g0_Profile = rep(0.02,length(Vcmax)),g1_Profile = rep(4,length(Vcmax)),canopy=canopy,gsmin = 0.01)
+See vignettes on github
 }

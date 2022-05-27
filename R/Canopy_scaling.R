@@ -312,9 +312,8 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 
 
 #' @title Function to describe the light levels inside the canopy
-#' @param meteo_hourly Hourly weather data frame with at least the column Tair (air temperature in degree C), RH (humidity in pc), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.
+#' @param meteo_hourly Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.
 #' @param lat Latitude of the canopy to model 
-#' @param t.d time of the day 
 #' @param DOY Day of Year 
 #' @param nlayers Number of layers inside the canopy (max = 50)
 #' @param dLAI LAI of each one of the n layers of vegetation in the canopy
@@ -345,14 +344,14 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' lat=9.2801048
 #' DOY = 60
 #' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
-f.canopy.interception=function(meteo_hourly,lat,t.d=0:23,DOY,nlayers,dLAI,LAI,Rho=0.11,Tau=0.06,Rho_soil=0.1,Rho_NIR=0.46,Tau_NIR=0.33,Rho_soil_NIR=0.33,chil=0.32,clumpfac=0.85,model='Norman'){
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,time = time,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
+f.canopy.interception=function(meteo_hourly,lat,DOY,nlayers,dLAI,LAI,Rho=0.11,Tau=0.06,Rho_soil=0.1,Rho_NIR=0.46,Tau_NIR=0.33,Rho_soil_NIR=0.33,chil=0.32,clumpfac=0.85,model='Norman'){
   if(is.null(meteo_hourly$NIR)){meteo_hourly$NIR=meteo_hourly$PFD/4.57}
   
   ##Calculation of cosz according to Miguel et al. 2009
   phi=lat*pi/180
   delta=-23.5*cos(360*(DOY+10)/365*pi/180)*pi/180
-  h=15*(t.d-12)*pi/180
+  h=15*(time-12)*pi/180
   cosz=pmax(0.01,sin(phi)*sin(delta)+cos(phi)*cos(delta)*cos(h))
  
   ## Calculation of the proportion of direct and diffuse light using the empirical equation from CLM5 (33.7)
@@ -375,13 +374,13 @@ f.canopy.interception=function(meteo_hourly,lat,t.d=0:23,DOY,nlayers,dLAI,LAI,Rh
   NIR_dif=meteo_hourly$NIR-NIR_dir
    
   #########################
-  plot(x=t.d,y=meteo_hourly$PFD,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='black')
-  lines(x=t.d,y=PFD_dif,col="blue")
-  lines(x=t.d,y=PFD_dir,col='red')
+  plot(x=time,y=meteo_hourly$PFD,type="l",xlab="Time of the day",ylab=expression(Light~intensity~(mu~mol~m^-2~s^-1)),col='black')
+  lines(x=time,y=PFD_dif,col="blue")
+  lines(x=time,y=PFD_dir,col='red')
   legend('topleft',c('Total','Diffuse light','Direct light'),col=c('black','blue','red'),lty=c(1,1,1))
   ### Creation of matrices with 50 vertical layers and 24 hours
-  Canopy_time_dir=Canopy_time_dif=Canopy_time_NIR_dir=Canopy_time_NIR_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(t.d),dimnames = list(Layer=1:nlayers,time=t.d))
-  for(i in 1:length(t.d)){
+  Canopy_time_dir=Canopy_time_dif=Canopy_time_NIR_dir=Canopy_time_NIR_dif=Canopy_time_tot=Photosynthesis_rate_dir=Photosynthesis_rate_dif=f_sun=f_shade=Temp_leaf_dir=Temp_leaf_dif=gs_dir=gs_dif=matrix(data = NA,nrow = nlayers,ncol = length(time),dimnames = list(Layer=1:nlayers,time=time))
+  for(i in 1:length(time)){
     Light_Profile=f.Norman.Radiation(PARdir = PFD_dir[i],PARdif = PFD_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho = Rho,Tau = Tau,Rho_soil_dif =Rho_soil,Rho_soil_dir=Rho_soil)
     Light_Profile_NIR=f.Norman.Radiation(PARdir = NIR_dir[i],PARdif = NIR_dif[i], dLAI = dLAI,nlayers = nlayers,cosz = cosz[i],chil=chil,clumpfac = clumpfac,Rho =Rho_NIR,Tau=Tau_NIR,Rho_soil_dif =Rho_soil_NIR,Rho_soil_dir=Rho_soil_NIR)
     Canopy_time_dir[,i]=(Light_Profile$PARsun)

@@ -23,7 +23,7 @@ f.gsmin(
 
 \item{RdHa}{Energie of activation for Rd in J.mol-1}
 
-\item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
+\item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 

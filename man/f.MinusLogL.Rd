@@ -107,9 +107,9 @@ f.MinusLogL(
 
 \item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
 
-\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB)}
+\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB or Nonlinear). Do not chose Nonlinear with Orchidee TBM}
 
-\item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
+\item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
@@ -124,7 +124,7 @@ f.MinusLogL(
 \item{gmHd}{Energy of deactivation for gm in J.mol-1}
 }
 \value{
--sum(y) returns the negative log-liklihood of the fit
+
 }
 \description{
 Title

@@ -2,25 +2,29 @@
 % Please edit documentation in R/Import_functions.R
 \name{f.import_licor6800}
 \alias{f.import_licor6800}
-\title{Import Licor 6800 excel file}
+\title{Import Licor 6800 file}
 \usage{
 f.import_licor6800(
+  nskip_header = 16,
+  nskip_data = 18,
+  do.print = TRUE,
   file,
   column_display = c("A", "gsw", "Qin", "Ci", "Species", "Canopy", "Pheno_Age",
     "Barcode", "file")
 )
 }
 \arguments{
-\item{file}{File to import by the function}
+\item{nskip_header}{Number of lines to skip in the Excel files to find the column names}
 
-\item{column_display}{The first lines of the file which are part of this list are displayed by this function after being imported.}
-}
-\value{
-dataframe
+\item{nskip_data}{Number of lines to skip in the Excel files to find the data}
+
+\item{do.print}{Print the 5 top lines of the file?}
+
+\item{file}{File path}
+
+\item{column_display}{Column you want to display after the import to verufy if it worked correctly}
 }
 \description{
-This functions allows to import the excel file produced by LICOR as a data.frame. The files have to be open in Excel and saved before using his function so the result of the formula are calculated. The formula are sotred into the Excel file but not computed until the file is open.
-}
-\references{
-Adapted from http://www.ericrscott.com/2018/01/17/li-cor-wrangling/
+This functions allows to import the excel files produced by LICOR as a data.frame.
+IMPORTANT: The excel files must be opened and saved before using this function (the Excel calculations are not done until the file is open, so the calculated colums will show 0s if not saved before being imported)
 }

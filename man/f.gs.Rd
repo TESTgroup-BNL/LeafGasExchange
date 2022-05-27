@@ -4,7 +4,18 @@
 \alias{f.gs}
 \title{Conductance model for stomatal conductance to water vapour}
 \usage{
-f.gs(A, cs, ds = NULL, RH = NULL, g0, g1, power = 0.5, model = "USO")
+f.gs(
+  A,
+  cs,
+  ds = NULL,
+  RH = NULL,
+  Rd = NULL,
+  Gstar = NULL,
+  g0,
+  g1,
+  power = 0.5,
+  model = "USO"
+)
 }
 \arguments{
 \item{A}{Net assimilation in micromol.m-2.s-1, i-e, the assimilation in presence of respiration}
@@ -15,13 +26,15 @@ f.gs(A, cs, ds = NULL, RH = NULL, g0, g1, power = 0.5, model = "USO")
 
 \item{RH}{Humidity at the surface of the leaf (0 - 100). ds or RH as to be specified}
 
+\item{Rd}{Dark respiration for the non linear model. Be carefull that the net assimilation is implemented in all the models except the non linear where the gross assimilation is used (A + Rd)}
+
 \item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
 \item{power}{Power of the VPDl in USO model. By default is is 0.5 as in Medlin publication}
 
-\item{model}{Stomatal model ("USO", "USO_simpl" or "BWB")}
+\item{model}{Stomatal model ("USO", "USO_simpl" or "BWB" or "Nonlinear")}
 }
 \value{
 This function returns the optimal stomatal conductance to water vapour in mol.m-2.s-1
@@ -29,10 +42,18 @@ This function returns the optimal stomatal conductance to water vapour in mol.m-
 \description{
 Semi-empirical model of the leaf conductance to water vapour
 }
+\details{
+USO : #gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
+USO_simpl : gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs
+BWB : gs=g0+g1*(A*RH/100)/cs
+Nonlinear: gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs
+}
 \examples{
 gs=f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
 }
 \references{
 Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
  Wu, J, Serbin, SP, Ely, KS, et al. The response of stomatal conductance to seasonal drought in tropical forests. Glob Change Biol. 2020; 26: 823– 839. https://doi.org/10.1111/gcb.14820
+ Leuning, R., Kelliher, F. M., De Pury, D. G. G., & Schulze, E. D. (1995). Leaf nitrogen, photosynthesis, conductance and transpiration: scaling from leaves to canopies. Plant, Cell & Environment, 18(10), 1183-1200.
+ Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
 }

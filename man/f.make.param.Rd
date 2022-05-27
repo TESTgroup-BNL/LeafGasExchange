@@ -103,9 +103,9 @@ f.make.param(
 
 \item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
 
-\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB)}
+\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB or Nonlinear). Do not chose Nonlinear with Orchidee TBM}
 
-\item{g0}{Constant of the USO model, representing the conductance when A is 0, in mol.m-2.s-1}
+\item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
 
@@ -143,4 +143,6 @@ ORCHIDEE: https://forge.ipsl.jussieu.fr/orchidee/wiki/Documentation/OrchideePara
 JULES: https://www.geosci-model-dev.net/4/701/2011/gmd-4-701-2011.pdf
 FATES: https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html#
 Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x
+Leuning, R., Kelliher, F. M., De Pury, D. G. G., & Schulze, E. D. (1995). Leaf nitrogen, photosynthesis, conductance and transpiration: scaling from leaves to canopies. Plant, Cell & Environment, 18(10), 1183-1200.
+Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
 }

@@ -10,17 +10,17 @@ output: github_document
 # Canopy Scaling
 
 
-The aim of this tutorial is to show how to scale the gas exchange predictions from the leaf level to the canopy. In this tutorial, several assumptions are used to simulate the canopy photosynthesis (GPP) and the transpiration (ET). We consider that apart from the light, the micrometeorological variables are homogeneous inside the canopy (Air temperature, CO2, humidity). We also consider that the leaf size and structure is homogeneous. Those assumptions may be challenged if needed. In this model we consider, as in most of the TBMs, that the vertical gradients of leaf properties are similar for all the photosynthetic parameters (Vcmax, Jmax, Tp and Td).
+The aim of this tutorial is to show how to scale the gas exchange predictions from the leaf level to the canopy. In this tutorial, several assumptions are used to simulate the canopy photosynthesis and transpiration. We consider that apart from the light, the micrometeorological variables are homogeneous inside the canopy (Air temperature, CO2, humidity). We also consider that the leaf size and structure is homogeneous. Those assumptions may be challenged if needed. In this model we consider, as in most of the TBMs, that the vertical gradients of leaf properties are similar for all the photosynthetic parameters (Vcmax, Jmax, Tp and Td).
 
 ## Overall description of the canopy scaling
 
 Basically, in most of the TBMs, the photosynthesis is modeled at the leaf level and the scaling up to the canopy is made using two other elements, the canopy structure and the canopy radiation interception.
 
-The leaf level photosynthesis is modeled using the function f.A. This function allows to simulate the leaf gas exchange using input environmental variables surrounding the leaves (PARi, RH, Tair, Tleaf) and the leaf photosynthetic parameters (produced using the function f.make.param()). This function couples 2 different models:  (i) The Farquhar et al. 1980 model itself which describes the rate of photosynthesis from the intracellular CO2 concentration, and (ii) the conductance model, which calculates the intracellular CO2 from the leaf surface CO2 and environmental factors that modify the conductance of the stomata. 
+The leaf level photosynthesis is modeled using the function f.A. This function allows to simulate the leaf gas exchange using input environmental variables surrounding the leaves (Q, RH, Tair, Tleaf) and the leaf photosynthetic parameters (produced using the function f.make.param()). This function couples 2 different models:  (i) The Farquhar et al. 1980 model itself which describes the rate of photosynthesis from the intracellular CO2 concentration, and (ii) the conductance model, which calculates the intracellular CO2 from the leaf surface CO2 and environmental factors that modify the conductance of the stomata. 
 
-The canopy structure corresponds to the vertical organization of the forest the size of the leaves, and their orientation. The vertical gradients of leaf properties are also represented, and notably the vertical structure of Vcmax, Jmax, TPU and Rd. For those representations, different equations can be used, see for example Clark et al. 2011, Lloyd et al. 2010 or Krinner et al. 2005. 
+The canopy structure corresponds to the vertical organization of the forest, the size of the leaves and their orientation. The vertical gradients of leaf properties are also represented, and notably the vertical structure of Vcmax, Jmax, TPU and Rd. For those representations, different equations can be used, see for example Clark et al. 2011, Lloyd et al. 2010 or Krinner et al. 2005. 
 
-The canopy radiation interception simulates the light levels that each leaf receive inside the canopy. The light can be diffuse (shaded leaves) or direct (sunlit leaves) depending on the position. The Norman radiation interception model (Norman 1979) is implemented as described in Bonan (2019).
+The canopy radiation interception simulates the light levels that each leaf receives inside the canopy. The light can be diffuse (shaded leaves) or direct (sunlit leaves) depending on the position. The Norman radiation interception model (Norman 1979) is implemented as described in Bonan (2019).
 
 
 ## Simulation of the canopy structure
@@ -50,15 +50,26 @@ We first model the meterological conditions of a 24 h day. It would be better to
 
 
 ```r
+## Simulation of the diurnal variation in irradiance using the function from Takenaka (1989) as used in Hirose and Werger (1987)
+PFD_noon=2000
+time=seq(0,23,1)
+PFD=PFD_noon*(sin(pi*(time-6)/12))^2
+PFD[time<6|time>=18]=0
+
+## We assume that all the other variables are constant during the day for simplicity
+Tair=Tleaf=25
+cs=400
+RH=80
+
 ##Simulation of weather data
-meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,cs=400,PFD=dnorm(x = seq(0,23,1),mean = 12,sd = 2.5)/0.16*2000,Tleaf=25)
-plot(x=meteo_hourly$time,y=meteo_hourly$PFD,xlab='Time of the day',ylab='PPFD in micro mol m-2 s-1')
+meteo_hourly=data.frame(time=time,RH=RH,Tair=Tair,cs=cs,PFD=PFD,Tleaf=Tleaf)
+plot(x=meteo_hourly$time,y=meteo_hourly$PFD,xlab='Time of the day',ylab='PFD in micro mol m-2 s-1')
 ```
 
 ![plot of chunk unnamed-chunk-2](Canopy_scaling_files/unnamed-chunk-2-1.png)
 
 
-We now represent the light levels inside the canopy. The function is a wrapper of lightME function from BioCro and the f.Norman.Radiation developped by Gordon Bonan (Bonan 2019). We encourage you to go and see the help of those functions. To summarize, they calculate the sun angle on a position on the earth to calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
+We now represent the light levels inside the canopy during the day. To summarize, the function calculates the sun angle on a position on the earth and calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
 
 
 ```r
@@ -66,7 +77,7 @@ lat=9.2801048
 t.d = 0:23
 DOY = 60
 
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
 ```
 
 ![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-1.png)
@@ -96,9 +107,33 @@ canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,t.d = t.d,DOY =
 ## [1] "Radiation model for a total LAI of  6"
 ## [1] "Radiation model for a total LAI of  6"
 ## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
+## [1] "Radiation model for a total LAI of  6"
 ```
 
-![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-2.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-3.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-4.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-5.png)
+![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-2.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-3.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-4.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-5.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-6.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-7.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-8.png)
 
 ## Simulation of the GPP without leaf energy budget
 
@@ -115,8 +150,8 @@ canopy_gasEx=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
 ![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-1.png)![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-2.png)
 
 ```
-## [1] "GPP =  2779.74643205001 g CO2 m-2 Ground Y-1"
-## [1] "ET =  975.083999036707 L H20 m-2 Ground Y-1"
+## [1] "GPP =  6396.01584264149 g CO2 m-2 Ground Y-1"
+## [1] "ET =  1165.0365897533 L H20 m-2 Ground Y-1"
 ```
 
 ## Simulation of the GPP with the leaf energy budget
@@ -169,11 +204,11 @@ canopy_gasExT=f.GPPT(TBM = "FATES",meteo_hourly =meteo_hourly,
 ![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-1.png)![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-2.png)![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-3.png)
 
 ```
-## [1] "GPP =  926.056287006624 g CO2 m-2 Ground Y-1"
-## [1] "ET =  1311.29627596088 L H20 m-2 Ground Y-1"
+## [1] "GPP =  5574.45193486157 g CO2 m-2 Ground Y-1"
+## [1] "ET =  1405.79150422933 L H20 m-2 Ground Y-1"
 ```
 
-By default three figures are produced which give the vertical and temporal variation of gsw, An and Tleaf in the canopy. Other figures can be produced using the output if needed.
+By default three figures are produced which give the vertical and temporal variation of gsw, An and Tleaf in the canopy. Other figures can be produced using the outputs if needed.
 
 For example, if we want to compute a figure with the CO2 at the leaf surface: 
 
@@ -219,6 +254,8 @@ Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., 
 
 Farquhar, G.D., von Caemmerer, S. & Berry, J.A. A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149, 78–90 (1980).
 
+Hirose, T., & Werger, M. J. A. (1987). Maximizing daily canopy photosynthesis with respect to the leaf nitrogen allocation pattern in the canopy. Oecologia, 72(4), 520-526.
+
 Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199
 
 Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010
@@ -227,7 +264,9 @@ Muir, C. D., tealeaves: an R package for modelling leaf temperature using energy
 
 Norman, J. M. (1979). Modeling the complete crop canopy. ln: Barﬁeld, G. Modification of the Aerial Environment of Crops. American Society of Agricultural Engineers, 249, 280.
 
-
+Takenaka, A. (1986). Studies on the forest light environment and 
+the ecological significance of light-response characteristics of 
+leaf photosynthesis. Dr Thesis, University of Tokyo 
 
 
 

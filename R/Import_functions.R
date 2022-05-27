@@ -43,16 +43,18 @@ f.import_licor6400<-function(file,column_display=c('Photo','Cond','PARi','Ci','L
 #' IMPORTANT: The excel files must be opened and saved before using this function (the Excel calculations are not done until the file is open, so the calculated colums will show 0s if not saved before being imported)
 #' @param nskip_header Number of lines to skip in the Excel files to find the column names
 #' @param nskip_data Number of lines to skip in the Excel files to find the data
+#' @param do.print Print the 5 top lines of the file?
 #' @param file File path
 #' @param column_display Column you want to display after the import to verufy if it worked correctly
 #'
 #' @examples
-f.import_licor6800<-function(nskip_header=16,nskip_data=18,file,column_display=c('A','gsw','Qin','Ci','Species','Canopy','Pheno_Age','Barcode','file')){
-  print(file)
+f.import_licor6800<-function(nskip_header=16,nskip_data=18,do.print=TRUE,file,column_display=c('A','gsw','Qin','Ci','Species','Canopy','Pheno_Age','Barcode','file')){
+  if(do.print){print(file)}
   header=make.names(as.data.frame(readxl::read_excel(path = file,skip = nskip_header,n_max = 1,.name_repair = 'minimal',col_names = FALSE)))##'minimal' to speed up the import
   data_6800=as.data.frame(readxl::read_excel(path = file,skip = nskip_data,col_names = header,.name_repair = 'minimal'))
   data_6800[,'date']=data_6800[1,'date']
   data_6800=cbind(data_6800,file=rep(file,nrow(data_6800)))
-  print(head(data_6800[,column_display]))
+  if(do.print){print(head(data_6800[,column_display]))}
+  if(all(data_6800$A==0)){print(paste('Open and save the file first',file))}
   return(data_6800)
 }

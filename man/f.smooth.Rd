@@ -4,7 +4,7 @@
 \alias{f.smooth}
 \title{Smoothing functions between photosynthesis limitations (for example between rubisco carboxylation and light limitation)}
 \usage{
-f.smooth(A1, A2, theta)
+f.smooth(A1, A2, theta, root = 1)
 }
 \arguments{
 \item{theta}{Smoothing factor}

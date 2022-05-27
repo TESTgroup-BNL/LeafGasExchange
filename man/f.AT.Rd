@@ -7,14 +7,15 @@
 f.AT(
   PFD,
   NIR = NA,
-  cs,
+  ca,
   Tair,
-  RH,
+  RHa,
   wind,
-  precision = 0.1,
+  precision = 0.05,
   max_it = 10,
   param,
-  abso_s = 0.5
+  abso_s = 0.5,
+  leaf_size = 0.04
 )
 }
 \value{
@@ -36,7 +37,7 @@ The energy balance model is calculated using the package Tealeaves (see referenc
 Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
 }
 \examples{
-leaf_physio=f.AT(PFD=seq(0,1500,50),cs=400,Tair=300,wind=2,RH=70,param=f.make.param())
+leaf_physio=f.AT(PFD=seq(0,1500,50),ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
 plot(x=seq(0,1500,50),y=leaf_physio$A)
 }
 \references{
