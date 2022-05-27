@@ -1,7 +1,7 @@
 ---
 title: "Aci_fitting"
 author: "Julien LAMOUR"
-date: "2021/04/23"
+date: "5/27/2022"
 output: github_document
 ---
 
@@ -51,7 +51,7 @@ We display this simulated curve using the function f.plot
 f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
 ```
 
-![plot of chunk unnamed-chunk-3](Aci_fitting_files/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-11](Aci_fitting_files/unnamed-chunk-11-1.png)
 
 
 
@@ -73,15 +73,15 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 
 ```
 ## $par
-##  JmaxRef VcmaxRef    RdRef 
-## 80.67034 47.98076  1.36076 
+##    JmaxRef   VcmaxRef      RdRef 
+## 77.2076430 47.3154133  0.9214826 
 ## 
 ## $value
-## [1] 14.52257
+## [1] 11.57709
 ## 
 ## $counts
 ## function gradient 
-##      152       NA 
+##      224       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -89,12 +89,12 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.695762758782813"
+## [1] "sd 0.621211000146691"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-4](Aci_fitting_files/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-12](Aci_fitting_files/unnamed-chunk-12-1.png)
 
 In a second example we now also fit TpRef
 
@@ -107,14 +107,14 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 ```
 ## $par
 ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-## 87.490349 48.402365  1.517134  5.067892 
+## 81.952572 47.700105  1.060850  4.904071 
 ## 
 ## $value
-## [1] 9.301036
+## [1] 7.249406
 ## 
 ## $counts
 ## function gradient 
-##      415       NA 
+##      401       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -122,12 +122,12 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30, VcmaxRef = 50,
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.556807447233842"
+## [1] "sd 0.491575895136237"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-5](Aci_fitting_files/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-13](Aci_fitting_files/unnamed-chunk-13-1.png)
 
 The fitting returns a list of 3 objects. The first object corresponds to the fitting using a minimum square function whereas the 
 second object corresponds to a maximum likelihood derived using the mle2 package. This latter method is useful because it allows us to 
@@ -146,12 +146,12 @@ confint(fitting2[[2]])
 ```
 
 ```
-##               2.5 %    97.5 %
-## sigma     0.4410739  0.734043
-## JmaxRef  82.0165269        NA
-## VcmaxRef 44.6111075 52.935460
-## TpRef     4.8235522  5.331058
-## RdRef     0.8715999  2.183341
+##               2.5 %     97.5 %
+## sigma     0.3894007  0.6480475
+## JmaxRef  77.6893228 86.6087754
+## VcmaxRef 43.8564470 52.3122149
+## TpRef     4.6779176  5.1438854
+## RdRef     0.4642047  1.6820187
 ```
 
 It is possible to compare the AIC of the two models using the base function AIC. The lower AIC corresponds to the best model, 
@@ -163,7 +163,7 @@ AIC(fitting1[[2]])
 ```
 
 ```
-## [1] 71.37152
+## [1] 64.57124
 ```
 
 ```r
@@ -171,7 +171,7 @@ AIC(fitting2[[2]])
 ```
 
 ```
-## [1] 60.00416
+## [1] 52.52796
 ```
 
 It is also possible to calculate the interval of confidence and prediction of the Aci curve from the outputs of the fitting.
@@ -203,5 +203,5 @@ polygon(c(measures$Ci ,rev(measures$Ci)),c(simul_confint[1,], rev(simul_confint[
         col=adjustcolor("#99CC99",alpha.f=0.5),border=NA)
 ```
 
-![plot of chunk unnamed-chunk-8](Aci_fitting_files/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-16](Aci_fitting_files/unnamed-chunk-16-1.png)
 
