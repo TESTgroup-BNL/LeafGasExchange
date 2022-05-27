@@ -1,12 +1,13 @@
 ---
 title: "Guide to use the LeagGasExchange package to simulate the photosynthesis"
 author: "Julien LAMOUR"
-date: "9/22/2020"
+date: "5/27/2022"
 output: github_document
 ---
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#ezknitr::ezknit("Simulation_of_leaf_photosynthesis.Rmd",fig_dir = "Simulation_of_leaf_photosynthesis_files",keep_md = TRUE,keep_html=FALSE )
 ```
 
 ## Description of the photosynthesis model

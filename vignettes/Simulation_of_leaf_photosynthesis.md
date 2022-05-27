@@ -1,7 +1,7 @@
 ---
 title: "Guide to use the LeagGasExchange package to simulate the photosynthesis"
 author: "Julien LAMOUR"
-date: "9/22/2020"
+date: "5/27/2022"
 output: github_document
 ---
 
@@ -382,10 +382,10 @@ print(Leaf_photo)
 ```
 
 ```
-##          A       Ac      Aj       Ap       Ag        gs       ci       ds     Transp      gbw     cs
-## 1 9.827052 9.887746 12.0333 27.37827 10.88575 0.1638462 303.9644 2262.238 0.06605806 1.443636 390.47
-##       RHs    Tleaf
-## 1 59.7955 306.3139
+##          A       Ac      Aj       Ap       Ag       Rd        gs       ci       ds
+## 1 9.827052 9.887746 12.0333 27.37827 10.88575 1.058694 0.1638462 303.9644 2262.238
+##       Transp      gbw       cs     RHs    Tleaf
+## 1 0.06605806 1.443636 390.6742 59.7955 306.3139
 ```
 
 In this case the leaf temperature was predicted by the function. If the leaf temperature is known, it is possible to use the function f.A
@@ -411,6 +411,9 @@ print(Leaf_photo2)
 ## 
 ## $Ag
 ## [1] 13.88129
+## 
+## $Rd
+## [1] 1.100289
 ## 
 ## $gs
 ## [1] 0.2438359
