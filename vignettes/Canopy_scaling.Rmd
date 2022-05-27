@@ -144,7 +144,25 @@ RH_surface=melt(RH_surface)
 ```
 
 
+If you are interested in the temperature of the sun leaves or shaded leaves:
+```{r}
+Tleaf_sun=canopy_gasExT$Tleaf_dir
+Tleaf_sun=melt(Tleaf_sun)
+(ggplot(data=Tleaf_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
+     +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
+     +xlab("Time in the day")
+     +ylab(paste("Vertical level (0= top,",nlayers," = ground)"))
+     +labs(fill=expression(T[leaf]~sun~('K'))))
 
+Tleaf_shade=canopy_gasExT$Tleaf_dif
+Tleaf_shade=melt(Tleaf_shade)
+(ggplot(data=Tleaf_shade,aes(x=time,y=Layer,fill=value))+geom_raster()
+     +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
+     +xlab("Time in the day")
+     +ylab(paste("Vertical level (0= top,",nlayers," = ground)"))
+     +labs(fill=expression(T[leaf]~shade~('K'))))
+```
+Note that the fraction of sun leaves in the undercanopy is very low, as well as the fraction of shaded leaves in the top of the canopy. oOte also that the 'sun' leaves show high temperature in the understory. This is because the conductance is lower, therefore not cooling the leaf, due to low Vcmax and A. The wind is also very low, making the leaf heat. However, the proportion of leaves that are in direct sun in the understory is very low, that's why, overall, the mean temperature of the leaves is higher in the top layer than on the bottom layer (see previous output of the f.GPPT function)
 
 ## References
 Bonan, G. (2019). Climate change and terrestrial ecosystem modeling. Cambridge University Press.

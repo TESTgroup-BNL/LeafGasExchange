@@ -66,7 +66,7 @@ meteo_hourly=data.frame(time=time,RH=RH,Tair=Tair,cs=cs,PFD=PFD,Tleaf=Tleaf)
 plot(x=meteo_hourly$time,y=meteo_hourly$PFD,xlab='Time of the day',ylab='PFD in micro mol m-2 s-1')
 ```
 
-![plot of chunk unnamed-chunk-2](Canopy_scaling_files/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-1.png)
 
 
 We now represent the light levels inside the canopy during the day. To summarize, the function calculates the sun angle on a position on the earth and calculate the amount of diffuse light and direct light that will be received by the top of the canopy. Then the Norman interception model is used to calculate the light levels inside the canopy.
@@ -80,7 +80,7 @@ DOY = 60
 canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
 ```
 
-![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-1.png)
 
 ```
 ## [1] "Radiation model for a total LAI of  6"
@@ -133,7 +133,7 @@ canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,DOY = DOY,nlaye
 ## [1] "Radiation model for a total LAI of  6"
 ```
 
-![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-2.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-3.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-4.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-5.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-6.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-7.png)![plot of chunk unnamed-chunk-3](Canopy_scaling_files/unnamed-chunk-3-8.png)
+![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-2.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-3.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-4.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-5.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-6.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-7.png)![plot of chunk unnamed-chunk-5](Canopy_scaling_files/unnamed-chunk-5-8.png)
 
 ## Simulation of the GPP without leaf energy budget
 
@@ -147,7 +147,7 @@ canopy_gasEx=f.GPP(TBM = "FATES",meteo_hourly =meteo_hourly,
                    canopy=canopy,gsmin = 0.01)
 ```
 
-![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-1.png)![plot of chunk unnamed-chunk-4](Canopy_scaling_files/unnamed-chunk-4-2.png)
+![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-1.png)![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-2.png)
 
 ```
 ## [1] "GPP =  6396.01584264149 g CO2 m-2 Ground Y-1"
@@ -201,7 +201,7 @@ canopy_gasExT=f.GPPT(TBM = "FATES",meteo_hourly =meteo_hourly,
 ## [1] "Layer 20 of 20 layers"
 ```
 
-![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-1.png)![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-2.png)![plot of chunk unnamed-chunk-6](Canopy_scaling_files/unnamed-chunk-6-3.png)
+![plot of chunk unnamed-chunk-8](Canopy_scaling_files/unnamed-chunk-8-1.png)![plot of chunk unnamed-chunk-8](Canopy_scaling_files/unnamed-chunk-8-2.png)![plot of chunk unnamed-chunk-8](Canopy_scaling_files/unnamed-chunk-8-3.png)
 
 ```
 ## [1] "GPP =  5574.45193486157 g CO2 m-2 Ground Y-1"
@@ -223,7 +223,7 @@ CO2_surface=melt(CO2_surface)
      +labs(fill=expression(C[s]~(ppm))))
 ```
 
-![plot of chunk unnamed-chunk-7](Canopy_scaling_files/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-9](Canopy_scaling_files/unnamed-chunk-9-1.png)
 
 This calcul uses the proportion of leaves in the sun (f_sun) and their associated CO2 (cs_dir) and the proportion of shaded leaves (1-f_sun) with their associated CO2 (cs_dif).
 
@@ -240,10 +240,35 @@ RH_surface=melt(RH_surface)
      +labs(fill=expression(RH[s]~('%'))))
 ```
 
-![plot of chunk unnamed-chunk-8](Canopy_scaling_files/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-10](Canopy_scaling_files/unnamed-chunk-10-1.png)
 
 
+If you are interested in the temperature of the sun leaves or shaded leaves:
 
+```r
+Tleaf_sun=canopy_gasExT$Tleaf_dir
+Tleaf_sun=melt(Tleaf_sun)
+(ggplot(data=Tleaf_sun,aes(x=time,y=Layer,fill=value))+geom_raster()
+     +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
+     +xlab("Time in the day")
+     +ylab(paste("Vertical level (0= top,",nlayers," = ground)"))
+     +labs(fill=expression(T[leaf]~sun~('K'))))
+```
+
+![plot of chunk unnamed-chunk-11](Canopy_scaling_files/unnamed-chunk-11-1.png)
+
+```r
+Tleaf_shade=canopy_gasExT$Tleaf_dif
+Tleaf_shade=melt(Tleaf_shade)
+(ggplot(data=Tleaf_shade,aes(x=time,y=Layer,fill=value))+geom_raster()
+     +scale_fill_distiller(palette = "Spectral", direction = -1) +scale_y_reverse()
+     +xlab("Time in the day")
+     +ylab(paste("Vertical level (0= top,",nlayers," = ground)"))
+     +labs(fill=expression(T[leaf]~shade~('K'))))
+```
+
+![plot of chunk unnamed-chunk-11](Canopy_scaling_files/unnamed-chunk-11-2.png)
+Note that the fraction of sun leaves in the undercanopy is very low, as well as the fraction of shaded leaves in the top of the canopy. oOte also that the 'sun' leaves show high temperature in the understory. This is because the conductance is lower, therefore not cooling the leaf, due to low Vcmax and A. The wind is also very low, making the leaf heat. However, the proportion of leaves that are in direct sun in the understory is very low, that's why, overall, the mean temperature of the leaves is higher in the top layer than on the bottom layer (see previous output of the f.GPPT function)
 
 ## References
 Bonan, G. (2019). Climate change and terrestrial ecosystem modeling. Cambridge University Press.
