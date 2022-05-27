@@ -30,7 +30,7 @@ we first simulate an A-Ci curve with known photosynthetic parameters and noise. 
 
 For this example we first simulate a photosynthesis curve, but it would work the same if the data were not simulated but measured. The data simulation is 
 done using the function f.A. This function needs a list of photosynthetic parameters which are produced using the function f.make.param() and a list of 
-input variables (CO2 at the surface of the leaf, leaf temperature, incident light, RH). Too have more information on the function f.make.param, you can 
+input variables (CO2 at the surface of the leaf, leaf temperature, incident light, RH). To have more information on the function f.make.param, you can 
 use the command ?f.make.param in R console.
 
 

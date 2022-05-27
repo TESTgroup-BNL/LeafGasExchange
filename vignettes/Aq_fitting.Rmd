@@ -1,7 +1,7 @@
 ---
 title: "Aq_fitting"
 author: "Julien LAMOUR"
-date: "2021/06/03"
+date: "5/27/2022"
 output: github_document
 ---
 
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
 library(mvtnorm)
 #library(ezknitr)
-#ezknitr::ezknit("Aq_fitting.Rmd",fig_dir = "Aq_fitting_files",keep_md = TRUE,keep_html = #FALSE)
+#ezknitr::ezknit("Aq_fitting.Rmd",fig_dir = "Aq_fitting_files",keep_md = TRUE,keep_html = FALSE)
 ```
 
 # Load the R libraries
@@ -135,7 +135,7 @@ In this case, the model with VcmaxRef is better.
 
 Generally it is interesting to test the fitting with or without VcmaxRef, and sometimes with or without Theta. Note that Theta can be difficult to estimate and can also reach negative values (June, 2005).
 
-Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the estimation of those parameters is generally using A-Ci curves. 
+Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the estimation of those parameters is generally done using A-Ci curves. 
 
 
 

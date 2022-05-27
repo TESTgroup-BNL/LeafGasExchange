@@ -1,7 +1,7 @@
 ---
 title: "Aq_fitting"
 author: "Julien LAMOUR"
-date: "2021/06/03"
+date: "5/27/2022"
 output: github_document
 ---
 
@@ -52,7 +52,7 @@ We display this simulated curve using the function f.plot
 f.plot(measures = measures,type = 'Aq',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef','Theta')],param = param)
 ```
 
-![plot of chunk unnamed-chunk-3](Aq_fitting_files/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-13](Aq_fitting_files/unnamed-chunk-13-1.png)
 
 In this case, you see that the top Assimilation values are only limited by Aj. It is thought that at high light in usual environmental conditions, Ac and Aj have similar rates. This coordination is thought to be often present in plants. In other cases Ac can be limiting at high light.
 
@@ -70,7 +70,7 @@ measures2=data.frame(Tleaf=Tleaf,Ci=simul2$ci,Qin=PAR,A=simul2$A)
 f.plot(measures = measures2,type = 'Aq',list_legend = param2[c('VcmaxRef','JmaxRef','TpRef','RdRef','Theta')],param = param2)
 ```
 
-![plot of chunk unnamed-chunk-4](Aq_fitting_files/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-14](Aq_fitting_files/unnamed-chunk-14-1.png)
 
 ## Fitting an AQ curve
 
@@ -91,14 +91,14 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Thet
 ```
 ## $par
 ##    JmaxRef      RdRef      Theta 
-## 89.1935559  1.0297619  0.6996975 
+## 88.7595267  0.9006015  0.6787440 
 ## 
 ## $value
-## [1] 0.4946647
+## [1] 0.4227626
 ## 
 ## $counts
 ## function gradient 
-##       98       NA 
+##      124       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -106,12 +106,12 @@ fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Thet
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.181597490422558"
+## [1] "sd 0.167881432518271"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-5](Aq_fitting_files/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-15](Aq_fitting_files/unnamed-chunk-15-1.png)
 
 In a second example we now also (try to) fit VcmaxRef. Here the fitting gives a weird value for VcmaxRef which is very high as there is no information in the curve to estimate it.
 
@@ -124,15 +124,15 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30,VcmaxRef=40, Rd
 
 ```
 ## $par
-##    JmaxRef   VcmaxRef      RdRef      Theta 
-## 91.1386641 62.1888937  1.0132787  0.6729676 
+##     JmaxRef    VcmaxRef       RdRef       Theta 
+##  88.7280147 238.5440883   0.9000552   0.6786526 
 ## 
 ## $value
-## [1] 0.4710319
+## [1] 0.4227329
 ## 
 ## $counts
 ## function gradient 
-##      355       NA 
+##      487       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -140,12 +140,12 @@ fitting2=f.fitting(measures = measures,Start = list(JmaxRef = 30,VcmaxRef=40, Rd
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.177206450348648"
+## [1] "sd 0.167875522304922"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-6](Aq_fitting_files/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-16](Aq_fitting_files/unnamed-chunk-16-1.png)
 
 The fitting returns a list of 3 objects. The first object corresponds to the fitting using a minimum square function whereas the 
 second object corresponds to a maximum likelihood derived using the mle2 package. This latter method is useful because it allows us to 
@@ -165,10 +165,10 @@ confint(fitting1[[2]])
 
 ```
 ##              2.5 %     97.5 %
-## sigma    0.1320035  0.2726141
-## JmaxRef 87.5106139 90.9273817
-## RdRef    0.8519132  1.2063340
-## Theta    0.6314111  0.7575820
+## sigma    0.1220332  0.2520236
+## JmaxRef 87.1654722 90.4000683
+## RdRef    0.7358790  1.0638952
+## Theta    0.6113558  0.7365215
 ```
 
 It is possible to compare the AIC of the two models using the base function AIC or BIC. The lower AIC or BIC corresponds to the best model. It shows in this case that adding VcmaxRef is not usefull.
@@ -179,7 +179,7 @@ BIC(fitting1[[2]])
 ```
 
 ```
-## [1] -3.065546
+## [1] -5.421588
 ```
 
 ```r
@@ -187,7 +187,7 @@ BIC(fitting2[[2]])
 ```
 
 ```
-## [1] -2.41357
+## [1] -4.036391
 ```
 
 We can redo this procedure for the second simulated curve:
@@ -200,15 +200,15 @@ fitting3=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 
 ```
 ## $par
-##    JmaxRef      RdRef      Theta 
-## 89.0757771  1.1283781  0.8113092 
+##   JmaxRef     RdRef     Theta 
+## 89.473378  1.126116  0.846951 
 ## 
 ## $value
-## [1] 1.864643
+## [1] 1.458633
 ## 
 ## $counts
 ## function gradient 
-##      154       NA 
+##      138       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -216,12 +216,12 @@ fitting3=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.352575551233708"
+## [1] "sd 0.311836809635222"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-9](Aq_fitting_files/unnamed-chunk-9-1.png)
+![plot of chunk unnamed-chunk-19](Aq_fitting_files/unnamed-chunk-19-1.png)
 
 ```r
 fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,Theta=0.5,VcmaxRef=30),param=f.make.param(abso=0.9),
@@ -231,14 +231,14 @@ fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ```
 ## $par
 ##     JmaxRef       RdRef       Theta    VcmaxRef 
-## 108.5110284   0.9611996   0.5447890  59.2941862 
+## 106.0681269   0.9696880   0.6500095  60.0221770 
 ## 
 ## $value
-## [1] 0.9291445
+## [1] 0.8682594
 ## 
 ## $counts
 ## function gradient 
-##      185       NA 
+##      355       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -246,12 +246,12 @@ fitting4=f.fitting(measures = measures2,Start = list(JmaxRef = 30, RdRef = 1,The
 ## $message
 ## NULL
 ## 
-## [1] "sd 0.248883440751959"
+## [1] "sd 0.240590856046509"
 ## Length  Class   Mode 
 ##      1   mle2     S4
 ```
 
-![plot of chunk unnamed-chunk-9](Aq_fitting_files/unnamed-chunk-9-2.png)
+![plot of chunk unnamed-chunk-19](Aq_fitting_files/unnamed-chunk-19-2.png)
 
 
 As previously we can compare the fitting with or without VcmaxRef as a parameter to estimate:
@@ -262,7 +262,7 @@ BIC(fitting3[[2]])
 ```
 
 ```
-## [1] 16.83862
+## [1] 13.15508
 ```
 
 ```r
@@ -270,14 +270,14 @@ BIC(fitting4[[2]])
 ```
 
 ```
-## [1] 7.776505
+## [1] 6.759897
 ```
 
 In this case, the model with VcmaxRef is better.
 
 Generally it is interesting to test the fitting with or without VcmaxRef, and sometimes with or without Theta. Note that Theta can be difficult to estimate and can also reach negative values (June, 2005).
 
-Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the estimation of those parameters is generally using A-Ci curves. 
+Note also that the parameters from the light curves (VcmaxRef and JmaxRef notably) are rarely used in modeling and that the estimation of those parameters is generally done using A-Ci curves. 
 
 
 
