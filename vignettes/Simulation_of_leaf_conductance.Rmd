@@ -103,7 +103,7 @@ For the non simplified USO model, a linear regression can also be performed but 
 
 ```{r}
 Y_USO= USO_gs - 1.6 * A/cs
-X_USO=regressor_USO_simpl
+X_USO=X_USO_simpl
 
 lm(Y_USO~X_USO)
 

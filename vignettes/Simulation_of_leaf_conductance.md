@@ -138,19 +138,19 @@ For the non simplified USO model, a linear regression can also be performed but 
 
 ```r
 Y_USO= USO_gs - 1.6 * A/cs
-X_USO=regressor_USO_simpl
-```
+X_USO=X_USO_simpl
 
-```
-## Error in eval(expr, envir, enclos): object 'regressor_USO_simpl' not found
-```
-
-```r
 lm(Y_USO~X_USO)
 ```
 
 ```
-## Error in eval(predvars, data, env): object 'X_USO' not found
+## 
+## Call:
+## lm(formula = Y_USO ~ X_USO)
+## 
+## Coefficients:
+## (Intercept)        X_USO  
+##        0.02         6.00
 ```
 
 ## Simulation of conductance using a coupled photosynthesis - conductance model
@@ -172,7 +172,7 @@ lines(x=PFD,y=Nonlinear_simulation$gs,col='deeppink2')
 legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty = c(1,1,1,1),legend=c("USO","USO_simpl","BWB","Nonlinear"))
 ```
 
-![plot of chunk unnamed-chunk-7](Simulation_of_leaf_conductance_files/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-16](Simulation_of_leaf_conductance_files/unnamed-chunk-16-1.png)
 
 The transpiration is also an output of the f.A function:
 
@@ -185,7 +185,7 @@ lines(x=PFD,y=Nonlinear_simulation$Transp,col='deeppink2')
 legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty = c(1,1,1,1),legend=c("USO","USO_simpl","BWB","Nonlinear"))
 ```
 
-![plot of chunk unnamed-chunk-8](Simulation_of_leaf_conductance_files/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-17](Simulation_of_leaf_conductance_files/unnamed-chunk-17-1.png)
 
 
 
