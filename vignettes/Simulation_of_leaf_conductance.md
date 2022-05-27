@@ -52,7 +52,7 @@ USO_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO')
 USO_simpl_gs=f.gs(A = A,cs = cs,ds = ds,g0 = g0,g1 = g1_BWB,model='USO_simpl')
 ```
 
-Finally, a "Nonlinear" version of the USO_simpl conductance model is also implemented: 
+Finally, a "Nonlinear" version of the USO_simpl conductance model is also implemented, see our paper Lamour et al. (2022): 
 
 ![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6g_1%5Cfrac%7BA_g%5E2%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D)
 
@@ -191,6 +191,8 @@ legend('bottomright',col = c('lightblue','slateblue3','orchid1','deeppink2'),lty
 
 ## References
 Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
+
+Lamour, J., Davidson, K. J., Ely, K. S., Le Moguédec, G., Leakey, A. D., Li, Q., Serbin, S. P., Rogers, A. (2022). An improved representation of the relationship between photosynthesis and stomatal conductance leads to more stable estimation of conductance parameters and improves the goodness‐of‐fit across diverse data sets. Global change biology, 28(11), 3537-3556.
 
 Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Prentice, I.C., Barton, C.V.M., Crous, K.Y., De Angelis, P., Freeman, M. and Wingate, L. (2011), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Global Change Biology, 17: 2134-2144. 
 
