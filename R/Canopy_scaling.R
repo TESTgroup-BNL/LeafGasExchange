@@ -344,10 +344,10 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 #' lat=9.2801048
 #' DOY = 60
 #' ##Representation of the light interception inside the canopy
-#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,time = time,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
+#' canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
 f.canopy.interception=function(meteo_hourly,lat,DOY,nlayers,dLAI,LAI,Rho=0.11,Tau=0.06,Rho_soil=0.1,Rho_NIR=0.46,Tau_NIR=0.33,Rho_soil_NIR=0.33,chil=0.32,clumpfac=0.85,model='Norman'){
   if(is.null(meteo_hourly$NIR)){meteo_hourly$NIR=meteo_hourly$PFD/4.57}
-  
+  time=meteo_hourly$time
   ##Calculation of cosz according to Miguel et al. 2009
   phi=lat*pi/180
   delta=-23.5*cos(360*(DOY+10)/365*pi/180)*pi/180
