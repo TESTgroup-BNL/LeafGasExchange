@@ -32,7 +32,7 @@ BWB_gs=f.gs(A = A,cs = cs,RH = RH,g0 = g0,g1 = g1_BWB,model='BWB')
 
 The "USO" model (Medlyn et al. 2011) is: 
 
-![equation](https://latex.codecogs.com/gif.latex?g_%7Bsw%7D%3Dg_0&plus;1.6%281&plus;g_1%5Cfrac%7BA_n%7D%7BCO_%7B2s%7D%5Csqrt%7BVPD_%7Bleaf%7D%7D%7D%29)
+![equation](https://latex.codecogs.com/gif.image?\dpi{110}g_{sw}=g_0&plus;1.6(1&plus;\frac{g_1}{VPD_{leaf}]})(\frac{A_n}{CO_{2s}}))
 
 It can be simplified in the "USO_simpl" model :  
 
