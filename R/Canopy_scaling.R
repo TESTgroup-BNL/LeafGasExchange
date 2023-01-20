@@ -469,7 +469,8 @@ f.canopy.interception=function(meteo_hourly,lat,DOY,nlayers,dLAI,LAI,Rho=0.11,Ta
 #' plot(Vcmax)
 #' lines(Vcmax2)
 f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambda=1){
-  if(is.null(kn)){kn=exp(alpha*Vcmax0+beta)}
+  if(is.null(kn)){kn=exp(alpha*Vcmax0+beta)
+  print(paste('kn is',kn))}
   return(Vcmax0*(1-lambda*(1-exp(-kn*LAI))))
 }
 
@@ -581,7 +582,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
   totalET= sum(Trans*dLAI,na.rm=TRUE)*365*3600*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
-  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,GPP=totalGPP,ET=totalET,fig_A=a,fig_gs=b))
+  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Trans=Trans,GPP=totalGPP,ET=totalET,fig_A=a,fig_gs=b))
 }
 
 #' @title Canopy scale GPP calculation, with leaf energy budget
@@ -708,7 +709,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   totalET= sum(Trans*dLAI,na.rm=TRUE)*365*3600*18*10^-3
   print(paste("GPP = ",totalGPP,"g CO2 m-2 Ground Y-1"))
   print(paste("ET = ",totalET,"L H20 m-2 Ground Y-1"))
-  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,Rd_dir=rd_dir,Rd_dif=rd_dif,GPP=totalGPP,ET=totalET,VpdL_dif=VpdL_dif,VpdL_dir=VpdL_dir,RHs_dif=RHs_dif,RHs_dir=RHs_dir,cs_dif=cs_dif,cs_dir=cs_dir,fig_A=a,fig_gs=b,fig_Tleaf=c))
+  return(list(A=Photosynthesis_rate,gs=Conductance_rate,A_dir=Photosynthesis_rate_dir,gs_dir=gs_dir,A_dif=Photosynthesis_rate_dif,gs_dif=gs_dif,Tleaf_dir=Tleaf_dir,Tleaf_dif=Tleaf_dif,Tleaf=Tleaf,Rd_dir=rd_dir,Rd_dif=rd_dif,Trans=Trans,GPP=totalGPP,ET=totalET,VpdL_dif=VpdL_dif,VpdL_dir=VpdL_dir,RHs_dif=RHs_dif,RHs_dir=RHs_dir,cs_dif=cs_dif,cs_dir=cs_dir,fig_A=a,fig_gs=b,fig_Tleaf=c))
 }
 
 
