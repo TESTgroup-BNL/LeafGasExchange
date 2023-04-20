@@ -219,6 +219,7 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #' @export
 #' @references
 #' Farquhar, G. D., von Caemmerer, S. V., & Berry, J. A. (1980). A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, 78-90.
+#' 
 #' Fates parameters: https://github.com/NGEET/fates/blob/main/parameter_files/fates_params_default.cdl.
 #' @return 
 #' List of different variables:
