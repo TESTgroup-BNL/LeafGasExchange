@@ -44,7 +44,7 @@ simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
 # Here we include a normal error 
 
-simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.3)
+simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.2)
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 ```
 
@@ -64,7 +64,7 @@ simul2=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param2)
 
 # Here we include a normal error 
 
-simul2$A=simul2$A+rnorm(n=length(simul2$A),mean = 0,sd = 0.3)
+simul2$A=simul2$A+rnorm(n=length(simul2$A),mean = 0,sd = 0.2)
 measures2=data.frame(Tleaf=Tleaf,Ci=simul2$ci,Qin=PAR,A=simul2$A)
 f.plot(measures = measures2,type = 'Aq',list_legend = param2[c('VcmaxRef','JmaxRef','TpRef','RdRef','Theta')],param = param2)
 ```

@@ -32,7 +32,7 @@ corresponds to the leaf absorptance.
 
     # Here we include a normal error 
 
-    simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.3)
+    simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.2)
     measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 
 We display this simulated curve using the function f.plot
@@ -54,7 +54,7 @@ For example:
 
     # Here we include a normal error 
 
-    simul2$A=simul2$A+rnorm(n=length(simul2$A),mean = 0,sd = 0.3)
+    simul2$A=simul2$A+rnorm(n=length(simul2$A),mean = 0,sd = 0.2)
     measures2=data.frame(Tleaf=Tleaf,Ci=simul2$ci,Qin=PAR,A=simul2$A)
     f.plot(measures = measures2,type = 'Aq',list_legend = param2[c('VcmaxRef','JmaxRef','TpRef','RdRef','Theta')],param = param2)
 
@@ -81,14 +81,14 @@ the photosynthesis rates. We’ll revisit this assumption later.
 
     ## $par
     ##    JmaxRef      RdRef      Theta 
-    ## 89.9712392  1.1241761  0.7562085 
+    ## 88.5374778  1.0515467  0.7695185 
     ## 
     ## $value
-    ## [1] 1.137301
+    ## [1] 0.4157516
     ## 
     ## $counts
     ## function gradient 
-    ##      110       NA 
+    ##      126       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -96,7 +96,7 @@ the photosynthesis rates. We’ll revisit this assumption later.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.275354423673918"
+    ## [1] "sd 0.16648354914332"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -110,15 +110,15 @@ information in the curve to estimate it.
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##   JmaxRef  VcmaxRef     RdRef     Theta 
-    ## 93.295444 62.617218  1.090212  0.710990 
+    ##    JmaxRef   VcmaxRef      RdRef      Theta 
+    ## 89.4501227 66.6059766  1.0459856  0.7619516 
     ## 
     ## $value
-    ## [1] 1.079666
+    ## [1] 0.4128538
     ## 
     ## $counts
     ## function gradient 
-    ##      425       NA 
+    ##      281       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -126,7 +126,7 @@ information in the curve to estimate it.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.268286688021414"
+    ## [1] "sd 0.165902339363218"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -145,10 +145,10 @@ info).
     confint(fitting1[[2]])
 
     ##              2.5 %     97.5 %
-    ## sigma    0.2001556  0.4133620
-    ## JmaxRef 87.5057929 92.5227812
-    ## RdRef    0.8591327  1.3861695
-    ## Theta    0.6657821  0.8270025
+    ## sigma    0.1210171  0.2499251
+    ## JmaxRef 87.0602623 90.0448643
+    ## RdRef    0.8903033  1.2114000
+    ## Theta    0.7176668  0.8139842
 
 It is possible to compare the AIC of the two models using the base
 function AIC or BIC. The lower AIC or BIC corresponds to the best model.
@@ -156,11 +156,11 @@ It shows in this case that adding VcmaxRef is not usefull.
 
     BIC(fitting1[[2]])
 
-    ## [1] 9.422447
+    ## [1] -5.672432
 
     BIC(fitting2[[2]])
 
-    ## [1] 10.02865
+    ## [1] -4.391054
 
 We can redo this procedure for the second simulated curve:
 
@@ -169,14 +169,14 @@ We can redo this procedure for the second simulated curve:
 
     ## $par
     ##    JmaxRef      RdRef      Theta 
-    ## 80.4394879  1.0774293  0.8045951 
+    ## 80.8048737  1.1032552  0.8302611 
     ## 
     ## $value
-    ## [1] 1.080278
+    ## [1] 1.007885
     ## 
     ## $counts
     ## function gradient 
-    ##      106       NA 
+    ##      120       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -184,7 +184,7 @@ We can redo this procedure for the second simulated curve:
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.268362699108731"
+    ## [1] "sd 0.259214852341732"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -195,14 +195,14 @@ We can redo this procedure for the second simulated curve:
 
     ## $par
     ##    JmaxRef      RdRef      Theta   VcmaxRef 
-    ## 89.0847230  0.9900322  0.6818325 54.7903712 
+    ## 96.8103899  0.9571274  0.6111154 54.6681592 
     ## 
     ## $value
-    ## [1] 0.7971008
+    ## [1] 0.2908847
     ## 
     ## $counts
     ## function gradient 
-    ##      483       NA 
+    ##      401       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -210,7 +210,7 @@ We can redo this procedure for the second simulated curve:
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.230521271470263"
+    ## [1] "sd 0.139256285645197"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -221,11 +221,11 @@ parameter to estimate:
 
     BIC(fitting3[[2]])
 
-    ## [1] 8.650857
+    ## [1] 7.610392
 
     BIC(fitting4[[2]])
 
-    ## [1] 5.477261
+    ## [1] -9.643558
 
 In this case, the model with VcmaxRef is better.
 
