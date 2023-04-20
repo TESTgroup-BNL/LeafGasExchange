@@ -22,17 +22,17 @@ the function f.make.param, you can use the command ?f.make.param in R
 console. Theta corresponds to the empirical curvature factor and abso
 corresponds to the leaf absorptance.
 
-    param=f.make.param(VcmaxRef = 65,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=50/10,RdRef=1)
+    param=f.make.param(VcmaxRef = 70,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=50/10,RdRef=1)
     CO2=400
     Tleaf=30+273.16
     Tair=27+273.16
     PAR=c(0,20,50,80,120,200,400,600,800,1000,1200,1400,1600,1800,2000)
-    RH=80
+    RH=70
     simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
     # Here we include a normal error 
 
-    simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.2)
+    simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.3)
     measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 
 We display this simulated curve using the function f.plot
@@ -49,7 +49,7 @@ light.
 
 For example:
 
-    param2=f.make.param(VcmaxRef = 60,JmaxRef=60*1.67,Theta=0.7,abso=0.9,TpRef=5,RdRef=1)
+    param2=f.make.param(VcmaxRef = 55,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=5,RdRef=1)
     simul2=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param2)
 
     # Here we include a normal error 
@@ -76,19 +76,19 @@ used in the TBM FATES to simulate the photosynthesis are used. In this
 example, we also give a high value for VcmaxRef so it is not limiting
 the photosynthesis rates. We’ll revisit this assumption later.
 
-    fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Theta=0.5),param=f.make.param(abso=0.9,VcmaxRef=150),
+    fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 60, RdRef = 1,Theta=0.5),param=f.make.param(abso=0.9,VcmaxRef=9999),
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##      JmaxRef        RdRef        Theta 
-    ## 106.38098162   0.26275930  -0.08050399 
+    ##     JmaxRef       RdRef       Theta 
+    ## 113.7118145   0.2601098  -0.1994429 
     ## 
     ## $value
-    ## [1] 2.579546
+    ## [1] 3.907609
     ## 
     ## $counts
     ## function gradient 
-    ##      144       NA 
+    ##      120       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -96,7 +96,7 @@ the photosynthesis rates. We’ll revisit this assumption later.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.41469233295113"
+    ## [1] "sd 0.51039910701802"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -111,14 +111,14 @@ information in the curve to estimate it.
 
     ## $par
     ##    JmaxRef   VcmaxRef      RdRef      Theta 
-    ## 83.7971319 55.9832980  0.8412195  0.6915046 
+    ## 82.1136986 59.9695836  0.8751863  0.7147391 
     ## 
     ## $value
-    ## [1] 0.4548774
+    ## [1] 1.25964
     ## 
     ## $counts
     ## function gradient 
-    ##      257       NA 
+    ##      487       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -126,7 +126,7 @@ information in the curve to estimate it.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.174141205269797"
+    ## [1] "sd 0.289786092827467"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -144,11 +144,11 @@ info).
 
     confint(fitting1[[2]])
 
-    ##                2.5 %    97.5 %
-    ## sigma    0.301440541 0.6225360
-    ## JmaxRef 83.840895796        NA
-    ## RdRef    0.001052065 0.5238225
-    ## Theta   -1.966141189 0.4821012
+    ##               2.5 %    97.5 %
+    ## sigma    0.37100998 0.7662110
+    ## JmaxRef 81.14004913        NA
+    ## RdRef   -0.06665939 0.5715776
+    ## Theta   -2.98343197 0.5706621
 
 It is possible to compare the AIC of the two models using the base
 function AIC or BIC. The lower AIC or BIC corresponds to the best model.
@@ -156,11 +156,11 @@ It shows in this case that adding VcmaxRef is not usefull.
 
     BIC(fitting1[[2]])
 
-    ## [1] 21.70678
+    ## [1] 27.93646
 
     BIC(fitting2[[2]])
 
-    ## [1] -2.937039
+    ## [1] 12.34126
 
 We can redo this procedure for the second simulated curve:
 
@@ -168,15 +168,15 @@ We can redo this procedure for the second simulated curve:
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##      JmaxRef        RdRef        Theta 
-    ## 101.24854445   0.24811805   0.06293845 
+    ##    JmaxRef      RdRef      Theta 
+    ## 86.9748423  0.3207121  0.3814943 
     ## 
     ## $value
-    ## [1] 3.255527
+    ## [1] 2.445858
     ## 
     ## $counts
     ## function gradient 
-    ##      198       NA 
+    ##      162       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -184,7 +184,7 @@ We can redo this procedure for the second simulated curve:
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.465870311632661"
+    ## [1] "sd 0.403803456646784"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -194,23 +194,23 @@ We can redo this procedure for the second simulated curve:
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##    JmaxRef      RdRef      Theta   VcmaxRef 
-    ## 84.1853118  0.8157030  0.6943111 55.4998630 
+    ##     JmaxRef       RdRef       Theta    VcmaxRef 
+    ##  77.9466375   0.7369673   0.7458313 777.4815995 
     ## 
     ## $value
-    ## [1] 1.038431
+    ## [1] 0.8643026
     ## 
     ## $counts
     ## function gradient 
-    ##      429       NA 
+    ##      501       NA 
     ## 
     ## $convergence
-    ## [1] 0
+    ## [1] 1
     ## 
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.263113503612196"
+    ## [1] "sd 0.240042023484236"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -221,11 +221,11 @@ parameter to estimate:
 
     BIC(fitting3[[2]])
 
-    ## [1] 25.19789
+    ## [1] 20.90852
 
     BIC(fitting4[[2]])
 
-    ## [1] 9.444535
+    ## [1] 6.691371
 
 In this case, the model with VcmaxRef is better.
 

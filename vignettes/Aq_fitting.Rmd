@@ -34,17 +34,17 @@ Theta corresponds to the empirical curvature factor and abso corresponds to the 
 
 
 ```{r}
-param=f.make.param(VcmaxRef = 65,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=50/10,RdRef=1)
+param=f.make.param(VcmaxRef = 70,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=50/10,RdRef=1)
 CO2=400
 Tleaf=30+273.16
 Tair=27+273.16
 PAR=c(0,20,50,80,120,200,400,600,800,1000,1200,1400,1600,1800,2000)
-RH=80
+RH=70
 simul=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param)
 
 # Here we include a normal error 
 
-simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.2)
+simul$A=simul$A+rnorm(n=length(simul$A),mean = 0,sd = 0.3)
 measures=data.frame(Tleaf=Tleaf,Ci=simul$ci,Qin=PAR,A=simul$A)
 ```
 
@@ -59,7 +59,7 @@ In this case, you see that the top Assimilation values are only limited by Aj. I
 For example:
 
 ```{r}
-param2=f.make.param(VcmaxRef = 60,JmaxRef=60*1.67,Theta=0.7,abso=0.9,TpRef=5,RdRef=1)
+param2=f.make.param(VcmaxRef = 55,JmaxRef=90,Theta=0.7,abso=0.9,TpRef=5,RdRef=1)
 simul2=f.A(PFD = PAR,cs = CO2,Tleaf = Tleaf,Tair = Tair,RH = RH,param = param2)
 
 # Here we include a normal error 
@@ -80,7 +80,7 @@ are used. In this example, we also give a high value for VcmaxRef so it is not l
 
 
 ```{r warning=FALSE}
-fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 30, RdRef = 1,Theta=0.5),param=f.make.param(abso=0.9,VcmaxRef=150),
+fitting1=f.fitting(measures = measures,Start = list(JmaxRef = 60, RdRef = 1,Theta=0.5),param=f.make.param(abso=0.9,VcmaxRef=9999),
                    modify.init=TRUE,do.plot=TRUE,type='Aq')
 ```
 
