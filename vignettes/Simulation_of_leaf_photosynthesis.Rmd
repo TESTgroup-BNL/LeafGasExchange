@@ -1,13 +1,12 @@
 ---
-title: "Guide to use the LeagGasExchange package to simulate the photosynthesis"
+title: "Guide to use the LeafGasExchange package to simulate the photosynthesis"
 author: "Julien LAMOUR"
-date: "5/27/2022"
-output: github_document
+date: "04/20/2023"
+output: md_document
 ---
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#ezknitr::ezknit("Simulation_of_leaf_photosynthesis.Rmd",fig_dir = "Simulation_of_leaf_photosynthesis_files",keep_md = TRUE,keep_html=FALSE )
 ```
 
 ## Description of the photosynthesis model
@@ -44,11 +43,17 @@ The output variables are:
 
 * The CO2 concentration inside the stomata cavity, ci, in ppm
 
-* The leaf temperature, Tleaf, in degree K
-
 * The vapour pressure deficit between the leaf and the surounding atmosphere, ds, in Pa
 
 * The transpiration rate of the leaf in g m-2 s-1
+
+* gbw, The boundary layer conductance in mol m-2 s-1.
+
+* cs, the CO2 concentration at the leaf surface in ppm.
+
+* RHs, the Relative humidity at the leaf surface (0 100).
+
+* Tleaf, the Leaf temperature in K
 
 ## Installation of the package from github
 First, the package devtools is needed to install the package LeafGasExchange from github. If you don't have devtools you have to first install it and load it.
