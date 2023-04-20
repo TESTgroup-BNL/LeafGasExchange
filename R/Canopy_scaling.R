@@ -500,7 +500,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
-  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_min=0} ## This trick is used to fix gsw to gswmin. Note that using g1 = 0 makes gsw = g0 in the USO_simpl, BWB and nonlinear models but not in USO. -1 is used as a flag in the f.A code to recompute gsw for the USO model
+  g1_min=-1 ## This trick is used to fix gsw to gswmin. 
   for(Layer in 1:nlayer){
     res_dir=f.A(PFD = canopy$Canopy_time_dir[Layer,],
                 cs = meteo_hourly[,"cs"],
@@ -610,7 +610,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
   param=f.make.param()
-  if(param[['model.gs']]=="USO"|param[['model.gs']]==0){g1_min=-1}else{g1_min=0} ## This trick is used to fix gsw to gswmin
+ g1_min=-1  #This trick is used to fix gsw to gswmin
   for(Layer in 1:nlayer){
     print(paste('Layer',Layer,'of', nrow(canopy$Canopy_time_dir),'layers'))
     res_dir=f.AT(PFD = canopy$Canopy_time_dir[Layer,],

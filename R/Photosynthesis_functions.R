@@ -230,6 +230,10 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
     Wc=(cic-Gstar)*Vcmax/(cic+Kc*(1+param[['O2']]/Ko))
     
     cij=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
+    #plot(cij[,1],ylim=c(-400,400))
+    #points(cij[,2],col="blue")
+    #points(cij[,3],col="red")
+    
     Wj=(cij-Gstar)*J/(4*cij+8*Gstar)
     
     Tp=f.modified.arrhenius(PRef=param[['TpRef']],param[['TpHa']],param[['TpHd']],param[['TpS']],Tleaf)
@@ -459,7 +463,10 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
     a4=-8*Gstar^2*cs*g1*x^2-5*sqrt(ds/1000)*cs^2*g0*y^2-8*Gstar*sqrt(ds/1000)*cs*x*y-8*sqrt(ds/1000)*Rd*cs*y^2
     coef_pol=cbind(a4,a3,a2,a1)
     res=f.solv.poly(coef_pol)
-    return(pmax(res[,1],res[,2],res[,3],na.rm = TRUE))
+    res[res<0]=NA
+    if(dim(res)[2]==2)(result=pmax(res[,1],res[,2],na.rm = TRUE))else(result=pmax(res[,1],res[,2],res[,3],na.rm=TRUE)) ## 23/02/2023 I changed the solution as I had issues
+    return(result)
+    #return(res)
   } else {
     a=g0+m/cs*(x-Rd)
     b=y*g0+m/cs*(-Gstar*x-Rd*y)-cs*g0+(x-Rd)*(1.6-m)
@@ -829,14 +836,14 @@ f.ci.treshold<-function(PFD,Tleaf,param){
 #' data=data.frame(Tleaf=rep(300,30),Ci=seq(40,1500,50),Qin=rep(2000,30),A=A)
 #' f.plot(measures=data,param=param,list_legend=param['VcmaxRef'],name='Example 01',type='Aci')
 
-f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci'){
+f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci',...){
   # Plot all data points
   if(type=='Aci'){x=measures$Ci
   xlab=expression(italic(C)[i]~ppm)}
   if(type%in%c('Aq','AQ')){x=measures$Qin
   xlab=expression(italic(Q)['in']~mu*mol~m^-2~s^-1)}
   if(!type%in%c('Aci','AQ','Aq')){print('type should be Aci or Aq')}
-  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab=expression(italic(A)~mu*mol~m^-2~s^-1),ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)))
+  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab=expression(italic(A)~mu*mol~m^-2~s^-1),ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)),...)
   if(!is.null(list_legend)){
     list_legend=list_legend[order(names(list_legend))]
     legend("bottomright",legend=mapply(FUN = function(x, i){paste(i,'=', round(x,2))}, list_legend, names(list_legend)),bty="n",cex=1)
