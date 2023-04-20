@@ -14,27 +14,27 @@ f.VcmaxRef.LAI(
 )
 }
 \arguments{
-\item{alpha}{Slope of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010}
+\item{alpha}{Slope of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010.}
 
-\item{beta}{Intercept of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010}
+\item{beta}{Intercept of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010.}
 
-\item{Vcmax0}{Vcmax at 25 degree C at the top of the canopy}
+\item{Vcmax0}{Vcmax at 25 degree C at the top of the canopy.}
 
-\item{LAI}{Vector of Leaf Area Index (or depth within the canopy see Clark et al. 2011)}
+\item{LAI}{Vector of Leaf Area Index (or depth within the canopy see Clark et al. 2011).}
 
-\item{kn}{Exponential decrease}
+\item{kn}{Exponential decrease.}
 
-\item{lambda}{Asymptot of the decrease (see Krinner et al. 2005)}
+\item{lambda}{Asymptot of the decrease (see Krinner et al. 2005).}
 }
 \value{
-Vector of Vcmax at the different LAI specified in the call of the function
+Vector of Vcmax (or any other parameter) at the different LAI specified in the call of the function
 }
 \description{
 Several versions of gradients can be found in the litterature, see for example Lloyd et al. 2010 (Fig. 10 and equation A2), but also the equation A14 from Krinner et al. 2005 and the equation 33 from Clark et al. 2011
 The simpler model describing the gradients is Vcmax(LAI)=Vcmax0 x exp(-kn x LAI) with Vcmax0 Vcmax at the top of the canopy
-kn can be also calculated as a function of Vcmax0: kn=exp(alpha x Vcmax0+beta)
+kn can be also calculated as a function of Vcmax0: kn=exp(alpha x Vcmax0+beta).
 If kn is NULL, then the function will use the default alpha and beta to calculate kn. If, on the contrary, kn is given, this specific one will be used to calculate the gradients.
-Krinner et al use a slightly different version of this equation with the parameter lambda: Vcmax(LAI)=Vcmax0 x (1-lambda x (1-exp(-kn*LAI))). The previous equation is a particular case of this one for lambda = 1
+Krinner et al use a slightly different version of this equation with the parameter lambda: Vcmax(LAI)=Vcmax0 x (1-lambda x (1-exp(-kn*LAI))). The previous equation is a particular case of this one for lambda = 1.
 }
 \examples{
 LAI=seq(0,6.2,6.2/49)
@@ -44,7 +44,7 @@ plot(Vcmax)
 lines(Vcmax2)
 }
 \references{
-Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199
-Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010
+Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199.
+Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011.
+Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010.
 }

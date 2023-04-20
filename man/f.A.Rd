@@ -6,23 +6,40 @@
 \usage{
 f.A(PFD, cs, Tleaf, Tair, RH, param = f.make.param())
 }
+\arguments{
+\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1.}
+
+\item{cs}{CO2 concentration at the leaf surface.}
+
+\item{Tleaf}{Leaf temperature in Kelvin.}
+
+\item{Tair}{Air temperature in Kelvin.}
+
+\item{RH}{Relative humidity at the leaf surface (between 0 and 100).}
+
+\item{param}{List of parameters given by f.make.param().}
+}
 \value{
 List of different variables:
- - A: Raw assimilation of the leaf in micromol.m-2.s-1
- - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1
- - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1
- - Ap: TPU rate of the leaf in micromol.m-2.s-1
- - Ag: Gross assimilation in micromol.m-2.s-1
- - gs: Conductance of the leaf for water vapour in mol m-2 s-1
- - ci: Intracellular CO2 concentration in micromol.mol-1
- - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
- - ds: Leaf surface to air vapour pressure deficit in Pa
- - Trans: Water transpiration in mL m-2 s-1
+ - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+ - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+ - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+ - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+ - Ag: Gross assimilation in micromol.m-2.s-1.
+ - Rd: Respiration rate in micromol.m-2.s-1.
+ - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+ - ci: Intracellular CO2 concentration in micromol.mol-1.
+ - ds: Leaf surface to air vapour pressure deficit in Pa.
+ - Transp: Water transpiration in mL m-2 s-1.
 }
 \description{
-Photosynthesis model at the leaf level using the farquhar equations. The parameters can be defined by the
-function f.make param and corresponds to the parameters inplemented in different Terrestrial Biosphere Modesl such as ORCHIDEE, JULES, CLM4.5 or FATES
+Photosynthesis model at the leaf level using the farquhar equations coupled with a conductance model. The parameters can be defined by the
+function f.make param and corresponds to the parameters implemented in FATES model. Note that the conductance model is selected in the param parameter.
 }
 \examples{
 f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
+}
+\references{
+Farquhar, G. D., von Caemmerer, S. V., & Berry, J. A. (1980). A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, 78-90.
+Fates parameters: https://github.com/NGEET/fates/blob/main/parameter_files/fates_params_default.cdl.
 }

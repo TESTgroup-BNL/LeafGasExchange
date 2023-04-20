@@ -7,22 +7,26 @@
 f.arrhenius.inv(P, Ha, Tleaf, TRef = 298.16, R = 8.314)
 }
 \arguments{
-\item{P}{Value of the parameter at Tleaf}
+\item{P}{Value of the parameter at Tleaf.}
 
-\item{Ha}{Enthalpie of activation in J.mol-1}
+\item{Ha}{Enthalpie of activation in J.mol-1.}
 
-\item{Tleaf}{Temperature of the leaf in Kelvin}
+\item{Tleaf}{Temperature of the leaf in Kelvin.}
 
-\item{TRef}{Reference temperature}
+\item{TRef}{Reference temperature in Kelvin.}
 
-\item{R}{Ideal gas constant}
+\item{R}{Ideal gas constant.}
 }
 \value{
-
+Value of the parameter at the reference temperature
 }
 \description{
 Temperature dependence of Gamma star, Ko, Kc and Rd
 }
 \details{
-Retrieve the value of the parameter at Tref knowing its value at Tleaf
+Retrieve the value of the parameter at TRef knowing its value at Tleaf
+}
+\examples{
+RdTleaf=f.arrhenius(PRef=1,Ha=46390,Tleaf=273.16+32,R=8.314)
+f.arrhenius.inv(P=RdTleaf,Ha=46390,Tleaf=273.16+32,R=8.314)
 }

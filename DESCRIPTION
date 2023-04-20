@@ -1,11 +1,11 @@
 Package: LeafGasExchange
-Title: A package containing functions for fitting photosynthetic response curves, simulat leaf and canopy photosynthesis.
+Title: A package containing functions for fitting photosynthetic response curves, simulat leaf and canopy photosynthesis
 Version: 1.0.1
 Authors@R: 
     c(person(given = "Julien",
            family = "Lamour",
            role = c("aut", "cre"),
-           email = "jlamour@bnl.gov",
+           email = "jlamour.sci@gmail.com",
            comment = c(ORCID = "0000-0002-4410-507X")),
     person(given = "Shawn",
            family = "Serbin",
@@ -16,7 +16,7 @@ Description: Model gas exchanges at the leaf level using a coupled stomatal cond
 License: GNU General Public License v3.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Depends: stats4, polynom, bbmle, readxl, stringr, tidyverse, readr, tealeaves, reshape2, ggplot2
 Imports: 
     stats4,
@@ -34,4 +34,4 @@ VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2020-04-12 20:39:25 UTC; jlamour
 Author: Julien Lamour [aut, cre]
-Maintainer: Julien Lamour <jlamour@bnl.gov>
+Maintainer: Julien Lamour <jlamour.sci@gmail.com>

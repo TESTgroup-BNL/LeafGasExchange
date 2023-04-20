@@ -13,15 +13,15 @@ f.gsmax(
 )
 }
 \arguments{
-\item{Sarea}{Maximum area of the aperture of stomata when open (microm2)}
+\item{Sarea}{Maximum area of the aperture of stomata when open (microm2).}
 
-\item{Sdensity}{Number of stomata per mm2 of leaf}
+\item{Sdensity}{Number of stomata per mm2 of leaf.}
 
-\item{Sdepth}{Stomatal pore depth (micro m)}
+\item{Sdepth}{Stomatal pore depth (micro m).}
 
-\item{Diffusivity}{Diffusivity of water vapor in air (m2 s-1)}
+\item{Diffusivity}{Diffusivity of water vapor in air (m2 s-1).}
 
-\item{mvair}{Molar volume of air (m3 mol-1)}
+\item{mvair}{Molar volume of air (m3 mol-1).}
 }
 \value{
 Maximum stomatal conductance to water vapour in mol m-2 s-1
@@ -35,8 +35,8 @@ This function calculates the maximum theoretical conductance value according to 
 \examples{
 ## The density of stomata is around 400 stomata.mm-2 in the tropical species.
 ## The length of the stomata is around 20 micro m. Following Franks and Beerling 2009 we can estimate the
-## Sarea of the stomata: pi*(20/4*10^-6)^2 and the Sdepth: 20*10^-6/4
-f.gsmax(Sarea=0.78,Sdensity=400,Sdepth=5)
+## Sarea of the stomata: pi*(20/4*10^-6)^2 and the Sdepth: 20*10^-6/4.
+f.gsmax(Sarea=0.78,Sdensity=400,Sdepth=5).
 }
 \references{
 Franks PJ, Beerling DJ. Maximum leaf conductance driven by CO2 effects on stomatal size and density over geologic time. Proc Natl Acad Sci U S A. 2009;106(25):10343-10347. doi:10.1073/pnas.0904209106

@@ -2,17 +2,25 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.smooth}
 \alias{f.smooth}
-\title{Smoothing functions between photosynthesis limitations (for example between rubisco carboxylation and light limitation)}
+\title{Analytical solution for f.Aci with mesophyll conductance}
 \usage{
 f.smooth(A1, A2, theta, root = 1)
 }
 \arguments{
-\item{theta}{Smoothing factor}
+\item{A1}{Photosynthesis rate under limitation state 1 in micro mol m-2 s-1.}
+
+\item{A2}{Photosynthesis rate under limitation state 1 in micro mol m-2 s-1.}
+
+\item{theta}{Smoothing factor between 0 and 1.}
+
+\item{ci}{}
 }
 \value{
-Smoothed value
+Smoothed photosynthesis value in micro mol m-2 s-1.
 }
 \description{
+Analytical solution for f.Aci with mesophyll conductance
+
 Smoothing functions between photosynthesis limitations (for example between rubisco carboxylation and light limitation)
 }
 \examples{
@@ -23,3 +31,4 @@ plot(A1,type='l')
 lines(A2)
 lines(Asmooth,col='blue')
 }
+\keyword{internal}

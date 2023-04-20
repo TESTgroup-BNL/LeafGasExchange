@@ -4,17 +4,18 @@
 \alias{f.plot}
 \title{Plot data and model}
 \usage{
-f.plot(measures = NULL, list_legend, param, name = "", type = "Aci")
+f.plot(measures = NULL, list_legend, param, name = "", type = "Aci", ...)
 }
 \arguments{
-\item{measures}{Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf
-Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf}
+\item{measures}{Data frame obtained from CO2 or light curve with at least columns A, Ci, Qin and Tleaf.}
 
-\item{list_legend}{Named list where the name and values will appear in the legend}
+\item{list_legend}{Named list where the name and values will appear in the legend.}
+
+\item{param}{List of parameters given by f.make.param().}
 
 \item{name}{Name of the curve to be displayed}
 
-\item{type}{Type of the curve to plot (light curve: Aq or CO2 curve Aci)}
+\item{type}{Type of the curve to plot (light curve: Aq or CO2 curve Aci).}
 }
 \value{
 Plot a figure

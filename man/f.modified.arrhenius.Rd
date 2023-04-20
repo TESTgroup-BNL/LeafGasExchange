@@ -2,34 +2,47 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.modified.arrhenius}
 \alias{f.modified.arrhenius}
-\title{Temperature dependence of Jmax and Vcmax}
+\title{Temperature dependence of photosynthetic parameters}
 \usage{
 f.modified.arrhenius(PRef, Ha, Hd, s, Tleaf, TRef = 298.16, R = 8.314)
 }
 \arguments{
-\item{PRef}{Value of the parameter, here Vcmax or Jmax, at the reference temperature in micromol.m-2.s-1}
+\item{PRef}{Value of the parameter, here Vcmax or Jmax, at the reference temperature in micromol.m-2.s-1.}
 
-\item{Ha}{Energy of activation in J.mol-1}
+\item{Ha}{Energy of activation in J.mol-1.}
 
-\item{Hd}{Energy of desactivation in J.mol-1}
+\item{Hd}{Energy of desactivation in J.mol-1.}
 
-\item{s}{Entropy term in J.mol-1.K-1}
+\item{s}{Entropy term in J.mol-1.K-1.}
 
-\item{Tleaf}{Temperature of the leaf in Kelvin}
+\item{Tleaf}{Temperature of the leaf in Kelvin.}
 
-\item{TRef}{Reference temperature}
+\item{TRef}{Reference temperature in Kelvin, usually 25 + 273.16 K.}
 
-\item{R}{Ideal gas constant}
+\item{R}{Ideal gas constant.}
 }
 \value{
+Value of the photosynthetic parameter at the specified leaf temperature
+
+Value of the photosynthetic parameter at the specified leaf temperature
+
 Value of the parameter Jmax or Vcmax at a given temperature
 }
 \description{
-The temperature dependence of the photosynthetic parameters Vcmax, the maximum catalytic rate of the enzyme Rubisco, and Jmax, the maximum electron transport rate is modelled by a modified Arrehenius equation. It is modified to account for decreases in each parameter at high temperatures.
+The temperature dependence of the photosynthetic parameters Vcmax, the maximum catalytic rate of the enzyme Rubisco, and Jmax, the maximum electron transport rate is modeled by a modified Arrhenius equation. It is modified to account for decreases in each parameter at high temperatures.
+}
+\details{
+This equation is used in JULES TBM model
+
+This equation is used in JULES TBM model
 }
 \examples{
 plot(x=seq(25,35,0.1),y=f.modified.arrhenius(PRef=50,Ha=73637,Hd=149252,s=486,Tleaf=seq(273.15+25,273.15+35,0.1)),xlab='Temperature degree C',ylab='Vcmax')
 }
 \references{
-Leuning, R. (2002), Temperature dependence of two parameters in a photosynthesis model. Plant, Cell & Environment, 25: 1205-1210. doi:10.1046/j.1365-3040.2002.00898.x
+Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
+
+Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
+
+Leuning, R. (2002), Temperature dependence of two parameters in a photosynthesis model. Plant, Cell & Environment, 25: 1205-1210. doi:10.1046/j.1365-3040.2002.00898.x.
 }

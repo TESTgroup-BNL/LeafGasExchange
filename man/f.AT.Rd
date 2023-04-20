@@ -19,14 +19,21 @@ f.AT(
 )
 }
 \value{
-- A: Raw assimilation of the leaf in micromol.m-2.s-1
- - Ag: Gross assimilation in micromol.m-2.s-1
- - gs: Conductance of the leaf for water vapour in mol m-2 s-1
- - ci: Intracellular CO2 concentration in micromol.mol-1
- - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
- - ds: Leaf surface to air vapour pressure deficit in Pa
- - Trans: Water transpiration in mL m-2 s-1
- - Tleaf: Leaf Temperature in K
+List of different variables:
+ - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+ - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+ - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+ - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+ - Ag: Gross assimilation in micromol.m-2.s-1.
+ - Rd: Respiration rate in micromol.m-2.s-1.
+ - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+ - ci: Intracellular CO2 concentration in micromol.mol-1.
+ - ds: Leaf surface to air vapour pressure deficit in Pa.
+ - Transp: Water transpiration in mL m-2 s-1.
+ - gbw: boundary layer conductance in mol m-2 s-1.
+ - cs: CO2 concentration at the leaf surface in ppm.
+ - RHs: Relative humidity at the leaf surface (0 100).
+ - Tleaf: Leaf temperature in K
 }
 \description{
 Coupled conductance photosynthesis model and energy balance model
@@ -41,5 +48,5 @@ leaf_physio=f.AT(PFD=seq(0,1500,50),ca=400,Tair=298,wind=2,RHa=70,param=f.make.p
 plot(x=seq(0,1500,50),y=leaf_physio$A)
 }
 \references{
-tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487
+tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487.
 }

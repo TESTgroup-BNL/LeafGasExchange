@@ -7,7 +7,6 @@
 f.MinusLogL(
   data,
   sigma,
-  TBM = 0,
   R = 0.75,
   O2 = 0.75,
   TRef = 0.75,
@@ -20,9 +19,6 @@ f.MinusLogL(
   VcmaxHa = 0.75,
   VcmaxHd = 0.75,
   VcmaxS = 0.75,
-  VcmaxQ10 = 0.75,
-  Tlow = 0.75,
-  Tup = 0.75,
   TpRef = 0.75,
   TpHa = 0.75,
   TpHd = 0.75,
@@ -38,93 +34,73 @@ f.MinusLogL(
   KcQ10 = 0.75,
   KoRef = 0.75,
   KoHa = 0.75,
-  KoQ10 = 0.75,
   GstarRef = 0.75,
   GstarHa = 0.75,
-  TauRef = 0.75,
-  TauQ10 = 0.75,
   abso = 0.75,
   aQY = 0.75,
   Theta = 0.75,
   model.gs = NA,
   g0 = 0.75,
   g1 = 0.75,
-  power = 0.75,
-  gmRef = 0.75,
-  gmS = 0.75,
-  gmHa = 0.75,
-  gmHd = 0.75
+  power = 0.75
 )
 }
 \arguments{
 \item{sigma}{Sigma value}
 
-\item{TBM}{Type of model (FATES, ORCHIDEE, CLM4.5 or JULES). Default is FATES}
+\item{R}{Ideal gas constant.}
 
-\item{R}{Ideal gas constant}
+\item{O2}{O2 concentration in ppm.}
 
-\item{O2}{O2 concentration in ppm}
+\item{TRef}{Reference temperature for Kc, Ko, Rd,GammaStar Vcmax, Jmax in Kelvin.}
 
-\item{TRef}{Reference temperature for Kc, Ko, Rd,GammaStar Vcmax, Jmax}
+\item{Patm}{Atmospheric pressure in kPa.}
 
-\item{Patm}{Atmospheric pressure in kPa}
+\item{JmaxRef}{Maximum electron transport rate in micromol.m-2.s-1.}
 
-\item{JmaxRef}{Maximum electron transport rate in micromol.m-2.s-1}
+\item{JmaxHa}{Energy of activation for Jmax in J.mol-1.}
 
-\item{JmaxHa}{Energy of activation for Jmax in J.mol-1}
+\item{JmaxHd}{Energy of desactivation for Jmax in J.mol-1.}
 
-\item{JmaxHd}{Energy of desactivation for Jmax in J.mol-1}
+\item{JmaxS}{Entropy term for Jmax in J.mol-1.K-1.}
 
-\item{JmaxS}{Entropy term for Jmax in J.mol-1.K-1}
+\item{VcmaxRef}{Maximum rate of Rubisco for carboxylation micromol.m-2.s-1.}
 
-\item{VcmaxRef}{Maximum rate of Rubisco for carboxylation micromol.m-2.s-1}
+\item{VcmaxHa}{Energy of activation for Vcmax in J.mol-1.}
 
-\item{VcmaxHa}{Energy of activation for Vcmax in J.mol-1}
+\item{VcmaxHd}{Energy of desactivation for Vcmax in J.mol-1.}
 
-\item{VcmaxHd}{Energy of desactivation for Vcmax in J.mol-1}
+\item{VcmaxS}{Entropy term for Vcmax in J.mol-1.K-1.}
 
-\item{VcmaxS}{Entropy term for Vcmax in J.mol-1.K-1}
+\item{RdRef}{Respiration value at the reference temperature in micromol.m-2.s-1.}
 
-\item{RdRef}{Respiration value at the reference temperature}
+\item{RdHa}{Energie of activation for Rd in J.mol-1.}
 
-\item{RdHa}{Energie of activation for Rd in J.mol-1}
+\item{KcRef}{Michaelis-Menten constant of Rubisco for CO2 at the reference temperature in micromol.mol-1.}
 
-\item{KcRef}{Michaelis-Menten constant of Rubisco for CO2 at the reference temperature in micromol.mol-1}
+\item{KcHa}{Energy of activation for Kc in J.mol-1.}
 
-\item{KcHa}{Energy of activation for Kc in J.mol-1}
+\item{KoRef}{ichaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1.}
 
-\item{KoRef}{ichaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1}
+\item{KoHa}{Energy of activation for Ko in J.mol-1.}
 
-\item{KoHa}{Energy of activation for Ko in J.mol-1}
+\item{GstarRef}{CO2 compensation point in absence of respiration in micromol.mol-1.}
 
-\item{GstarRef}{CO2 compensation point in absence of respiration in micromol.mol-1}
+\item{GstarHa}{Enthalpie of activation for Gstar in J.mol-1.}
 
-\item{GstarHa}{Enthalpie of activation for Gstar in J.mol-1}
+\item{abso}{Absorptance of the leaf in the photosynthetic active radiation wavelenghts.}
 
-\item{abso}{Absorptance of the leaf in the photosynthetic active radiation wavelenghts}
+\item{aQY}{Apparent quantum yield.}
 
-\item{aQY}{Apparent quantum yield}
+\item{Theta}{Theta is the empirical curvature factor for the response of J to PFD. It takes its values between 0 and 1.}
 
-\item{Theta}{Theta is the empirical curvacture factor for the response of J to PFD. It takes its values between 0 and 1.}
+\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB or Nonlinear). See f.gs documentation for more information.}
 
-\item{model.gs}{Type of conductance model (USO, USO_simpl,BWB or Nonlinear). Do not chose Nonlinear with Orchidee TBM}
+\item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1, usually around 0.01.}
 
-\item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1}
+\item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019).}
 
-\item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019)}
-
-\item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article}
-
-\item{gmRef}{Mesophyll conductance at Tref (25 deg C) mol m-2 s-1}
-
-\item{gmS}{Entropy term for gm J K-1 mol-1}
-
-\item{gmHa}{Energy of activation for gm in J.mol-1}
-
-\item{gmHd}{Energy of deactivation for gm in J.mol-1}
-}
-\value{
-
+\item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article.}
 }
 \description{
 Title

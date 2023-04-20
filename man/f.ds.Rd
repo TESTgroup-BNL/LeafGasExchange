@@ -7,11 +7,11 @@
 f.ds(Tleaf, Tair, RH)
 }
 \arguments{
-\item{Tleaf}{Temperature of the leaf in Kelvin}
+\item{Tleaf}{Temperature of the leaf in Kelvin.}
 
-\item{Tair}{Temperature of the air in Kelvin}
+\item{Tair}{Temperature of the air in Kelvin.}
 
-\item{RH}{Humidity of the air (0 to 100)}
+\item{RH}{Humidity of the air (0 to 100).}
 }
 \value{
 Ds in Pascal

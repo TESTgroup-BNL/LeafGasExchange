@@ -2,15 +2,22 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.ci.treshold}
 \alias{f.ci.treshold}
-\title{Intracellular CO2 threshold between electron transport and carboxylation limitations}
+\title{Intercellular CO2 threshold between electron transport and carboxylation limitations}
 \usage{
 f.ci.treshold(PFD, Tleaf, param)
 }
+\arguments{
+\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1.}
+
+\item{Tleaf}{Leaf temperature in Kelvin.}
+
+\item{param}{List of parameters given by f.make.param().}
+}
 \value{
-Intracellular CO2 such as Wc==Wj
+Intercellular CO2 such as Wc==Wj
 }
 \description{
-Intracellular CO2 threshold between electron transport and carboxylation limitations
+Intercellular CO2 threshold between electron transport and carboxylation limitations
 }
 \examples{
 f.ci.treshold(PFD=2000,Tleaf=300,param=f.make.param(VcmaxRef=60,JmaxRef=85))

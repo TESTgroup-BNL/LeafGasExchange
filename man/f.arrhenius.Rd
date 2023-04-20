@@ -7,15 +7,15 @@
 f.arrhenius(PRef, Ha, Tleaf, TRef = 298.16, R = 8.314)
 }
 \arguments{
-\item{PRef}{Value of the parameter at the reference temperature}
+\item{PRef}{Value of the parameter at the reference temperature.}
 
-\item{Ha}{Enthalpie of activation in J.mol-1}
+\item{Ha}{Enthalpie of activation in J.mol-1.}
 
-\item{Tleaf}{Temperature of the leaf in Kelvin}
+\item{Tleaf}{Temperature of the leaf in Kelvin.}
 
-\item{TRef}{Reference temperature}
+\item{TRef}{Reference temperature in Kelvin.}
 
-\item{R}{Ideal gas constant}
+\item{R}{Ideal gas constant.}
 }
 \value{
 Value of the parameter at the temperature of the leaf
@@ -27,6 +27,6 @@ Temperature dependence of Gamma star, Ko, Kc and Rd
 plot(x=seq(25,35,0.1),y=f.arrhenius(PRef=1,Ha=46390,Tleaf=seq(273.15+25,273.15+35,0.1),R=8.314),xlab='Temperature degree C',ylab='Rd')
 }
 \references{
-VON CAEMMERER, S. (2013), Steady state models of photosynthesis. Plant Cell Environ, 36: 1617-1630. doi:10.1111/pce.12098
- Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.x
+VON CAEMMERER, S. (2013), Steady state models of photosynthesis. Plant Cell Environ, 36: 1617-1630. doi:10.1111/pce.12098.
+ Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.x.
 }

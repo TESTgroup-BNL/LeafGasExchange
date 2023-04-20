@@ -9,9 +9,6 @@ f.solv.poly(data)
 \arguments{
 \item{data}{}
 }
-\value{
-
-}
 \description{
 Polynom solver
 }

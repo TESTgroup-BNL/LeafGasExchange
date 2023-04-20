@@ -22,11 +22,11 @@
 #'
 #'    U_i = F_i - E_i * U_i+1
   
-#' @param a See description
-#' @param b See description
-#' @param c See description
-#' @param d See description
-#' @param n See description
+#' @param a See description.
+#' @param b See description.
+#' @param c See description.
+#' @param d See description.
+#' @param n See description.
 #'
 #' @return Solution U
 #' @export
@@ -58,17 +58,17 @@ f.tridiagonal.solver=function(a,b,c,d,n){
 
 #' @title Norman 1979 Radiation interception model
 #' Converted into a R code from the original code of Gordon Bonan: Bonan, G. (2019). Climate Change and Terrestrial Ecosystem Modeling. Cambridge: Cambridge University Press. doi:10.1017/9781107339217
-#' @param Rho Leaf reflectance
-#' @param Tau Leaf transmittance
-#' @param Rho_soil_dir Direct beam albedo of ground (soil)
-#' @param Rho_soil_dif Direct beam albedo of ground (soil)
-#' @param cosz Cosinus of the solar zenith angle
-#' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6
-#' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)
-#' @param dLAI LAI of each one of the n layers of vegetation in the canopy, layer 1 is the top of canopy, layer n is the bottom
-#' @param nlayers Number of vegetation layers
-#' @param PARdir Atmospheric direct beam solar radiation (W/m2)
-#' @param PARdif Atmospheric diffuse solar radiation (W/m2)
+#' @param Rho Leaf reflectance.
+#' @param Tau Leaf transmittance.
+#' @param Rho_soil_dir Direct beam albedo of ground (soil).
+#' @param Rho_soil_dif Direct beam albedo of ground (soil).
+#' @param cosz Cosinus of the solar zenith angle.
+#' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6.
+#' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012).
+#' @param dLAI LAI of each one of the n layers of vegetation in the canopy, layer 1 is the top of canopy, layer n is the bottom.
+#' @param nlayers Number of vegetation layers.
+#' @param PARdir Atmospheric direct beam solar radiation (W/m2).
+#' @param PARdif Atmospheric diffuse solar radiation (W/m2).
 #'
 #' @return list of output:
 #' PARsun Absorbed PFD by the sunlit leaves
@@ -312,22 +312,22 @@ f.Norman.Radiation=function(Rho=0.1, Tau=0.05, Rho_soil_dir=0.1,Rho_soil_dif=0.1
 
 
 #' @title Function to describe the light levels inside the canopy
-#' @param meteo_hourly Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.
-#' @param lat Latitude of the canopy to model 
-#' @param DOY Day of Year 
-#' @param nlayers Number of layers inside the canopy (max = 50)
-#' @param dLAI LAI of each one of the n layers of vegetation in the canopy
-#' @param LAI Cumulated LAI in the midle of each layer
-#' @param Rho Leaf reflectance in the visible wavelengths
-#' @param Tau Leaf transmittance in the visible wavelengths
-#' @param Rho_soil Soil reflectance in the visible wavelengths
-#' @param Rho_NIR Leaf reflectance in the NIR wavelengths
-#' @param Tau_NIR Leaf transmittance in the NIR wavelengths
-#' @param Rho_soil_NIR Soil reflectance in the NIR wavelengths
-#' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6
-#' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)
+#' @param meteo_hourly Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc from 0 to 100), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.
+#' @param lat Latitude of the canopy to model.
+#' @param DOY Day of Year .
+#' @param nlayers Number of layers inside the canopy (max = 50).
+#' @param dLAI LAI of each one of the n layers of vegetation in the canopy.
+#' @param LAI Cumulated LAI in the midle of each layer.
+#' @param Rho Leaf reflectance in the visible wavelengths.
+#' @param Tau Leaf transmittance in the visible wavelengths.
+#' @param Rho_soil Soil reflectance in the visible wavelengths.
+#' @param Rho_NIR Leaf reflectance in the NIR wavelengths.
+#' @param Tau_NIR Leaf transmittance in the NIR wavelengths.
+#' @param Rho_soil_NIR Soil reflectance in the NIR wavelengths.
+#' @param chil Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6.
+#' @param clumpfac Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012).
 
-#' @param model Model for the radiation interception model, default is Norman (only Norman implemented so far)
+#' @param model Model for the radiation interception model, default is Norman (only Norman implemented so far).
 #'
 #' @return
 #' @export
@@ -447,19 +447,19 @@ f.canopy.interception=function(meteo_hourly,lat,DOY,nlayers,dLAI,LAI,Rho=0.11,Ta
 #' @title Gradients of photosynthetic parameters
 #' @description Several versions of gradients can be found in the litterature, see for example Lloyd et al. 2010 (Fig. 10 and equation A2), but also the equation A14 from Krinner et al. 2005 and the equation 33 from Clark et al. 2011
 #' The simpler model describing the gradients is Vcmax(LAI)=Vcmax0 x exp(-kn x LAI) with Vcmax0 Vcmax at the top of the canopy
-#' kn can be also calculated as a function of Vcmax0: kn=exp(alpha x Vcmax0+beta)
+#' kn can be also calculated as a function of Vcmax0: kn=exp(alpha x Vcmax0+beta).
 #' If kn is NULL, then the function will use the default alpha and beta to calculate kn. If, on the contrary, kn is given, this specific one will be used to calculate the gradients.
-#' Krinner et al use a slightly different version of this equation with the parameter lambda: Vcmax(LAI)=Vcmax0 x (1-lambda x (1-exp(-kn*LAI))). The previous equation is a particular case of this one for lambda = 1
-#' @param alpha Slope of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010
-#' @param beta Intercept of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010
-#' @param Vcmax0 Vcmax at 25 degree C at the top of the canopy
-#' @param LAI Vector of Leaf Area Index (or depth within the canopy see Clark et al. 2011)
-#' @param kn Exponential decrease
-#' @param lambda Asymptot of the decrease (see Krinner et al. 2005)
-#' @references Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199
-#' Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-#' Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010
-#' @return Vector of Vcmax at the different LAI specified in the call of the function
+#' Krinner et al use a slightly different version of this equation with the parameter lambda: Vcmax(LAI)=Vcmax0 x (1-lambda x (1-exp(-kn*LAI))). The previous equation is a particular case of this one for lambda = 1.
+#' @param alpha Slope of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010.
+#' @param beta Intercept of the relationship between Vcmax0 and log(kn), see Lloyd et al. 2010.
+#' @param Vcmax0 Vcmax at 25 degree C at the top of the canopy.
+#' @param LAI Vector of Leaf Area Index (or depth within the canopy see Clark et al. 2011).
+#' @param kn Exponential decrease.
+#' @param lambda Asymptot of the decrease (see Krinner et al. 2005).
+#' @references Krinner, G., Viovy, N., de Noblet-Ducoudr?, N., Og?e, J., Polcher, J., Friedlingstein, P., . Prentice, I. C. (2005). A dynamic global vegetation model for studies of the coupled atmosphere-biosphere system. Global Biogeochemical Cycles, 19(1). doi:10.1029/2003gb002199.
+#' Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011.
+#' Lloyd, J., Pati?o, S., Paiva, R. Q., Nardoto, G. B., Quesada, C. A., Santos, A. J. B., . Mercado, L. M. (2010). Optimisation of photosynthetic carbon gain and within-canopy gradients of associated foliar traits for Amazon forest trees. Biogeosciences, 7(6), 1833-1859. doi:10.5194/bg-7-1833-2010.
+#' @return Vector of Vcmax (or any other parameter) at the different LAI specified in the call of the function
 #' @export
 #'
 #' @examples
@@ -478,25 +478,24 @@ f.VcmaxRef.LAI=function(alpha=0.00963,beta=-2.43,Vcmax0=50,LAI=0:8,kn=NULL,lambd
 
 #' @title Canopy scale GPP calculation
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
-#' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
-#' @param meteo_hourly See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf
-#' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
-#' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
-#' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy
-#' @param Tp_Profile Vector of the values of Tp at the reference temperature at each layer of the canopy
-#' @param g0_Profile Vector of the values of g0 at the reference temperature at each layer of the canopy
-#' @param g1_Profile Vector of the values of g1 at the reference temperature at each layer of the canopy
-#' @param gsmin Minimum stomatal conductance for water to consider. This value will be used as the minimum conductance value to avoid 0 and negative values obtained from the coupled assimilation and conductance models
-#' @param canopy Description of the canopy interception (see canopy_interception function)
-#' @param Patm Atmospheric pressure (used to calculate the transpiration)
-#' @param ... Other parameters of the photosynthetic model, without gradients, for example curvature factor, quantum yield.. see the help of f.make.param()
+#' @param meteo_hourly See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf.
+#' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy.
+#' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy.
+#' @param Rd_Profile Vector of the values of Rd at the reference temperature at each layer of the canopy.
+#' @param Tp_Profile Vector of the values of Tp at the reference temperature at each layer of the canopy.
+#' @param g0_Profile Vector of the values of g0 at the reference temperature at each layer of the canopy.
+#' @param g1_Profile Vector of the values of g1 at the reference temperature at each layer of the canopy.
+#' @param gsmin Minimum stomatal conductance for water to consider. This value will be used as the minimum conductance value to avoid 0 and negative values obtained from the coupled assimilation and conductance models.
+#' @param canopy Description of the canopy interception (see canopy_interception function).
+#' @param Patm Atmospheric pressure (used to calculate the transpiration).
+#' @param ... Other parameters of the photosynthetic model, without gradients, for example curvature factor, quantum yield.. see the help of f.make.param().
 #'
 #' @return
 #' @export
 #'
 #' @examples
-#' See vignettes on github
-f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
+#' #See vignettes on github
+f.GPP<-function(meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
@@ -507,8 +506,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 Tair = meteo_hourly[,"Tair"]+273.15,
                 Tleaf= meteo_hourly[,"Tleaf"]+273.15,
                 RH = meteo_hourly[,"RH"],
-                param = f.make.param(TBM=TBM,
-                                     VcmaxRef =Vcmax_Profile[Layer],
+                param = f.make.param(VcmaxRef =Vcmax_Profile[Layer],
                                      RdRef = Rd_Profile[Layer],
                                      JmaxRef=Jmax_Profile[Layer],
                                      TpRef=Tp_Profile[Layer],
@@ -519,7 +517,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
     
-    res_dir$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dir[Layer,],cs = meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dir[Layer,],cs = meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
@@ -536,8 +534,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 Tair = meteo_hourly[,"Tair"]+273.15,
                 Tleaf= meteo_hourly[,"Tleaf"]+273.15,
                 RH = meteo_hourly[,"RH"],
-                param = f.make.param(TBM=TBM,
-                                     VcmaxRef =Vcmax_Profile[Layer],
+                param = f.make.param(VcmaxRef =Vcmax_Profile[Layer],
                                      RdRef = Rd_Profile[Layer],
                                      JmaxRef=Jmax_Profile[Layer],
                                      TpRef=Tp_Profile[Layer],
@@ -547,7 +544,7 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
                 ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dif[Layer,],cs =meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.A(PFD = canopy$Canopy_time_dif[Layer,],cs =meteo_hourly[,"cs"],Tleaf = meteo_hourly[,"Tleaf"]+273.15,Tair = meteo_hourly[,"Tair"]+273.15,RH = meteo_hourly[,"RH"],param = f.make.param(
                                                                                                                                                              VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                              RdRef = Rd_Profile[Layer],
                                                                                                                                                              JmaxRef=Jmax_Profile[Layer],
@@ -587,7 +584,6 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 
 #' @title Canopy scale GPP calculation, with leaf energy budget
 #' @description Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
-#' @param TBM Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)
 #' @param meteo_hourly See f.canopy.interception
 #' @param Vcmax_Profile Vector of the values of Vcmax at the reference temperature at each layer of the canopy
 #' @param Jmax_Profile Vector of the values of Jmax at the reference temperature at each layer of the canopy
@@ -604,8 +600,8 @@ f.GPP<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profil
 #' @export
 #'
 #' @examples
-#' See github vignettes
-f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
+#' #See github vignettes
+f.GPPT<-function(meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profile,g0_Profile,g1_Profile,gsmin,canopy,Patm=100,...){
   if(length(Vcmax_Profile)!=nrow(canopy$Canopy_time_dir)){print(paste('Are you sure you want to use',length(Vcmax_Profile),'different Vcmax but ',nrow(canopy$Canopy_time_dir),'vertical canopy layers ?'))}
   VpdL_dir=VpdL_dif=Photosynthesis_rate_dir=Photosynthesis_rate_dif=gs_dir=gs_dif=rd_dir=rd_dif=Tleaf_dir=Tleaf_dif=RHs_dir=RHs_dif=cs_dir=cs_dif=canopy$Canopy_time_dir
   nlayer=nrow(canopy$Canopy_time_dir)
@@ -620,8 +616,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  wind= meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
                  abso_s=1,
-                 param = f.make.param(TBM=TBM,
-                                      VcmaxRef =Vcmax_Profile[Layer],
+                 param = f.make.param(VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
@@ -630,7 +625,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dir$gs<gsmin)
     res_dir$gs[ls.gs]=gsmin
-    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = canopy$Canopy_time_NIR_dir[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dir$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dir[Layer,],NIR = canopy$Canopy_time_NIR_dir[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],
@@ -653,8 +648,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),
                  RHa = meteo_hourly[,"RH"],
                  abso_s=1,
-                 param = f.make.param(TBM=TBM,
-                                      VcmaxRef =Vcmax_Profile[Layer],
+                 param = f.make.param(VcmaxRef =Vcmax_Profile[Layer],
                                       RdRef = Rd_Profile[Layer],
                                       JmaxRef=Jmax_Profile[Layer],
                                       TpRef=Tp_Profile[Layer],
@@ -663,7 +657,7 @@ f.GPPT<-function(TBM,meteo_hourly,Vcmax_Profile,Jmax_Profile,Rd_Profile,Tp_Profi
                  ))
     ls.gs=which(res_dif$gs<gsmin)
     res_dif$gs[ls.gs]=gsmin
-    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = canopy$Canopy_time_NIR_dif[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(TBM=TBM,
+    res_dif$A[ls.gs]=f.AT(PFD = canopy$Canopy_time_dif[Layer,],NIR = canopy$Canopy_time_NIR_dif[Layer,],ca = meteo_hourly[,"cs"],Tair = meteo_hourly[,"Tair"]+273.15,RHa = meteo_hourly[,"RH"],wind=meteo_hourly[,'wind']*exp(-0.5*canopy$LAI[Layer]),abso_s=1,param = f.make.param(
                                                                                                                                                       VcmaxRef =Vcmax_Profile[Layer],
                                                                                                                                                       RdRef = Rd_Profile[Layer],
                                                                                                                                                       JmaxRef=Jmax_Profile[Layer],

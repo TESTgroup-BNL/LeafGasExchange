@@ -7,15 +7,15 @@
 f.tridiagonal.solver(a, b, c, d, n)
 }
 \arguments{
-\item{a}{See description}
+\item{a}{See description.}
 
-\item{b}{See description}
+\item{b}{See description.}
 
-\item{c}{See description}
+\item{c}{See description.}
 
-\item{d}{See description}
+\item{d}{See description.}
 
-\item{n}{See description}
+\item{n}{See description.}
 }
 \value{
 Solution U

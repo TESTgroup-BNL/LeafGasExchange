@@ -5,7 +5,6 @@
 \title{Canopy scale GPP calculation, with leaf energy budget}
 \usage{
 f.GPPT(
-  TBM,
   meteo_hourly,
   Vcmax_Profile,
   Jmax_Profile,
@@ -20,8 +19,6 @@ f.GPPT(
 )
 }
 \arguments{
-\item{TBM}{Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)}
-
 \item{meteo_hourly}{See f.canopy.interception}
 
 \item{Vcmax_Profile}{Vector of the values of Vcmax at the reference temperature at each layer of the canopy}
@@ -44,12 +41,9 @@ f.GPPT(
 
 \item{...}{Other parameters of the photosynthetic model, without gradients, for example curvature factor, quantum yield.. see the help of f.make.param()}
 }
-\value{
-
-}
 \description{
 Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 }
 \examples{
-See github vignettes
+#See github vignettes
 }

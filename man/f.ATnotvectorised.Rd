@@ -19,37 +19,45 @@ f.ATnotvectorised(
 )
 }
 \arguments{
-\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1}
+\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1.}
 
-\item{ca}{CO2 concentration in the air}
+\item{ca}{CO2 concentration in the air in ppm.}
 
-\item{Tair}{Air temperature in Kelvin}
+\item{Tair}{Air temperature in Kelvin.}
 
-\item{RHa}{Relative humidity in the air (between 0 and 100)}
+\item{RHa}{Relative humidity in the air (between 0 and 100).}
 
-\item{wind}{Wind speed at the surface of the leaf in m.s-1}
+\item{wind}{Wind speed at the surface of the leaf in m.s-1.}
 
 \item{precision}{Precision of the leaf temperature prediction. The resolution of the energy balance coupled with the photosynthesis and stomatal conductance is numerical. The smaller the precision, the longer will be the resolution.}
 
-\item{max_it}{Maximum number of iterations to find the solution}
+\item{max_it}{Maximum number of iterations to find the solution.}
 
-\item{param}{List of parameters given by f.make.param()}
+\item{param}{List of parameters given by f.make.param().}
 
-\item{NIR}{NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57 )}
+\item{NIR}{NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57).}
 
-\item{abso_s}{absorptance of the leaves in shortwave, see documentation of tealeaves package}
+\item{abso_s}{absorptance of the leaves in shortwave, see documentation of tealeaves package.}
 
-\item{leaf_size}{Dimension of the leaf in m (see Tealeaves package)}
+\item{leaf_size}{Dimension of the leaf in m (see Tealeaves package).}
 }
 \value{
-- A: Raw assimilation of the leaf in micromol.m-2.s-1
- - Ag: Gross assimilation in micromol.m-2.s-1
- - gs: Conductance of the leaf for water vapour in mol m-2 s-1
- - ci: Intracellular CO2 concentration in micromol.mol-1
- - cc: Mesophyll CO2 concentration in micromol.mol-1 (for the models using mesophyll conductance)
- - ds: Leaf surface to air vapour pressure deficit in Pa
- - Trans: Water transpiration in mL m-2 s-1
- - Tleaf: Leaf Temperature in K
+List of different variables:
+ - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+ - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+ - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+ - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+ - Ag: Gross assimilation in micromol.m-2.s-1.
+ - Rd: Respiration rate in micromol.m-2.s-1.
+ - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+ - ci: Intracellular CO2 concentration in micromol.mol-1.
+ - ds: Leaf surface to air vapour pressure deficit in Pa.
+ - Transp: Water transpiration in mL m-2 s-1.
+ - gbw: boundary layer conductance in mol m-2 s-1.
+ - cs: CO2 concentration at the leaf surface in ppm.
+ - RHs: Relative humidity at the leaf surface (0 100).
+ - Tleaf: Leaf temperature in K
+#' @export
 }
 \description{
 Coupled conductance photosynthesis model and energy balance model
@@ -57,7 +65,7 @@ Coupled conductance photosynthesis model and energy balance model
 \details{
 This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
 The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
-Here the minimum conductance is considered to be equal to g0.
+Here the cuticular conductance is considered to be equal to g0.
 }
 \examples{
 f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))

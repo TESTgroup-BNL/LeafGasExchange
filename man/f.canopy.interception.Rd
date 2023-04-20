@@ -23,38 +23,35 @@ f.canopy.interception(
 )
 }
 \arguments{
-\item{meteo_hourly}{Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.}
+\item{meteo_hourly}{Hourly weather data frame with at least the column time (time in numeric, for example 0 to 23),Tair (air temperature in degree C), RH (humidity in pc from 0 to 100), cs the CO2 concentration and PFD the total PFD in micro mol m-2 s-1.}
 
-\item{lat}{Latitude of the canopy to model}
+\item{lat}{Latitude of the canopy to model.}
 
-\item{DOY}{Day of Year}
+\item{DOY}{Day of Year .}
 
-\item{nlayers}{Number of layers inside the canopy (max = 50)}
+\item{nlayers}{Number of layers inside the canopy (max = 50).}
 
-\item{dLAI}{LAI of each one of the n layers of vegetation in the canopy}
+\item{dLAI}{LAI of each one of the n layers of vegetation in the canopy.}
 
-\item{LAI}{Cumulated LAI in the midle of each layer}
+\item{LAI}{Cumulated LAI in the midle of each layer.}
 
-\item{Rho}{Leaf reflectance in the visible wavelengths}
+\item{Rho}{Leaf reflectance in the visible wavelengths.}
 
-\item{Tau}{Leaf transmittance in the visible wavelengths}
+\item{Tau}{Leaf transmittance in the visible wavelengths.}
 
-\item{Rho_soil}{Soil reflectance in the visible wavelengths}
+\item{Rho_soil}{Soil reflectance in the visible wavelengths.}
 
-\item{Rho_NIR}{Leaf reflectance in the NIR wavelengths}
+\item{Rho_NIR}{Leaf reflectance in the NIR wavelengths.}
 
-\item{Tau_NIR}{Leaf transmittance in the NIR wavelengths}
+\item{Tau_NIR}{Leaf transmittance in the NIR wavelengths.}
 
-\item{Rho_soil_NIR}{Soil reflectance in the NIR wavelengths}
+\item{Rho_soil_NIR}{Soil reflectance in the NIR wavelengths.}
 
-\item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6}
+\item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6.}
 
-\item{clumpfac}{Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)}
+\item{clumpfac}{Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012).}
 
-\item{model}{Model for the radiation interception model, default is Norman (only Norman implemented so far)}
-}
-\value{
-
+\item{model}{Model for the radiation interception model, default is Norman (only Norman implemented so far).}
 }
 \description{
 Function to describe the light levels inside the canopy
@@ -71,5 +68,5 @@ meteo_hourly=data.frame(time=0:23,RH=80,Tair=25,cs=400,PFD=dnorm(x = seq(0,23,1)
 lat=9.2801048
 DOY = 60
 ##Representation of the light interception inside the canopy
-canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,time = time,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
+canopy=f.canopy.interception(meteo_hourly=meteo_hourly,lat = lat,DOY = DOY,nlayers = nlayers,dLAI = dLAI,LAI=LAI)
 }

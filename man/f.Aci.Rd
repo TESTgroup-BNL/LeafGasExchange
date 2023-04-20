@@ -10,10 +10,15 @@ f.Aci(PFD, ci, Tleaf, param = f.make.param())
 \item{param}{List of parameters, see f.make.param for details}
 }
 \value{
-Assimilation in micromol.m-2.s-1
+List of different variables:
+ - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+ - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+ - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+ - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+ - Ag: Gross assimilation in micromol.m-2.s-1.
 }
 \description{
-Calculate the assimilation according to Farquhar equations. Contrary to f.A, this function uses intracellular CO2 and not ambiant air CO2
+Calculate the assimilation according to Farquhar equations. Contrary to f.A, this function uses inter-cellular CO2 and not ambient air CO2
 }
 \examples{
 ci=seq(40,1500,10)

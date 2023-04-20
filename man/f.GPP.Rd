@@ -5,7 +5,6 @@
 \title{Canopy scale GPP calculation}
 \usage{
 f.GPP(
-  TBM,
   meteo_hourly,
   Vcmax_Profile,
   Jmax_Profile,
@@ -20,36 +19,31 @@ f.GPP(
 )
 }
 \arguments{
-\item{TBM}{Specific TBM to use (ORCHIDEE, CLM4.5, FATES or JULES)}
+\item{meteo_hourly}{See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf.}
 
-\item{meteo_hourly}{See f.canopy.interception doc. In addition to the requirement for f.canopy.interception, the leaf temperature has to be informed within the column Tleaf}
+\item{Vcmax_Profile}{Vector of the values of Vcmax at the reference temperature at each layer of the canopy.}
 
-\item{Vcmax_Profile}{Vector of the values of Vcmax at the reference temperature at each layer of the canopy}
+\item{Jmax_Profile}{Vector of the values of Jmax at the reference temperature at each layer of the canopy.}
 
-\item{Jmax_Profile}{Vector of the values of Jmax at the reference temperature at each layer of the canopy}
+\item{Rd_Profile}{Vector of the values of Rd at the reference temperature at each layer of the canopy.}
 
-\item{Rd_Profile}{Vector of the values of Rd at the reference temperature at each layer of the canopy}
+\item{Tp_Profile}{Vector of the values of Tp at the reference temperature at each layer of the canopy.}
 
-\item{Tp_Profile}{Vector of the values of Tp at the reference temperature at each layer of the canopy}
+\item{g0_Profile}{Vector of the values of g0 at the reference temperature at each layer of the canopy.}
 
-\item{g0_Profile}{Vector of the values of g0 at the reference temperature at each layer of the canopy}
+\item{g1_Profile}{Vector of the values of g1 at the reference temperature at each layer of the canopy.}
 
-\item{g1_Profile}{Vector of the values of g1 at the reference temperature at each layer of the canopy}
+\item{gsmin}{Minimum stomatal conductance for water to consider. This value will be used as the minimum conductance value to avoid 0 and negative values obtained from the coupled assimilation and conductance models.}
 
-\item{gsmin}{Minimum stomatal conductance for water to consider. This value will be used as the minimum conductance value to avoid 0 and negative values obtained from the coupled assimilation and conductance models}
+\item{canopy}{Description of the canopy interception (see canopy_interception function).}
 
-\item{canopy}{Description of the canopy interception (see canopy_interception function)}
+\item{Patm}{Atmospheric pressure (used to calculate the transpiration).}
 
-\item{Patm}{Atmospheric pressure (used to calculate the transpiration)}
-
-\item{...}{Other parameters of the photosynthetic model, without gradients, for example curvature factor, quantum yield.. see the help of f.make.param()}
-}
-\value{
-
+\item{...}{Other parameters of the photosynthetic model, without gradients, for example curvature factor, quantum yield.. see the help of f.make.param().}
 }
 \description{
 Generic function to calculate the GPP within a forest (Here GPP = sum of Anet at the canopy level, so it takes into account the leaf mitochondrial respiration)
 }
 \examples{
-See vignettes on github
+#See vignettes on github
 }

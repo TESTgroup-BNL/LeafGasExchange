@@ -9,21 +9,25 @@ f.modified.arrhenius.inv(P, Ha, Hd, s, Tleaf, TRef = 298.16, R = 8.314)
 \arguments{
 \item{P}{Value of the parameter, here Vcmax or Jmax, at the leaf temperature in micromol.m-2.s-1}
 
-\item{Ha}{Energy of activation in J.mol-1}
+\item{Ha}{Energy of activation in J.mol-1.}
 
-\item{Hd}{Energy of desactivation in J.mol-1}
+\item{Hd}{Energy of desactivation in J.mol-1.}
 
-\item{s}{Entropy term in J.mol-1.K-1}
+\item{s}{Entropy term in J.mol-1.K-1.}
 
-\item{Tleaf}{Temperature of the leaf in Kelvin}
+\item{Tleaf}{Temperature of the leaf in Kelvin.}
 
-\item{TRef}{Reference temperature}
+\item{TRef}{Reference temperature in Kelvin, usually 25 + 273.16 K.}
 
-\item{R}{Ideal gas constant}
+\item{R}{Ideal gas constant.}
 }
 \value{
-
+Value of the parameter Jmax or Vcmax at the reference temperature
 }
 \description{
 Retrieve the reference temperature value of a parameter knowing its value at Tleaf
+}
+\examples{
+VcmaxTleaf=f.modified.arrhenius(PRef=50,Ha=73637,Hd=149252,s=486,Tleaf=seq(273.15+25,273.15+35,0.1))
+f.modified.arrhenius.inv(P=VcmaxTleaf,Ha=73637,Hd=149252,s=486,Tleaf=seq(273.15+25,273.15+35,0.1))
 }

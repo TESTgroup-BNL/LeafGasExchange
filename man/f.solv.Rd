@@ -9,9 +9,6 @@ f.solv(x, y, cs, Rd, Gstar, g0, g1, power, ds, RH, model)
 \arguments{
 \item{model}{}
 }
-\value{
-
-}
 \description{
 Analytical solution of the coupled photosynthesis and conductance models
 }

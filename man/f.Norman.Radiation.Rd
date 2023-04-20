@@ -20,27 +20,27 @@ f.Norman.Radiation(
 )
 }
 \arguments{
-\item{Rho}{Leaf reflectance}
+\item{Rho}{Leaf reflectance.}
 
-\item{Tau}{Leaf transmittance}
+\item{Tau}{Leaf transmittance.}
 
-\item{Rho_soil_dir}{Direct beam albedo of ground (soil)}
+\item{Rho_soil_dir}{Direct beam albedo of ground (soil).}
 
-\item{Rho_soil_dif}{Direct beam albedo of ground (soil)}
+\item{Rho_soil_dif}{Direct beam albedo of ground (soil).}
 
-\item{cosz}{Cosinus of the solar zenith angle}
+\item{cosz}{Cosinus of the solar zenith angle.}
 
-\item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6}
+\item{chil}{Index of departure of the leaf angles from a spherical distribution. -0.4 < chil < 0.6.}
 
-\item{clumpfac}{Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012)}
+\item{clumpfac}{Clumping factor, index of non random spatial distribution of leaves. = 1 for randomly spaced leaves, <1 for clumed leaves (Chen et al. 2012).}
 
-\item{dLAI}{LAI of each one of the n layers of vegetation in the canopy, layer 1 is the top of canopy, layer n is the bottom}
+\item{dLAI}{LAI of each one of the n layers of vegetation in the canopy, layer 1 is the top of canopy, layer n is the bottom.}
 
-\item{nlayers}{Number of vegetation layers}
+\item{nlayers}{Number of vegetation layers.}
 
-\item{PARdir}{Atmospheric direct beam solar radiation (W/m2)}
+\item{PARdir}{Atmospheric direct beam solar radiation (W/m2).}
 
-\item{PARdif}{Atmospheric diffuse solar radiation (W/m2)}
+\item{PARdif}{Atmospheric diffuse solar radiation (W/m2).}
 }
 \value{
 list of output:
