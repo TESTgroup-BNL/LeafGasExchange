@@ -80,15 +80,15 @@ the photosynthesis rates. We’ll revisit this assumption later.
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##     JmaxRef       RdRef       Theta 
-    ## 113.7118145   0.2601098  -0.1994429 
+    ##    JmaxRef      RdRef      Theta 
+    ## 89.9712392  1.1241761  0.7562085 
     ## 
     ## $value
-    ## [1] 3.907609
+    ## [1] 1.137301
     ## 
     ## $counts
     ## function gradient 
-    ##      120       NA 
+    ##      110       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -96,7 +96,7 @@ the photosynthesis rates. We’ll revisit this assumption later.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.51039910701802"
+    ## [1] "sd 0.275354423673918"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -110,15 +110,15 @@ information in the curve to estimate it.
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##    JmaxRef   VcmaxRef      RdRef      Theta 
-    ## 82.1136986 59.9695836  0.8751863  0.7147391 
+    ##   JmaxRef  VcmaxRef     RdRef     Theta 
+    ## 93.295444 62.617218  1.090212  0.710990 
     ## 
     ## $value
-    ## [1] 1.25964
+    ## [1] 1.079666
     ## 
     ## $counts
     ## function gradient 
-    ##      487       NA 
+    ##      425       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -126,7 +126,7 @@ information in the curve to estimate it.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.289786092827467"
+    ## [1] "sd 0.268286688021414"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -144,11 +144,11 @@ info).
 
     confint(fitting1[[2]])
 
-    ##               2.5 %    97.5 %
-    ## sigma    0.37100998 0.7662110
-    ## JmaxRef 81.14004913        NA
-    ## RdRef   -0.06665939 0.5715776
-    ## Theta   -2.98343197 0.5706621
+    ##              2.5 %     97.5 %
+    ## sigma    0.2001556  0.4133620
+    ## JmaxRef 87.5057929 92.5227812
+    ## RdRef    0.8591327  1.3861695
+    ## Theta    0.6657821  0.8270025
 
 It is possible to compare the AIC of the two models using the base
 function AIC or BIC. The lower AIC or BIC corresponds to the best model.
@@ -156,11 +156,11 @@ It shows in this case that adding VcmaxRef is not usefull.
 
     BIC(fitting1[[2]])
 
-    ## [1] 27.93646
+    ## [1] 9.422447
 
     BIC(fitting2[[2]])
 
-    ## [1] 12.34126
+    ## [1] 10.02865
 
 We can redo this procedure for the second simulated curve:
 
@@ -169,14 +169,14 @@ We can redo this procedure for the second simulated curve:
 
     ## $par
     ##    JmaxRef      RdRef      Theta 
-    ## 86.9748423  0.3207121  0.3814943 
+    ## 80.4394879  1.0774293  0.8045951 
     ## 
     ## $value
-    ## [1] 2.445858
+    ## [1] 1.080278
     ## 
     ## $counts
     ## function gradient 
-    ##      162       NA 
+    ##      106       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -184,7 +184,7 @@ We can redo this procedure for the second simulated curve:
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.403803456646784"
+    ## [1] "sd 0.268362699108731"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -194,23 +194,23 @@ We can redo this procedure for the second simulated curve:
                        modify.init=TRUE,do.plot=TRUE,type='Aq')
 
     ## $par
-    ##     JmaxRef       RdRef       Theta    VcmaxRef 
-    ##  77.9466375   0.7369673   0.7458313 777.4815995 
+    ##    JmaxRef      RdRef      Theta   VcmaxRef 
+    ## 89.0847230  0.9900322  0.6818325 54.7903712 
     ## 
     ## $value
-    ## [1] 0.8643026
+    ## [1] 0.7971008
     ## 
     ## $counts
     ## function gradient 
-    ##      501       NA 
+    ##      483       NA 
     ## 
     ## $convergence
-    ## [1] 1
+    ## [1] 0
     ## 
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.240042023484236"
+    ## [1] "sd 0.230521271470263"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -221,11 +221,11 @@ parameter to estimate:
 
     BIC(fitting3[[2]])
 
-    ## [1] 20.90852
+    ## [1] 8.650857
 
     BIC(fitting4[[2]])
 
-    ## [1] 6.691371
+    ## [1] 5.477261
 
 In this case, the model with VcmaxRef is better.
 
