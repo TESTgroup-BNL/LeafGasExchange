@@ -1,17 +1,13 @@
 ---
 title: "Aci_fitting"
 author: "Julien LAMOUR"
-date: "5/27/2022"
-output: github_document
+date: "04/20/2023"
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
-
-knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
 library(mvtnorm)
-#library(ezknitr)
-#ezknitr::ezknit("Aci_fitting.Rmd",fig_dir = "Aci_fitting_files",keep_md = TRUE,keep_html = FALSE)
 ```
 
 # Load the R libraries
