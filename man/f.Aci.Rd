@@ -7,6 +7,12 @@
 f.Aci(PFD, ci, Tleaf, param = f.make.param())
 }
 \arguments{
+\item{PFD}{Photosynthetic light at the leaf surface in micro mol m-2 s-1.}
+
+\item{ci}{Intercellular CO2 concentration in ppm}
+
+\item{Tleaf}{Leaf temperature in Kelvin.}
+
 \item{param}{List of parameters, see f.make.param for details}
 }
 \value{

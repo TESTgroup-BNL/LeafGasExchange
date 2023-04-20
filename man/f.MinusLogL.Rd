@@ -72,6 +72,18 @@ f.MinusLogL(
 
 \item{VcmaxS}{Entropy term for Vcmax in J.mol-1.K-1.}
 
+\item{TpRef}{Triose phosphate utilization  rate in micromol.m-2.s-1.}
+
+\item{TpHa}{Activation energy for Tp in J.mol-1.}
+
+\item{TpHd}{Energy of deactivation for Tp in J.mol-1.}
+
+\item{TpS}{Entropy term for Tp in J.mol-1.K-1.}
+
+\item{thetacj}{Collatz smoothing factor used to introduce a gradual transition from Ac to Aj (close to 0.999)}
+
+\item{thetaip}{Collatz smoothing factor used to introduce a gradual transition from Aj to Ap (close to 0.999)}
+
 \item{RdRef}{Respiration value at the reference temperature in micromol.m-2.s-1.}
 
 \item{RdHa}{Energie of activation for Rd in J.mol-1.}
@@ -80,7 +92,7 @@ f.MinusLogL(
 
 \item{KcHa}{Energy of activation for Kc in J.mol-1.}
 
-\item{KoRef}{ichaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1.}
+\item{KoRef}{Michaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1.}
 
 \item{KoHa}{Energy of activation for Ko in J.mol-1.}
 

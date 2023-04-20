@@ -20,19 +20,33 @@ f.AT(
 }
 \value{
 List of different variables:
+
  - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+ 
  - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+ 
  - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+ 
  - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+ 
  - Ag: Gross assimilation in micromol.m-2.s-1.
+ 
  - Rd: Respiration rate in micromol.m-2.s-1.
+ 
  - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+ 
  - ci: Intracellular CO2 concentration in micromol.mol-1.
+ 
  - ds: Leaf surface to air vapour pressure deficit in Pa.
+ 
  - Transp: Water transpiration in mL m-2 s-1.
+ 
  - gbw: boundary layer conductance in mol m-2 s-1.
+ 
  - cs: CO2 concentration at the leaf surface in ppm.
+ 
  - RHs: Relative humidity at the leaf surface (0 100).
+ 
  - Tleaf: Leaf temperature in K
 }
 \description{

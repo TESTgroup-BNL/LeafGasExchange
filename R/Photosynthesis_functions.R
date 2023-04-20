@@ -25,17 +25,28 @@ f.ds<-function(Tleaf,Tair,RH){
 #' @param power Power of the VPDl in USO model. By default is is 0.5 as in Medlyn publication
 #' @param model Stomatal model ("USO", "USO_simpl" or "BWB" or "Nonlinear")
 #' @export
-#' @details USO : #gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs.
-#' USO_simpl : gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs.
-#' BWB : gs=g0+g1*(A*RH/100)/cs.
-#' Nonlinear: gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs.
+#' @details 
+#' USO : gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs. Cf Medlyn et al. 2011
+#' 
+#' USO_simpl : gs=g0+1.6*(g1/(ds/1000)^power)*(A)/cs. Cf Medlyn et al. 2011
+#' 
+#' BWB : gs=g0+g1*(A*RH/100)/cs. Cf Ball et al. 1987
+#' 
+#' Nonlinear: gs=g0+1.6*(g1/(ds/1000)^power)*(A+Rd)^2/cs. Cf Lamour et al. 2022
+#' 
 #' @return This function returns the stomatal conductance to water vapour in mol.m-2.s-1
-#' @references Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x.
+#' @references
+#'  Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x.
+#'  
 #'  Wu, J, Serbin, SP, Ely, KS, et al. The response of stomatal conductance to seasonal drought in tropical forests. Glob Change Biol. 2020; 26: 823– 839. https://doi.org/10.1111/gcb.14820.
+#'  
 #'  Leuning, R., Kelliher, F. M., De Pury, D. G. G., & Schulze, E. D. (1995). Leaf nitrogen, photosynthesis, conductance and transpiration: scaling from leaves to canopies. Plant, Cell & Environment, 18(10), 1183-1200.
+#'  
 #'  Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
+#'  
+#'  Lamour, J., Davidson, K.J., Ely, K.S., Le Moguédec, G., Leakey, A.D., Li, Q., Serbin, S.P. and Rogers, A., 2022. An improved representation of the relationship between photosynthesis and stomatal conductance leads to more stable estimation of conductance parameters and improves the goodness‐of‐fit across diverse data sets. Global change biology, 28(11), pp.3537-3556.
 #' @examples f.gs(A=30,cs=400,ds=1500,g0=0.01,g1=2,power=0.5)
-f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,Gstar=NULL,g0,g1,power=0.5,model="USO"){
+f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,g0,g1,power=0.5,model="USO"){
   if(model=="USO"|model==0){
     gs=g0+1.6*(1+g1/(ds/1000)^power)*(A)/cs
   } else if(model=="USO_simpl"|model==1){
@@ -53,6 +64,10 @@ f.gs<-function(A,cs,ds=NULL,RH=NULL,Rd=NULL,Gstar=NULL,g0,g1,power=0.5,model="US
 #' @description The minimal conductance of a model depends on the parameters of the model (ie g0 and g1) but also on the minimum A value, which corresponds to the dark respiration.
 #' Knowing the minimal conductance is important because the conductance can become negative and lead to unrealistic values in photosynthesis models
 #' @inheritParams f.make.param
+#' @param RH Air relative humidity (0 to 100), only necessary for the BWB stomatal conductance model
+#' @param cs CO2 concentration at the leaf surface in ppm
+#' @param Tleaf Leaf temperature in Kelvin
+#' @param ds Leaf to air vapor pressure deficit in Pa
 #'
 #' @return Minimum conductance in mol m-2 s-1
 #' @export
@@ -89,7 +104,7 @@ f.gsmin<-function(RdRef=	0.825,RdHa=	46390,RdHd=150650,RdS=490,Tleaf=300,cs=400,
 #' ## The density of stomata is around 400 stomata.mm-2 in the tropical species.
 #' ## The length of the stomata is around 20 micro m. Following Franks and Beerling 2009 we can estimate the
 #' ## Sarea of the stomata: pi*(20/4*10^-6)^2 and the Sdepth: 20*10^-6/4.
-#' f.gsmax(Sarea=0.78,Sdensity=400,Sdepth=5).
+#' f.gsmax(Sarea=0.78,Sdensity=400,Sdepth=5)
 f.gsmax=function(Sarea=0.78,Sdensity=400,Sdepth=5,Diffusivity=0.282/1000,mvair=24.5/1000){
   Diffusivity/mvair*Sdensity*Sarea*10^-6/(Sdepth*10^-6+pi/2*(Sarea*10^-12/pi)^0.5)
 }
@@ -129,28 +144,28 @@ f.arrhenius.inv<-function(P,Ha,Tleaf,TRef=298.16,R=8.314){
   return(PRef)
 }
 
-##' @title Temperature dependence of photosynthetic parameters
-##' @details This equation is used in JULES TBM model
-##' @inheritParams f.make.param
-##'
-##' @return Value of the photosynthetic parameter at the specified leaf temperature
-##' @export
-##' @references Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-##' @examples
+## @title Temperature dependence of photosynthetic parameters
+## @details This equation is used in JULES TBM model
+## @inheritParams f.make.param
+##
+## @return Value of the photosynthetic parameter at the specified leaf temperature
+## @export
+## @references Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
+## @examples
 #f.Q10=function(Pref,Q10,Tleaf,TRef){
 #  P=Pref*Q10^(0.1*(Tleaf-TRef))
 #  return(P)
 #}
 #
-##' @title Temperature dependence of photosynthetic parameters
-##' @details This equation is used in JULES TBM model
-##'
-##' @inheritParams f.make.param
-##'
-##' @return Value of the photosynthetic parameter at the specified leaf temperature
-##' @references Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-##'
-##' @examples
+## @title Temperature dependence of photosynthetic parameters
+## @details This equation is used in JULES TBM model
+##
+## @inheritParams f.make.param
+##
+## @return Value of the photosynthetic parameter at the specified leaf temperature
+## @references Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
+##
+## @examples
 #f.Q10.modified=function(Pref,Q10,Tleaf,TRef,Tlow,Tup){
 #  P=Pref*Q10^(0.1*(Tleaf-TRef))/((1+exp(0.3*(Tleaf-Tup)))*(1+exp(0.3*(Tlow-Tleaf))))
 #  return(P)
@@ -205,16 +220,26 @@ f.modified.arrhenius.inv<-function(P,Ha,Hd,s,Tleaf,TRef=298.16,R=8.314){
 #' @references
 #' Farquhar, G. D., von Caemmerer, S. V., & Berry, J. A. (1980). A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, 78-90.
 #' Fates parameters: https://github.com/NGEET/fates/blob/main/parameter_files/fates_params_default.cdl.
-#' @return List of different variables:
+#' @return 
+#' List of different variables:
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ag: Gross assimilation in micromol.m-2.s-1.
+#'  
 #'  - Rd: Respiration rate in micromol.m-2.s-1.
+#'  
 #'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+#'  
 #'  - ci: Intracellular CO2 concentration in micromol.mol-1.
+#'  
 #'  - ds: Leaf surface to air vapour pressure deficit in Pa.
+#'  
 #'  - Transp: Water transpiration in mL m-2 s-1.
 #'
 #' @examples f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
@@ -256,7 +281,7 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   if(!is.null(which(Wp<W))){ci[which(Wp<W)]=cip[which(Wp<W)]}
   Ai=f.smooth(A1 = Wc,A2 = Wj,theta=param[['thetacj']])
   A=f.smooth(A1=Ai,A2=Wp,theta=param[['thetaip']])-Rd
-  gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,Gstar=Gstar,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
+  gs=f.gs(A=A,cs=cs,ds=ds,Rd=Rd,RH=RH,g0=param[['g0']],g1=param[['g1']],power=param[['power']],model =param[['model.gs']])
   output=list(A=A,Ac=Wc-Rd,Aj=Wj-Rd,Ap=Wp-Rd,Ag=A+Rd,Rd=Rd,gs=gs,ci=ci,ds=ds,Transp=gs*ds/(param[['Patm']]*1000)*18)
   return(output)
 }
@@ -279,25 +304,43 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
 #' @param leaf_size Dimension of the leaf in m (see Tealeaves package).
 #' @param NIR NIR radiation in watt m-2, if not given, then by default the shortwave radiation is calculated as PFD/4.57+NIR = PFD/(4.57*0.45) (see Yun et al. 2020 for the constants 0.45 and 4.57).
 #' @return List of different variables:
+#' 
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ag: Gross assimilation in micromol.m-2.s-1.
+#'  
 #'  - Rd: Respiration rate in micromol.m-2.s-1.
+#'  
 #'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+#'  
 #'  - ci: Intracellular CO2 concentration in micromol.mol-1.
+#'  
 #'  - ds: Leaf surface to air vapour pressure deficit in Pa.
+#'  
 #'  - Transp: Water transpiration in mL m-2 s-1.
+#'  
 #'  - gbw: boundary layer conductance in mol m-2 s-1.
+#'  
 #'  - cs: CO2 concentration at the leaf surface in ppm.
+#'  
 #'  - RHs: Relative humidity at the leaf surface (0 100).
+#'  
 #'  - Tleaf: Leaf temperature in K
-#'#' @export
+#'  
+#' @export
 #' @keywords internal
-#' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 
+#' @references 
+#' tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487 
+#' 
 #'Yun, S. H., Park, C. Y., Kim, E. S., & Lee, D. K. (2020). A Multi-Layer Model for Transpiration of Urban Trees Considering Vertical Structure. Forests, 11(11), 1164.
-#' @examples f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
+#' @examples 
+#' f.ATnotvectorised(PFD=1500,ca=400,Tair=298,wind=2,RHa=70,param=f.make.param(g0=0.03))
 f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,NIR=NA,abso_s=0.5,leaf_size=0.04){
   #Defining the initial conditions at the leaf surface
   cs=ca
@@ -342,25 +385,41 @@ f.ATnotvectorised<-function(PFD,ca,Tair,RHa,wind,precision=0.05,max_it=10,param,
   return(Leaf_physio)
 }
 
+
 #' @title Coupled conductance photosynthesis model and energy balance model
 #' @details This function allows to calculate the photosynthesis from environmental variables PFD, RH, wind, cs and Tair.
 #' The energy balance model is calculated using the package Tealeaves (see reference). The energy balance calculation involves the stomatal conductance and the cuticular conductance.
 #' Here the cuticular conductance is considered to be equal to g0 as done in some TBMs even if it is probably a wrong representation.This choice was made to prevent unrealistic energy budgets when the conductance is too low (<= 0) for low light levels.
 #' @inheritParams f.AT
-#' @return List of different variables:
+#' @return 
+#' List of different variables:
+#' 
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ac: Rubisco limitation assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Aj: Electron transport rate assimilation of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ap: TPU rate of the leaf in micromol.m-2.s-1.
+#'  
 #'  - Ag: Gross assimilation in micromol.m-2.s-1.
+#'  
 #'  - Rd: Respiration rate in micromol.m-2.s-1.
+#'  
 #'  - gs: Conductance of the leaf for water vapour in mol m-2 s-1.
+#'  
 #'  - ci: Intracellular CO2 concentration in micromol.mol-1.
+#'  
 #'  - ds: Leaf surface to air vapour pressure deficit in Pa.
+#'  
 #'  - Transp: Water transpiration in mL m-2 s-1.
+#'  
 #'  - gbw: boundary layer conductance in mol m-2 s-1.
+#'  
 #'  - cs: CO2 concentration at the leaf surface in ppm.
+#'  
 #'  - RHs: Relative humidity at the leaf surface (0 100).
+#'  
 #'  - Tleaf: Leaf temperature in K
 #' @export
 #' @references tealeaves: an R package for modelling leaf temperature using energy budgets. Christopher. D. Muir. bioRxiv 529487; doi: https://doi.org/10.1101/529487.
@@ -437,23 +496,7 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
   }
 }
 
-##' @title Analytical solution of the coupled photosynthesis with mesophyll conductance and USO model
-##' @param x1
-##' @param x2
-##' @param g0
-##' @param g1
-##' @param power
-##' @param ds
-##' @param model
-##' @param gm
-##' @param Rd
-##' @param Gstar
-##' @param cs
-##'
-##' @return
-##' @export
-##' @keywords internal
-##' @examples
+
 #f.solv.Acc=function(x1,x2,g0,g1,power,ds,RH,model,gm,Rd,Gstar,cs){
 #  if(model=="USO"|model==0){
 #    m=1.6*(1+g1/(ds/1000)^power)
@@ -500,32 +543,46 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
 #' @param VcmaxHa Energy of activation for Vcmax in J.mol-1.
 #' @param VcmaxHd Energy of desactivation for Vcmax in J.mol-1.
 #' @param VcmaxS Entropy term for Vcmax in J.mol-1.K-1.
+#' @param TpRef Triose phosphate utilization  rate in micromol.m-2.s-1.
+#' @param TpHa Activation energy for Tp in J.mol-1.
+#' @param TpHd Energy of deactivation for Tp in J.mol-1.
+#' @param TpS Entropy term for Tp in J.mol-1.K-1.
+#' @param thetacj Collatz smoothing factor used to introduce a gradual transition from Ac to Aj (close to 0.999)
+#' @param thetaip Collatz smoothing factor used to introduce a gradual transition from Aj to Ap (close to 0.999)
 #' @param RdRef Respiration value at the reference temperature in micromol.m-2.s-1.
 #' @param RdHa Energie of activation for Rd in J.mol-1.
 #' @param KcRef Michaelis-Menten constant of Rubisco for CO2 at the reference temperature in micromol.mol-1.
 #' @param KcHa Energy of activation for Kc in J.mol-1.
-#' @param KoRef ichaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1.
+#' @param KoRef Michaelis-Menten constant of Rubisco for CO2 at the reference temperature in milimol.mol-1.
 #' @param KoHa Energy of activation for Ko in J.mol-1.
 #' @param GstarRef CO2 compensation point in absence of respiration in micromol.mol-1.
 #' @param GstarHa Enthalpie of activation for Gstar in J.mol-1.
 #' @param abso Absorptance of the leaf in the photosynthetic active radiation wavelenghts.
 #' @param aQY Apparent quantum yield.
 #' @param Theta Theta is the empirical curvature factor for the response of J to PFD. It takes its values between 0 and 1.
+#' @param model.gs Type of conductance model (USO, USO_simpl,BWB or Nonlinear). See f.gs documentation for more information.
 #' @param g0 Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1, usually around 0.01.
 #' @param g1 Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019).
 #' @param power Power of VPDl in USO model. By default power=0.5 as in Medlyn article.
-#' @param model.gs Type of conductance model (USO, USO_simpl,BWB or Nonlinear). See f.gs documentation for more information.
-#' @return List of parameters that can be used in f.A.
-#' @references Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.
+#' 
+#' @return List of parameters that can be used in other functions of the package such as f.A, f.Aci, and f.GPP
+#' 
+#' @references 
+#' Bernacchi, C.J., Singsaas, E.L., Pimentel, C., Portis Jr, A.R. and Long, S.P. (2001), Improved temperature response functions for models of Rubisco‐limited photosynthesis. Plant, Cell & Environment, 24: 253-259. doi:10.1111/j.1365-3040.2001.00668.
+#' 
 #' FATES: https://fates-docs.readthedocs.io/en/latest/fates_tech_note.html.
+#' 
 #' Medlyn, B.E., Duursma, R.A., Eamus, D., Ellsworth, D.S., Colin Prentice, I., Barton, C.V.M., Crous, K.Y., de Angelis, P., Freeman, M. and Wingate, L. (2012), Reconciling the optimal and empirical approaches to modelling stomatal conductance. Glob Change Biol, 18: 3476-3476. doi:10.1111/j.1365-2486.2012.02790.x.
+#' 
 #' Leuning, R., Kelliher, F. M., De Pury, D. G. G., & Schulze, E. D. (1995). Leaf nitrogen, photosynthesis, conductance and transpiration: scaling from leaves to canopies. Plant, Cell & Environment, 18(10), 1183-1200.
+#' 
 #' Ball, J. T., Woodrow, I. E., & Berry, J. A. (1987). A model predicting stomatal conductance and its contribution to the control of photosynthesis under different environmental conditions. In Progress in photosynthesis research (pp. 221-224). Springer, Dordrecht.
 
 #' @export
 #'
-#' @examples param1=f.make.param(JmaxRef=100,VcmaxRef=60,RdRef=1,TpRef=10)
-#'  f.A(PFD=1500,cs=400,Tleaf=300,Tair=299,RH=70,param=param1)
+#' @examples 
+#' param1=f.make.param(JmaxRef=100,VcmaxRef=60,RdRef=1,TpRef=10)
+#' f.A(PFD=1500,cs=400,Tleaf=300,Tair=299,RH=70,param=param1)
 f.make.param<-function(R=NA,O2=NA,TRef=NA,
                        Patm=NA,JmaxRef=	NA,
                        JmaxHa=	NA,
@@ -547,7 +604,6 @@ f.make.param<-function(R=NA,O2=NA,TRef=NA,
                        RdS=NA,
                        KcRef=	NA,
                        KcHa=	NA,
-                       KcQ10=NA,
                        KoRef=	NA,
                        KoHa=	NA,
                        GstarRef= NA,
@@ -590,7 +646,10 @@ f.make.param<-function(R=NA,O2=NA,TRef=NA,
 #' @title Photosynthesis model
 #' @description Calculate the assimilation according to Farquhar equations. Contrary to f.A, this function uses inter-cellular CO2 and not ambient air CO2
 #' @inheritParams f.make.param
+#' @inheritParams f.A
+#' @param ci Intercellular CO2 concentration in ppm 
 #' @param param List of parameters, see f.make.param for details
+#' 
 #'
 #' @return List of different variables:
 #'  - A: Raw assimilation of the leaf in micromol.m-2.s-1.
@@ -628,18 +687,18 @@ f.Aci<-function(PFD,ci,Tleaf,param=f.make.param()){
 }
 
 
-##' @title Analytical solution for f.Aci with mesophyll conductance
-##' @param x1
-##' @param x2
-##' @param gm
-##' @param Rd
-##' @param Gstar
-##' @param ci
-##'
-##' @return
-##' @keywords internal
-##'
-##' @examples
+## @title Analytical solution for f.Aci with mesophyll conductance
+## @param x1
+## @param x2
+## @param gm
+## @param Rd
+## @param Gstar
+## @param ci
+##
+## @return
+## @keywords internal
+##
+## @examples
 #f.solv.cc=function(x1,x2,gm,Rd,Gstar,ci){
 #  a=-gm
 #  b=ci*gm-x2*gm-x1+Rd
@@ -868,28 +927,27 @@ f.fitting<-function(measures,id.name=NULL,Start=list(JmaxRef=90,VcmaxRef=70,RdRe
 }
 
 
-##' @title Function logit
-##' @description This function takes it values in 0;1- and returns values in Inf;+Inf. It is the inverse function of f.logistic
-##' @param x
-##' @return
-##' @export
-#
-##' @encoding UTF-8
-##' @examples
-##' plot(x=seq(0,1,0.01),y=f.logit(x=seq(0,1,0.01)))
+## @title Function logit
+## @description This function takes it values in 0;1- and returns values in Inf;+Inf. It is the inverse function of f.logistic
+## @param x
+## @return
+## @export
+### @encoding UTF-8
+## @examples
+## plot(x=seq(0,1,0.01),y=f.logit(x=seq(0,1,0.01)))
 #f.logit<-function(x){ return(log(x/(1-x)))}
 
 
 
-##' @title Logistic function
-##' @description This function takes it values in -Inf;+Inf and returns values in 0;1. It is the inverse function of f.logit, ie f.logistic(logit(x))=x
-##' @details f.logistic(x)=1/(1+exp(-x)) if x<0, = exp(x)/(1+exp(x)) if x<=0
-##' @param x
-##' @return
-##' @export
+## @title Logistic function
+## @description This function takes it values in -Inf;+Inf and returns values in 0;1. It is the inverse function of f.logit, ie f.logistic(logit(x))=x
+## @details f.logistic(x)=1/(1+exp(-x)) if x<0, = exp(x)/(1+exp(x)) if x<=0
+## @param x
+## @return
+## @export
 #
-##' @examples
-##' plot(x=seq(-10,10,0.1),y=f.logistic(x=seq(-10,10,0.1)))
+## @examples
+## plot(x=seq(-10,10,0.1),y=f.logistic(x=seq(-10,10,0.1)))
 #f.logistic<-function(x){ return(ifelse(x>0,1/(1+exp(-x)),exp(x)/(1+exp(x))))}
 
 

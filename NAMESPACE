@@ -2,6 +2,7 @@
 
 export(f.A)
 export(f.AT)
+export(f.ATnotvectorised)
 export(f.Aci)
 export(f.GPP)
 export(f.GPPT)

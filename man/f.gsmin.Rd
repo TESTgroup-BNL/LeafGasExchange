@@ -23,13 +23,19 @@ f.gsmin(
 
 \item{RdHa}{Energie of activation for Rd in J.mol-1.}
 
-\item{cs}{}
+\item{Tleaf}{Leaf temperature in Kelvin}
+
+\item{cs}{CO2 concentration at the leaf surface in ppm}
+
+\item{ds}{Leaf to air vapor pressure deficit in Pa}
 
 \item{g0}{Constant of the conductance model, representing the conductance when A is 0, in mol.m-2.s-1, usually around 0.01.}
 
 \item{g1}{Slope parameter, between 1.14 and 3.58 KPa^0.5 (Wu et al., 2019).}
 
 \item{power}{Power of VPDl in USO model. By default power=0.5 as in Medlyn article.}
+
+\item{RH}{Air relative humidity (0 to 100), only necessary for the BWB stomatal conductance model}
 }
 \value{
 Minimum conductance in mol m-2 s-1

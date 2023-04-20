@@ -2,7 +2,7 @@
 % Please edit documentation in R/Photosynthesis_functions.R
 \name{f.modified.arrhenius}
 \alias{f.modified.arrhenius}
-\title{Temperature dependence of photosynthetic parameters}
+\title{Temperature dependence of Jmax and Vcmax}
 \usage{
 f.modified.arrhenius(PRef, Ha, Hd, s, Tleaf, TRef = 298.16, R = 8.314)
 }
@@ -22,27 +22,14 @@ f.modified.arrhenius(PRef, Ha, Hd, s, Tleaf, TRef = 298.16, R = 8.314)
 \item{R}{Ideal gas constant.}
 }
 \value{
-Value of the photosynthetic parameter at the specified leaf temperature
-
-Value of the photosynthetic parameter at the specified leaf temperature
-
 Value of the parameter Jmax or Vcmax at a given temperature
 }
 \description{
 The temperature dependence of the photosynthetic parameters Vcmax, the maximum catalytic rate of the enzyme Rubisco, and Jmax, the maximum electron transport rate is modeled by a modified Arrhenius equation. It is modified to account for decreases in each parameter at high temperatures.
 }
-\details{
-This equation is used in JULES TBM model
-
-This equation is used in JULES TBM model
-}
 \examples{
 plot(x=seq(25,35,0.1),y=f.modified.arrhenius(PRef=50,Ha=73637,Hd=149252,s=486,Tleaf=seq(273.15+25,273.15+35,0.1)),xlab='Temperature degree C',ylab='Vcmax')
 }
 \references{
-Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-
-Clark, D. B., Mercado, L. M., Sitch, S., Jones, C. D., Gedney, N., Best, M. J., . Cox, P. M. (2011). The Joint UK Land Environment Simulator (JULES), model description - Part 2: Carbon fluxes and vegetation dynamics. Geoscientific Model Development, 4(3), 701-722. doi:10.5194/gmd-4-701-2011
-
 Leuning, R. (2002), Temperature dependence of two parameters in a photosynthesis model. Plant, Cell & Environment, 25: 1205-1210. doi:10.1046/j.1365-3040.2002.00898.x.
 }
