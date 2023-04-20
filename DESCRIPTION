@@ -1,6 +1,6 @@
 Package: LeafGasExchange
 Title: A package containing functions for fitting photosynthetic response curves, simulat leaf and canopy photosynthesis
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     c(person(given = "Julien",
            family = "Lamour",
