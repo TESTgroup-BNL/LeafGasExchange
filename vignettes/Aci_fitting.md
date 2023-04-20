@@ -38,7 +38,7 @@ We display this simulated curve using the function f.plot
 
     f.plot(measures = measures,type = 'Aci',list_legend = param[c('VcmaxRef','JmaxRef','TpRef','RdRef')],param = param)
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpCOAD5h/preview-243c134936a9.dir/Aci_fitting_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](Aci_fitting_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
 ## Fitting an Aci curve
 
@@ -61,14 +61,14 @@ to TpRef so the TPU limitation is not considered when fitting the curve.
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef 
-    ## 80.400115 48.705110  1.566699 
+    ## 79.615810 51.141824  1.438314 
     ## 
     ## $value
-    ## [1] 15.60231
+    ## [1] 11.29944
     ## 
     ## $counts
     ## function gradient 
-    ##      112       NA 
+    ##      152       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -76,11 +76,11 @@ to TpRef so the TPU limitation is not considered when fitting the curve.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.721163711934783"
+    ## [1] "sd 0.613716524221981"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpCOAD5h/preview-243c134936a9.dir/Aci_fitting_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+![](Aci_fitting_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
 In a second example we now also fit TpRef
 
@@ -89,14 +89,14 @@ In a second example we now also fit TpRef
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 83.365497 49.482091  1.701667  5.201616 
+    ## 83.072886 52.178676  1.612542  5.134247 
     ## 
     ## $value
-    ## [1] 13.71905
+    ## [1] 9.224217
     ## 
     ## $counts
     ## function gradient 
-    ##      367       NA 
+    ##      397       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -104,11 +104,11 @@ In a second example we now also fit TpRef
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.676240768995704"
+    ## [1] "sd 0.554503279961213"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpCOAD5h/preview-243c134936a9.dir/Aci_fitting_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](Aci_fitting_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
 The fitting returns a list of 3 objects. The first object corresponds to
 the fitting using a minimum square function whereas the second object
@@ -123,11 +123,11 @@ info).
     confint(fitting2[[2]])
 
     ##               2.5 %     97.5 %
-    ## sigma     0.5356828  0.8914928
-    ## JmaxRef  78.0399093 89.1994162
-    ## VcmaxRef 44.5394103 55.0462108
-    ## TpRef     4.8807789  7.8820068
-    ## RdRef     0.9040798  2.5183067
+    ## sigma     0.4392483  0.7310047
+    ## JmaxRef  78.2845065 88.2279846
+    ## VcmaxRef 47.4256228 57.9321547
+    ## TpRef     4.8644789  5.4917113
+    ## RdRef     0.9220098  2.3343784
 
 It is possible to compare the AIC of the two models using the base
 function AIC. The lower AIC corresponds to the best model, showing that
@@ -136,11 +136,11 @@ the fit of the model.
 
     AIC(fitting1[[2]])
 
-    ## [1] 73.52296
+    ## [1] 63.84298
 
     AIC(fitting2[[2]])
 
-    ## [1] 71.66394
+    ## [1] 59.7553
 
 It is also possible to calculate the interval of confidence and
 prediction of the Aci curve from the outputs of the fitting.
@@ -169,4 +169,4 @@ prediction of the Aci curve from the outputs of the fitting.
     polygon(c(measures$Ci ,rev(measures$Ci)),c(simul_confint[1,], rev(simul_confint[2,])),
             col=adjustcolor("#99CC99",alpha.f=0.5),border=NA)
 
-![](C:/Users/jlamour/AppData/Local/Temp/RtmpCOAD5h/preview-243c134936a9.dir/Aci_fitting_files/figure-markdown_strict/unnamed-chunk-8-1.png)
+![](Aci_fitting_files/figure-markdown_strict/unnamed-chunk-8-1.png)
