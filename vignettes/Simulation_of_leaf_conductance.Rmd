@@ -1,8 +1,8 @@
 ---
 title: "Guide to use the LeagGasExchange package to simulate leaf conductance"
 author: "Julien LAMOUR"
-date: "5/27/2022"
-output: github_document
+date: "04/20/2023"
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
@@ -10,8 +10,6 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 library(LeafGasExchange)
 library(mvtnorm)
-#library(ezknitr)
-#ezknitr::ezknit("Simulation_of_leaf_conductance.Rmd",fig_dir = "Simulation_of_leaf_conductance_files",keep_md = TRUE,keep_html=FALSE)
 ```
 
 
@@ -119,7 +117,7 @@ PFD=0:2000
 USO_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=3,model.gs = "USO"))
 USO_simpl_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=2.67,model.gs = "USO_simpl"))
 BWB_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=5,model.gs = "BWB"))
-Nonlinear_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=0.23,model.gs = "Nonlinear",VcmaxRef=55,RdRef=0.015*55,JmaxRef=1.67*55,TpRef = 20,TBM = "CLM4.5"))
+Nonlinear_simulation=f.A(PFD = PFD,cs = 400,Tleaf = 25+273.16,Tair = 25+273.16,RH = 70,param = f.make.param(g0=0.02,g1=0.23,model.gs = "Nonlinear",VcmaxRef=55,RdRef=0.015*55,JmaxRef=1.67*55,TpRef = 20))
 plot(x=PFD,y=USO_simulation$gs,type='l',ylab=expression(Conductance~ mol~m^-2~s^-1),col='lightblue')
 lines(x=PFD,y=USO_simpl_simulation$gs,col='slateblue3')
 lines(x=PFD,y=BWB_simulation$gs,col='orchid1')
