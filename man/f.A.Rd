@@ -50,5 +50,6 @@ f.A(PFD=2000,cs=400,Tleaf=273.16+29,Tair=273.16+28,RH=70,param=f.make.param())
 }
 \references{
 Farquhar, G. D., von Caemmerer, S. V., & Berry, J. A. (1980). A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, 78-90.
+
 Fates parameters: https://github.com/NGEET/fates/blob/main/parameter_files/fates_params_default.cdl.
 }

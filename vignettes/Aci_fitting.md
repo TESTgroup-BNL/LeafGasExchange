@@ -61,14 +61,14 @@ to TpRef so the TPU limitation is not considered when fitting the curve.
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef 
-    ## 79.615810 51.141824  1.438314 
+    ## 78.141096 49.423895  1.073605 
     ## 
     ## $value
-    ## [1] 11.29944
+    ## [1] 22.96381
     ## 
     ## $counts
     ## function gradient 
-    ##      152       NA 
+    ##      126       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -76,7 +76,7 @@ to TpRef so the TPU limitation is not considered when fitting the curve.
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.613716524221981"
+    ## [1] "sd 0.874905983238913"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -89,14 +89,14 @@ In a second example we now also fit TpRef
 
     ## $par
     ##   JmaxRef  VcmaxRef     RdRef     TpRef 
-    ## 83.072886 52.178676  1.612542  5.134247 
+    ## 85.567121 50.798031  1.374205  4.949683 
     ## 
     ## $value
-    ## [1] 9.224217
+    ## [1] 12.71768
     ## 
     ## $counts
     ## function gradient 
-    ##      397       NA 
+    ##      487       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -104,7 +104,7 @@ In a second example we now also fit TpRef
     ## $message
     ## NULL
     ## 
-    ## [1] "sd 0.554503279961213"
+    ## [1] "sd 0.651093369135607"
     ## Length  Class   Mode 
     ##      1   mle2     S4
 
@@ -123,11 +123,11 @@ info).
     confint(fitting2[[2]])
 
     ##               2.5 %     97.5 %
-    ## sigma     0.4392483  0.7310047
-    ## JmaxRef  78.2845065 88.2279846
-    ## VcmaxRef 47.4256228 57.9321547
-    ## TpRef     4.8644789  5.4917113
-    ## RdRef     0.9220098  2.3343784
+    ## sigma     0.5157620  0.8583409
+    ## JmaxRef  79.7793526 92.3447196
+    ## VcmaxRef 45.5682094 57.3108320
+    ## TpRef     4.6635868  5.2507344
+    ## RdRef     0.5737043  2.2183785
 
 It is possible to compare the AIC of the two models using the base
 function AIC. The lower AIC corresponds to the best model, showing that
@@ -136,11 +136,11 @@ the fit of the model.
 
     AIC(fitting1[[2]])
 
-    ## [1] 63.84298
+    ## [1] 85.11798
 
     AIC(fitting2[[2]])
 
-    ## [1] 59.7553
+    ## [1] 69.39018
 
 It is also possible to calculate the interval of confidence and
 prediction of the Aci curve from the outputs of the fitting.
