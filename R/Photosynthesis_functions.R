@@ -255,7 +255,8 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   
   # Calculation of the electron transport rate
   I2=PFD*param[['abso']]*(param[['aQY']])
-  J=(I2+Jmax-((I2+Jmax)^2-4*(param[['Theta']])*I2*Jmax)^0.5)/(2*(param[['Theta']]))
+  if(param[['Theta']]==0){J=I2*Jmax/(I2+Jmax)}else{J=(I2+Jmax-((I2+Jmax)^2-4*(param[['Theta']])*I2*Jmax)^0.5)/(2*(param[['Theta']]))}
+  
   
   # Calculation of the leaf to air vapor pressure deficit
   ds=f.ds(Tleaf,Tair,RH)
@@ -774,7 +775,7 @@ f.plot<-function(measures=NULL,list_legend,param,name='',type='Aci',...){
   if(type%in%c('Aq','AQ')){x=measures$Qin
   xlab=expression(italic(Q)['in']~mu*mol~m^-2~s^-1)}
   if(!type%in%c('Aci','AQ','Aq')){print('type should be Aci or Aq')}
-  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab=expression(italic(A)~mu*mol~m^-2~s^-1),ylim=c(min(measures$A,na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)),...)
+  plot(x=x,y=measures$A, main=name, xlab=xlab, ylab=expression(italic(A)~mu*mol~m^-2~s^-1),ylim=c(min(measures$A,-abs(param[['RdRef']]),na.rm = TRUE),1.15*max(measures$A,na.rm = TRUE)),...)
   if(!is.null(list_legend)){
     list_legend=list_legend[order(names(list_legend))]
     legend("bottomright",legend=mapply(FUN = function(x, i){paste(i,'=', round(x,2))}, list_legend, names(list_legend)),bty="n",cex=1)
