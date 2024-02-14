@@ -266,6 +266,12 @@ f.A<-function(PFD,cs,Tleaf,Tair,RH,param=f.make.param()){
   Wc=(cic-Gstar)*Vcmax/(cic+Kc*(1+param[['O2']]/Ko))
     
   cij=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=param[['g1']],param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
+  ## With the USO model, gsw can be negative under the light compensation point. Below, we use the constraint gsw>=g0 to keep positive gsw
+  if(param[["model.gs"]]==0){g1=-1}else(g1=0)
+  cij_g0=f.solv(x=J/4,y=2*Gstar,cs=cs,Rd=Rd,Gstar=Gstar,g0=param[['g0']],g1=g1,param[['power']],ds=ds,RH=RH,model=param[["model.gs"]])
+  cij=pmax(cij,cij_g0)
+  cij[(cij-cs)>=0]=cij_g0[(cij-cs)>=0]
+  
   #plot(cij[,1],ylim=c(-400,400))
   #points(cij[,2],col="blue")
   #points(cij[,3],col="red")
@@ -494,7 +500,7 @@ f.solv<-function(x,y,cs,Rd,Gstar,g0,g1,power,ds,RH,model){
     c=-y*cs*g0+(1.6-m)*(-Gstar*x-Rd*y)
     ci2=(-b-(b^2-4*a*c)^0.5)/(2*a)
     ci1=(-b+(b^2-4*a*c)^0.5)/(2*a)
-    return(pmax(ci1,ci2)) ## Be careful that the max does not always correspond to the more sounding solution at low light
+    return(pmax(ci1,ci2)) 
   }
 }
 
