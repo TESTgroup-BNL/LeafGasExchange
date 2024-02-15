@@ -33,6 +33,8 @@ You will need to install the package devtools first.
 
 ### This package was used to analyse and simulate gas exchanges in several of our lab studies:
 
+Davidson, K.J., Lamour, J., McPherran, A., Rogers, A. and Serbin, S.P. (2023), Seasonal trends in leaf-level photosynthetic capacity and water use efficiency in a North American Eastern deciduous forest and their impact on canopy-scale gas exchange. New Phytol, 240: 138-156. https://doi.org/10.1111/nph.1913
+
 Davidson, K.J., Lamour, J., Rogers, A., Ely, K.S., Li, Q., McDowell, N.G., Pivovaroff, A.L., Wolfe, B.T., Wright, S.J., Zambrano, A. and Serbin, S.P., 2023. Short‐term variation in leaf‐level water use efficiency in a tropical forest. New Phytologist, 237(6), pp.2069-2087.
 
 Lamour, J., Davidson, K.J., Ely, K.S., Le Moguédec, G., Leakey, A.D., Li, Q., Serbin, S.P. and Rogers, A., 2022. An improved representation of the relationship between photosynthesis and stomatal conductance leads to more stable estimation of conductance parameters and improves the goodness‐of‐fit across diverse data sets. Global change biology, 28(11), pp.3537-3556.
